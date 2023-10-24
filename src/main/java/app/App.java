@@ -13,6 +13,7 @@ import spark.Spark;
 import dao.UsuarioDAO;
 import model.Usuario;
 import service.Service;
+import service.AuthService;
 
 public class App{
 	static UsuarioDAO usuarioDAO;
@@ -33,10 +34,10 @@ public class App{
 	         
 	        //ROTAS
 	        post("/insert", (req, res) -> {
-	           return postInsert(req, res);
+	           return Service.cadastraUsuario(req, res);
 	        });
 	        post("/auth", (req, res) -> {
-		           return Service.auth(req, res);
+		           return AuthService.auth(req, res);
 		        });
 	        /*
 	        Spark.post("/insert", (req, res) -> {
@@ -47,38 +48,9 @@ public class App{
 	        	return res;
 	        	});
 	        */    
-    
+ 
 		          
-		        
-		        
-	}
-	
-	
-	static Response postInsert(Request request, Response response){
-		 // Pegue os dados do formulário
-        
-        String name = request.queryParams("name");			  
-        System.out.println(name);			            
-        
-        String email = request.queryParams("email");
-        String password = request.queryParams("password");
-        // Se você tiver outros campos, adicione-os aqui...
-
-        // Montando o objeto Usuario
-        Usuario usuario = new Usuario(name, email, password); // Ajuste conforme seu construtor
-        //usuarioDAO.insert(usuario);
-        //response.redirect("/cadastro.html");
-        
-        // Chame a função insert()
-        if (usuarioDAO.insert(usuario)) {
-            //response.redirect("/sucesso");
-        	System.out.println("/sucesso");
-        } else {
-        	System.out.println("/erro");
-            //response.redirect("/erro");
-        }
-        
-        return null;
+		      	        
 	}
 }
 

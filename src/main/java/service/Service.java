@@ -41,67 +41,6 @@ public class Service {
 	//-------------------------------------------------------------------------
 	///REQUEST ROUTES
 	
-	@SuppressWarnings("unchecked")
-	public static Object auth(Request req, Response res) throws Exception{
-		//Receives json and sends JWT json. See auth.js to check the json format
-		final String requestParam1 = "username";
-    	final String requestParam2 = "password";
-    	final String apiPath = "(/auth)-> ";
-    
-    	//print request type
-		final String contentType = req.headers("Content-Type");
-		System.out.println("Reading for " + apiPath + "contentType = " + contentType);
-		
-    	///PROCESS BODY (REQ)
-		final String reqJsonBody = req.body(); //get Request body as String
-		  									   //parseBody will try to parse it to a proper JSON
-		JSONObject reqJson = parseBody(reqJsonBody, apiPath); //Exceptions handled by function
-		
-		System.out.println(apiPath + "body json = \n" + reqJson);
-
-
-		///AUTHENTICATE
-		boolean auth = false;
-		String trilha = ""; //get trilha from db
-		String user = ""; //might be a better pk than email
-		
-		if (auth) {
-	    	String email = (String) reqJson.get(requestParam1);; 
-	    	String password = (String) reqJson.get(requestParam2);;
-	    	System.out.println(apiPath + "got [(" +email+ "), (" +password+ ")] from request body");
-	    	
-	    	///CREATE RESPONSE (RES)
-	    	res.type("application/json");
-			
-	    	 // Create the JSON response structure
-	        JSONObject header = new JSONObject();
-	        header.put("alg", "HS256");
-	        header.put("typ", "JWT");
-	
-	        JSONObject payload = new JSONObject();
-	        payload.put("sub", email); // Unique identifier, for now, email
-	        payload.put("name", password);
-	        payload.put("trilha", trilha); // Not sure if its best to include this on payload
-	
-	        JSONObject jsonResponse = new JSONObject();
-	        jsonResponse.put("header", header);
-	        jsonResponse.put("payload", payload);
-	        jsonResponse.put("iat", null); // Represents the time the token was issued (set to null for now)
-	        jsonResponse.put("signature", null); // Signature (set to null for now)
-	        
-	        System.out.println(apiPath + jsonResponse);
-	        return jsonResponse.toJSONString(); //response must go as string
-		}
-		else {
-			res.status(401); // HTTP status code 401 Unauthorized
-			res.type("application/json");
-			
-			JSONObject errorResponse = new JSONObject();
-		    errorResponse.put("error", "Authentication failed");
-		    return errorResponse.toJSONString();
-		}
-	}
-	
 	public static Object cadastraUsuario(Request req, Response res) throws Exception{
 		//Receives json and sends JWT json. See auth.js to check the json format
 		final String requestParam1 = "username";
@@ -125,7 +64,7 @@ public class Service {
 		String nome = (String) reqJson.get(requestParam1);
 		Usuario usuario = new Usuario(senha,email,nome);
 		
-		if(usuarioDAO.insert(usuario))
+		if(usuarioDAO.cadastraUsuario(usuario))
 		{
 			res.status(200);
 		}
@@ -133,9 +72,7 @@ public class Service {
 		{
 			res.status(409);
 		}
-		
-	
-		
+			
 		return null;
 	}
 	
