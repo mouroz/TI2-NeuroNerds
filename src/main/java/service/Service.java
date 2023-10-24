@@ -6,10 +6,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import dao.UsuarioDAO;
+import model.Usuario;
 import spark.Request;
 import spark.Response;
 
 public class Service {
+	static UsuarioDAO usuarioDAO = new UsuarioDAO();
+	
 	 /*
 	 * For the Service.java, all exceptions are thrown out to the Spark.exception route
 	 * As such, to simplify and make debugging easier and more flexible, each catch will instead just
@@ -57,7 +61,7 @@ public class Service {
 
 
 		///AUTHENTICATE
-		boolean auth = true;
+		boolean auth = false;
 		String trilha = ""; //get trilha from db
 		String user = ""; //might be a better pk than email
 		
@@ -97,7 +101,46 @@ public class Service {
 		    return errorResponse.toJSONString();
 		}
 	}
+	
+	public static Object cadastraUsuario(Request req, Response res) throws Exception{
+		//Receives json and sends JWT json. See auth.js to check the json format
+		final String requestParam1 = "username";
+    	final String requestParam2 = "password";
+    	final String requestParam3 = "email";
+    	final String apiPath = "(/insert)-> ";
+    
+    	//print request type
+		final String contentType = req.headers("Content-Type");
+		System.out.println("Reading for " + apiPath + "contentType = " + contentType);
 		
+    	///PROCESS BODY (REQ)
+		final String reqJsonBody = req.body(); //get Request body as String
+		  									   //parseBody will try to parse it to a proper JSON
+		JSONObject reqJson = parseBody(reqJsonBody, apiPath); //Exceptions handled by function
+		
+		System.out.println(apiPath + "body json = \n" + reqJson);
+				
+		String email = (String) reqJson.get(requestParam3);
+		String senha = (String) reqJson.get(requestParam2);
+		String nome = (String) reqJson.get(requestParam1);
+		Usuario usuario = new Usuario(senha,email,nome);
+		
+		if(usuarioDAO.insert(usuario))
+		{
+			res.status(200);
+		}
+		else
+		{
+			res.status(409);
+		}
+		
+	
+		
+		return null;
+	}
+	
+	//NÃO ESTA SENDO EXCECUTADO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
 	@SuppressWarnings("unchecked") //JSONObject.put() receives wrong warning
 	//multipart/form-data only sends <input> values
 	static Object formsPostHandler(Request req, Response res) throws Exception{
@@ -123,8 +166,9 @@ public class Service {
     	///CREATE RESPONSE (RES)
         
         return null;
- 
 	}
+	
+	//NÃO ESTA SENDO EXCECUTADO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ^^^^
 }
 
 

@@ -30,7 +30,7 @@ public class App{
 		
 		        return App.class.getResourceAsStream("index.html");
 	        });
-	             
+	         
 	        //ROTAS
 	        post("/insert", (req, res) -> {
 	           return postInsert(req, res);
