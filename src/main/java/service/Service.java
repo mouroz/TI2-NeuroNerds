@@ -55,6 +55,7 @@ public class Service {
 		
 		System.out.println(apiPath + "body json = \n" + reqJson);
 
+
 		///AUTHENTICATE
 		boolean auth = true;
 		String trilha = ""; //get trilha from db
