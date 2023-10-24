@@ -1,0 +1,23 @@
+/*THIS CSS CAN ONLY AFFECT HEADERS - CHANGES NEEDED TO .CONTAINER OR SO ON ARE TO BE SENT TO STYLE*/
+
+
+#navbarDimensions {
+    padding: 0;
+}
+
+.navbar{
+    background-color: beige!important;
+    /*previous bg-color: background-color  :darkblue!important;*/
+
+    padding: 10px 0; /* Bigger height */
+}
+
+.navbar-nav {
+    margin-left: auto; /*Allows elements to divide left and right*/
+}
+
+#navbarDimensions{
+    padding: 0 3%; /*Padding between both right and left of navbar*/
+
+}
+

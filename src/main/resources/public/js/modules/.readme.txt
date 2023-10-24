@@ -1,0 +1,4 @@
+Elements that will be used through many pages will be put inside the modules 
+such as headers, footers and even a common HEAD page.
+
+.common.html contains all of them on a more readable html format

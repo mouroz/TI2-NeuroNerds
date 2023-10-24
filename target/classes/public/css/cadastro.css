@@ -1,0 +1,27 @@
+
+#Voltar{
+    text-align: end;
+}
+
+#formularios {
+    display: inline;
+    align-items: center;
+}
+
+
+#botoes{
+    display: inline;
+    align-items: center;
+    justify-content: center;
+}
+
+#mensagens {
+    text-align: center;
+}
+
+#textoCadastro{
+    padding: 5%;
+    text-align: center;
+
+}
+

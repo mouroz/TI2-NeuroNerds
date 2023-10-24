@@ -1,0 +1,20 @@
+.navbar{
+    background-color:darkblue!important;
+    margin-right: 0%;
+}
+
+#barraNavegacao .navbar-nav .nav-link {
+    color: white;
+}
+
+
+#barraNavegacao .navbar-brand {
+    color: white;
+}
+
+
+.navbar-nav {
+    margin-left: auto;
+    display: flex;
+    justify-content: flex-end;
+}
