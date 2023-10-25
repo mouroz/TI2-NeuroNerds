@@ -16,10 +16,12 @@
     <!--CSS-->
     <link rel="stylesheet" href="/css/header2.css"> <!--adds more to common header.css-->
     <link rel="stylesheet" href="/css/forum.css">
+    <link rel="stylesheet" href="/css/forum-page.css">
     <link rel="stylesheet" href="/css/lib/return-arrow.css">
 
     <!--JS-->
-    <script src="/js/fetch/forumPageBuilder.js"defer></script>
+    <script src="/js/fetch/forumPageBuilder.js" defer></script>
+    <script src="/js/fetch/forumPageInteractions.js"></script>
 </head>
 
 <body>
@@ -31,42 +33,51 @@
                 <div class="container mg-4">
                     <!--user data-->
                     <div class="row">
-                        <div class="post-user-display col">
-                            <img src="/imagens/card-pgPrincipal/perfil.png">
-                            <span id="post-username">username</span>
-                            -
-                            <i id="post-age">4 dias tras</i>
+                        <div class="col">
+                            <div class="post-user-display inline-block">
+                                <div class="centered-content">
+                                    <img id="forum-image" src="/imagens/card-pgPrincipal/perfil.png">
+                                    <span id="post-username">username</span>
+                                    <span class="divider">-</span>
+                                    <i><span id="post-age">4</span> dias atras</i>
+                                </div>
+                            </div>
                         </div>
-                    
-                        <div class="col text-end"><i class="fa-solid fa-gear"></i></div>
+                        <div class="col text-end">
+                            <div id="likes">
+                                <div><i id="like-button" class="liked fa-solid fa-heart"></i></div>
+                                <div id="post-likes-num">40</div>
+                            </div>
+                        </div>
                     </div>
-                    
+
                     <!--title-->
-                    <h4 id="post-title" class="mt-2">TIIIIITLE</h4>
-               
-                    
+                    <h4 id="post-title"></h4>
+
                     <!--tag-->
-                    <div id="tag-container">
-                        <div class="tag circular-container bg-danger">important</div>
-                    </div>
-                    
+                    <div id="tag-container"></div>
+
                     <!--text-->
-                    <div id="post-description" class="mt-3">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptate eaque temporibus saepe delectus perferendis, odio in praesentium maiores laudantium dolor quam modi quibusdam mollitia cupiditate quae. Porro officiis delectus adipisci dolores! Ipsum quisquam minus accusantium exercitationem quis eos, rem totam expedita omnis dolor adipisci quas iure magni atque perferendis similique ut nam nulla esse, modi maiores. Enim placeat nesciunt atque impedit quisquam? Eligendi eaque nesciunt pariatur nam! Quaerat nisi architecto dignissimos odio cum, amet fugit. Illum amet doloribus doloremque tempore asperiores itaque modi? Aut quas earum obcaecati suscipit adipisci, voluptate nemo ipsam! Eaque fugiat nulla soluta debitis aspernatur? Iusto, commodi.
-                    </div>
-                    
-                    <!--like/comment-->
-                    <div class="mt-3 row like-comment">
-                        <div class="col-1 circular-container">
-                            <span id="likes-num">50</span>
-                            <i class="fa-regular fa-heart"></i>
+                    <div id="post-text" class="mt-3"></div>
+
+                    <!--comment-box-->
+                    <div class="my-5"></div>
+                    <form>
+                        <textarea class="comment-box" placeholder="Write your comment here..."></textarea>
+                        <div class="text-end">
+                            <button class="btn btn-secondary" type="submit">Enviar</button>
                         </div>
-                        <div class="col-1 circular-container">
-                            <span id="comments-num">30</span> 
-                            <i class="fa-regular fa-comment "></i>
-                        </div>
+                    </form>
+                    <div class="my-3"></div>
+                    <div>Total of <span id="comments-num">30</span> comments found</div>
+                    <hr class="my-4">
+
+                    <!--user-comment-section-->
+                    <div id="comments-area">
+                            
                     </div>
-                    </div>
+                </div>
+
             </div>
 
             <!--Right sidebar-->

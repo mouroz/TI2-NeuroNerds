@@ -31,26 +31,22 @@ public class App{
 		
 		        return App.class.getResourceAsStream("index.html");
 	        });
-	         
+	        
+	        //Exceptions dos services
+	        Spark.exception(Exception.class, (e, req, res) -> {
+		    	System.err.println(e.getMessage());
+		        res.body(""); // | res.body(e.getMessage())
+		        res.status(400);
+		    });
+	        
+	        
 	        //ROTAS
-	        post("/insert", (req, res) -> {
-	           return Service.cadastraUsuario(req, res);
-	        });
-	        post("/auth", (req, res) -> {
-		           return AuthService.auth(req, res);
-		        });
-	        /*
-	        Spark.post("/insert", (req, res) -> {
-	        	
-	        	req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
-	        	String name = req.queryParams("name");	
-	        	System.out.println(name);
-	        	return res;
-	        	});
-	        */    
- 
-		          
-		      	        
+	        post("/cadastro", (req, res) -> {return AuthService.cadastraUsuario(req, res);});
+	        post("/auth", (req, res) -> {return AuthService.auth(req, res);});
+	        get("/exercicios", (req,res) -> {return Service.getExercicio(req, res);});
+	        get("/forum-homepage", (req,res) -> {return Service.getForumHomepage(req, res);});
+	        get("/forum-post", (req,res) -> {return Service.getForumPost(req, res);});
+	      
 	}
 }
 

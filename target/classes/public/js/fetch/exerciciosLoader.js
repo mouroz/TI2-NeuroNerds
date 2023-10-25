@@ -10,30 +10,29 @@ const defaultJson = {
     ],
     correct: '1'
 }
-const userSessionStorageName = 'userData';
+const userLocalStorageName = 'userData';
 
 ///GLOBAL METHODS
-function getUserSessionStorage(){
-    const existingSS = sessionStorage.getItem(userSessionStorageName);
-    if (existingData != null) console.error('Couldnt access sessionStorage data')
+function getUserLocalStorage(){
+    const existingLS = localStorage.getItem(userLocalStorageName);
+    if (existingLS == null) console.error('Couldnt access LocalStorage data')
 
-    const ss_Json = JSON.parse(existingSS);
-    if (!ss_Json.ok) console.error('Couldnt access SessionStorage as JSON');
+    let ss_Json;
+    try {
+         ss_Json = JSON.parse(existingLS);
+    } catch(e) {console.error('Couldnt access LocalStorage as JSON');}
 
+    console.log(ss_Json)
     return ss_Json;
 }
 
 ///START FOR GLOBALS
 //Url has as parameters current trilha and difficulty. 
     //UserId is gotten from the ss
-const url = new URL(window.location.href);
-const trilha = url.searchParams.get('param1');
-const difficulty = url.searchParams.get('param2'); 
-console.log("exerciciosLoader.js url values found: " + trilha + ", " + difficulty);
 
-const userSS = getUserSessionStorage();
-const user = userSS.payload.user; //get unique key user from JSON
-if (user == null || user == '') console.error('Couldnt access user key');  
+const userLS = getUserLocalStorage();
+const sub = userLS.payload.sub; //get unique key user from JSON
+if (sub == null || sub == '') console.error('Couldnt access user key');  
 
 ///LOCAL START
 fetchNewExercise(); //fetch new as soon as page starts
@@ -45,7 +44,7 @@ function fetchNewExercise() {
     //There are also no dividers for filtering (completed) or (not completed) 
         //and the code is default to the 2nd
 
-    fetch(`/get/exercicios?${user}&${trilha}&${difficulty}`, ({
+    fetch(`/exercicios?user=${sub}`, {
         method: 'GET'
     })
         .then(response => {
@@ -53,7 +52,7 @@ function fetchNewExercise() {
             return response.json();
         })
         .then(datajson => {
-            console.log(datajson);
+            if (datajson === null) throw new Error('JSON is null');
 
             if (!('title' in datajson)) throw new Error('Failure in atribute (title) on Exercicio JSON');
             if (!('type' in datajson)) throw new Error('Failure in atribute (type) on Exercicio JSON');
@@ -72,18 +71,18 @@ function fetchNewExercise() {
             updateExercicios(datajson);
         })
         .catch(error => {
-            console.error('exerciciosLoader.js error:', error + '\n' + 'getting default values');
+            console.error('exerciciosLoader.js error:\n', error + '\n' + 'getting default values');
             if (defaultJson){ //reserved for if function starts receiving default as param
                 updateExercicios(defaultJson);
             }
-        }));
+        });
 }
 
 ///FETCH POST
 function fetchPost() {
     console.log("url fetch value specifier: "+urlValue); //debug results
 
-    fetch('/put/acerto/', ({
+    fetch('/acerto', ({
         method: "POST", // You can use GET or POST, depending on your server's implementation.
         body: JSON.stringify(serverRequestData),
         headers: {

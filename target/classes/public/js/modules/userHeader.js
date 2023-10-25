@@ -40,7 +40,7 @@ const headerHtml =
 </div>
 `;
 
-const ss_UserKey = 'userData';
+const ls_UserKey = 'userData';
 
 ///MODULATES THE LOGGED IN HEADER
 document.addEventListener("DOMContentLoaded", function () {
@@ -55,18 +55,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const exitButton = newHeader.querySelector('.exit-button');
     exitButton.addEventListener('click', (e) => {
         e.preventDefault();
-        sessionStorage.removeItem(ss_UserKey);
+        localStorage.removeItem(ls_UserKey);
         window.location.href='/index.html';
     })
 
     ///Update values according to sessionStorage JSON
-    const sessionStr = sessionStorage.getItem(ss_UserKey);
+    const localStr = localStorage.getItem(ls_UserKey);
 
     try {
-        if (sessionStr.trim() === '') throw new Error('Invalid access - no session storage found for userData');
+        if(localStr === null) throw new Error('Invalid access - no session storage found for userData');
+        if (localStr.trim() === '') throw new Error('Invalid access - session storage is an empty string');
 
-        const sessionJson = JSON.parse(sessionStr);
-        if (!sessionJson) throw new Error('Invalid access - session storage is not usable json');
+        const localJson = JSON.parse(localStr);
+        if (!localJson) throw new Error('Invalid access - session storage is not usable json');
 
         const displayName = newHeader.querySelector('.header-username-display');
         const trilhaHtmlRedirect = newHeader.querySelector('.trilha-link');
@@ -75,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
         trilhaHtmlRedirect.href = '/outras/trilhas/adhd.html'; //for now only this option exists
 
         //change display name to session name
-        displayName.textContent = sessionJson.payload.name;
+        displayName.textContent = localJson.payload.name;
 
         //insert header
         document.body.insertBefore(newHeader, document.body.firstElementChild);

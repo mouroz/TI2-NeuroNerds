@@ -7,10 +7,22 @@ public class Pergunta {
 
 	private int id_pergunta;
 	private String titulo;
-	private LocalDate data_postagem;
 	private String conteudo;
+	private LocalDate data_postagem;
 	private int id_usuario;
 	
+	public Pergunta() {
+		
+	}
+	
+	public Pergunta(int id_pergunta, String titulo, String conteudo, LocalDate data_postagem, int id_usuario){
+		this.id_pergunta = id_pergunta;
+		this.titulo = titulo;
+		this.conteudo = conteudo;
+		this.data_postagem = data_postagem;
+		this.id_usuario = id_usuario;
+		
+	}
 	public int getId_pergunta() {
 		return id_pergunta;
 	}

@@ -8,12 +8,13 @@ const defaultJson = {
     },
     payload: {
         sub: 'username', //unique identifier, for now username 
-        name: 'name'
+        name: 'name',
+        trilha: 'adhd'
         //iat: 124252354 //-> represents the time the token was issued to see if it expired
     }
     //signature: 'XXXXXXXXXXXXXXXXXXXXXX' //uses alg to encode header, payload and secret key
 }
-const sessionStorageName = 'userData';
+const localStorageName = 'userData';
 const nextPageHtml = '/outras/telainicial.html';
 
 
@@ -25,7 +26,7 @@ const passwordElement = document.getElementById('password');
 form.addEventListener('submit', (e) => {
     e.preventDefault(); // Prevent default form submission
 
-    const existingData = sessionStorage.getItem(sessionStorageName);
+    const existingData = localStorage.getItem(localStorageName);
     if (existingData != null){
         alert("login through logged in acc")
         window.location.href = nextPageHtml;
@@ -34,7 +35,6 @@ form.addEventListener('submit', (e) => {
 
     const usernameInput = usernameElement.value;
     const passwordInput = passwordElement.value;
-    console.log(usernameInput.trim());
     if (usernameInput.trim() !== '' || passwordInput.trim() !== ''){
         sendAuth(usernameInput, passwordInput);
     } 
@@ -64,12 +64,12 @@ function sendAuth(usernameInput, passwordInput) {
         }
     })
         .then(response => {
-            console.log(response.status);
-            if (!response.ok) throw new ApiError('API request failed with status ' + response.status);
-            if (response.status == 401) { //unauthorized
+            if (response.status == 401) { //expected unauthorized response
                 alert("Incorrect user or password");
                 return;
-            } 
+            } else if (!response.ok) { //unexpected error responses, incluiding couldnt reach server
+                throw new ApiError('API request failed with status ' + response.status);
+            }
             return response.json();
         })
         .then(json => {
@@ -79,21 +79,21 @@ function sendAuth(usernameInput, passwordInput) {
             const payload = json.payload;
             if (!('username' in payload)) throw new JsonError('Failure in atribute (username) on Auth JSON');
             if (!('name' in payload)) throw new JsonError('Failure in atribute (password) on Auth JSON');
-            updateSessionStorage(defaultJson);
+            updateLocalStorage(defaultJson);
         })
         .catch(error => {
             console.error('loginAuth.js error: ', error + '\n' + 'using test user values for now');
             if (error instanceof ApiError){
                 if (defaultJson) { //reserved for if function starts receiving default as param
                     alert('couldnt reach server. Using test user');
-                    updateSessionStorage(defaultJson);
+                    updateLocalStorage(defaultJson);
                 }
             }
         })
 }
-alert("jumpscare alerti")
-function updateSessionStorage(json){
-    //sessionStorage.setItem(sessionStorageName, JSON.stringify(json));
-    //window.location.href = nextPageHtml;
+
+function updateLocalStorage(json){
+    localStorage.setItem(localStorageName, JSON.stringify(json));
+    window.location.href = nextPageHtml;
 }
 

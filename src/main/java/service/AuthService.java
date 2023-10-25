@@ -33,6 +33,37 @@ public class AuthService {
         catch (Exception e) {throw new Exception (apiPath + "Request body is not a proper JSON");}
 	}
 
+	//-------------------------------------------------------------------------
+	///REQUEST ROUTES
+		
+	public static Object cadastraUsuario(Request req, Response res) throws Exception{
+		//Receives json and sends JWT json. See auth.js to check the json format
+		final String requestParam1 = "username";
+    	final String requestParam2 = "password";
+    	final String requestParam3 = "email";
+    	final String apiPath = "(/insert)-> ";
+    
+		final String contentType = req.headers("Content-Type");
+		System.out.println("Reading for " + apiPath + "contentType = " + contentType);
+		
+    	///PROCESS BODY (REQ)
+		final String reqJsonBody = req.body(); //get Request body as String
+		  									   //parseBody will try to parse it to a proper JSON
+		JSONObject reqJson = parseBody(reqJsonBody, apiPath); //Exceptions handled by function
+		
+		System.out.println(apiPath + "body json = \n" + reqJson);
+				
+		String email = (String) reqJson.get(requestParam3);
+		String senha = (String) reqJson.get(requestParam2);
+		String nome = (String) reqJson.get(requestParam1);
+		Usuario usuario = new Usuario(senha,email,nome);
+		
+		if(usuarioDAO.cadastraUsuario(usuario)) res.status(200);
+		else res.status(409);
+		
+			
+		return null;
+	}
 	
 	public static Object auth(Request req, Response res) throws Exception{
 		//Receives json and sends JWT json. See auth.js to check the json format

@@ -11,16 +11,19 @@ const dataJson = {
     data: [
         { title: 'Placeholder 1', type: 0, description: 'my description is this' },
         { title: 'Placeholder 2', type: 0, description: 'my description is this' },
-        { title: 'Placeholder 3', type: 1, description: 'my description is this' },
-        { title: 'Placeholder 4', type: 1, description: 'my description is this' },
+        { title: 'Placeholder 3', type: 0, description: 'my description is this' },
+        { title: 'Placeholder 4', type: 0, description: 'my description is this' },
         { title: 'Placeholder 5', type: 0, description: 'my description is this' },
-        { title: 'Placeholder 6', type: 1, description: 'my description is this' },
+        { title: 'Placeholder 6', type: 0, description: 'my description is this' },
         { title: 'Placeholder 7', type: 0, description: 'my description is this' },
-        { title: 'Placeholder 8', type: 1, description: 'my description is this' }
+        { title: 'Placeholder 8', type: 0, description: 'my description is this' }
     ]
 };
 
-///FETCH
+/*
+ * THIS FETCH WILL BE DISCONTINUED FOR THIS PROJECT. HOWEVER, FOR FLEXIBLITY THE SCRIPT
+ * WILL BE STAYING AS IS IN THE MEANTIME
+*/
 fetch('/api/endpoint')
     .then(response => {
         if (!response.ok) throw new Error('API request failed with status ' + response);

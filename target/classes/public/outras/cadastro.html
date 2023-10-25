@@ -14,6 +14,7 @@
 
     <!--CSS-->
     <link rel="stylesheet" href="/css/cadastro.css">
+    <link rel="stylesheet" href="/js/fetch/cadastro.js">
 </head>
 
 
@@ -26,7 +27,7 @@
             <div class="col-md-6">
                 <div class="card custom-card">
                     <div class="card-body">
-                        <form>
+                        <form id ="cadastro-form">
                             <div class="mb-4">
                                 <label for="name" class="form-label">Nome:</label>
                                 <input type="text" class="form-control" id="name" name="name" required>
@@ -44,8 +45,8 @@
                                 <select class="form-select" id="dropdown" name="dropdown" required>
                                     <option value="" disabled selected>Selecione uma opção</option>
                                     <option value="opcao1">TDAH</option>
-                                    <option value="opcao2">Dislexia</option>
-                                    <option value="opcao3">Discalculia</option>
+                                     <!--<option value="opcao2">Dislexia</option>-->
+                                     <!--<option value="opcao3">Discalculia</option>-->
                                 </select>
                             </div>
                             <div class="text-center">
