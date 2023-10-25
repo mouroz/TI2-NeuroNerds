@@ -38,7 +38,7 @@ public class AuthService {
 		
 	public static Object cadastraUsuario(Request req, Response res) throws Exception{
 		//Receives json and sends JWT json. See auth.js to check the json format
-		final String requestParam1 = "username";
+		final String requestParam1 = "name";
     	final String requestParam2 = "password";
     	final String requestParam3 = "email";
     	final String apiPath = "(/insert)-> ";

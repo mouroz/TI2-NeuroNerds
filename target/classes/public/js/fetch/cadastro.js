@@ -1,4 +1,4 @@
-import { ApiError, JsonError } from '/js/class/fetchErrors.js';
+
 
 const sessionStorageName = 'userData';
 const nextPageHtml = '/outras/telainicial.html';
@@ -6,10 +6,9 @@ const nextPageHtml = '/outras/telainicial.html';
 
 //STATIC GLOBAL ELEMENTS
 const form = document.getElementById('cadastro-form');
-const usernameElement = document.getElementById('username');
+const usernameElement = document.getElementById('name');
 const emailElement = document.getElementById('email');
 const passwordElement = document.getElementById('password');
-
 form.addEventListener('submit', (e) => {
     e.preventDefault(); // Prevent default form submission
 
@@ -22,14 +21,14 @@ form.addEventListener('submit', (e) => {
     } 
 })
 
-function sendAuth(usernameInput, passwordInput) {
+function sendAuth() {
     //to keep consistency we will send a JSON instead of FORM DATA, 
     //although the code for formData is still here for use
     /*const serverRequestData = new FormData(form);*/
 
     //for security purposes it might be better do encrypt the data before sending
     const serverRequestData = {
-        username: usernameElement.value,
+        name: usernameElement.value,
         email: emailElement.value,
         password: passwordElement.value
     };
@@ -47,6 +46,7 @@ function sendAuth(usernameInput, passwordInput) {
         }
     })
         .then(response => {
+            alert('sent')
             console.log(response.status);
             switch (response.status){
                 case 200: //sucessful
