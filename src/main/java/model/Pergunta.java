@@ -10,6 +10,7 @@ public class Pergunta {
 	private String conteudo;
 	private LocalDate data_postagem;
 	private int id_usuario;
+	private String nome_usuario;
 	
 	public Pergunta() {
 		

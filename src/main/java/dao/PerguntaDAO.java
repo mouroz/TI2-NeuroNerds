@@ -67,13 +67,14 @@ public class PerguntaDAO extends DAO {
         String sql = "SELECT * FROM Resposta WHERE Pergunta_idPergunta = ?";
         try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
             stmt.setInt(1, id_pergunta);
-            try (ResultSet rs = stmt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {xq	
                 ArrayList<Resposta> respostas = new ArrayList<>();
                 while (rs.next()) {
                     Resposta resposta = new Resposta();
-                    resposta.setId_resposta(rs.getString("idResposta"));
+                    resposta.setId_resposta(rs.getInt("idResposta"));
                     resposta.setConteudo(rs.getString("conteudo"));
-                    resposta.setData_postagem(rs.getString("data_postagem"));
+                    resposta.setData_postagem(rs.getDate("data_postagem"));
+                    resposta.setId_usuario(id_pergunta);
                     // Adicione aqui outros campos conforme necessário
                     respostas.add(resposta);
                 }

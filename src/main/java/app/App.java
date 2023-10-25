@@ -37,7 +37,7 @@ public class App{
 		    	System.err.println(e.getMessage());
 		        res.body(""); // | res.body(e.getMessage())
 		        res.status(400);
-		    });
+		    }); 	
 	        
 	        
 	        //ROTAS

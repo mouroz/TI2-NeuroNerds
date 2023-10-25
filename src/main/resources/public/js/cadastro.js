@@ -1,11 +1,64 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const botaoProximo = document.getElementById("Proximo");
-    const botaoVoltar = document.getElementById("Voltar");
 
-    botaoVoltar.addEventListener("click", function() {
-        window.location.href = "../index.html";
-    });
-    botaoProximo.addEventListener("click", function() {
-        window.location.href = "./cadastro2.html";
-    });
-});
+
+const sessionStorageName = 'userData';
+const nextPageHtml = '/outras/telainicial.html';
+
+
+//STATIC GLOBAL ELEMENTS
+const form = document.getElementById('cadastro-form');
+const usernameElement = document.getElementById('name');
+const emailElement = document.getElementById('email');
+const passwordElement = document.getElementById('password');
+form.addEventListener('submit', (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    const usernameInput = usernameElement.value;
+    const passwordInput = passwordElement.value;
+
+    console.log(usernameInput.trim());
+    if (usernameInput.trim() !== '' || passwordInput.trim() !== ''){
+        sendAuth(usernameInput, passwordInput);
+    } 
+})
+
+function sendAuth() {
+    //to keep consistency we will send a JSON instead of FORM DATA, 
+    //although the code for formData is still here for use
+    /*const serverRequestData = new FormData(form);*/
+
+    //for security purposes it might be better do encrypt the data before sending
+    const serverRequestData = {
+        name: usernameElement.value,
+        email: emailElement.value,
+        password: passwordElement.value
+    };
+    
+    console.log(serverRequestData);
+    //authentification will be done with a 'POST' and auth token.
+    //a lot of the typical JWT is not being used for now so its 100% non secure
+    //and serves only as prototype
+    fetch('/cadastro', { 
+        method: "POST", // You can use GET or POST, depending on your server's implementation.
+        body: JSON.stringify(serverRequestData),
+        headers: {
+            "Content-Type": "application/json"
+            //for form body there is no need for Content-Type header
+        }
+    })
+        .then(response => {
+            alert('sent')
+            console.log(response.status);
+            switch (response.status){
+                case 200: //sucessful
+                    alert("Sucessfuly created new account");
+                    window.location.href = '/index.html';
+                    break;
+                case 401: //expected unathorized response
+                    alert("Login already exists");
+                    break;
+                default: 
+                    alert("Unexpected server response. Server might be out of air. Sorry for the incovenience")    
+
+            }
+        })
+}

@@ -61,7 +61,7 @@ public class UsuarioDAO extends DAO {
     
     public boolean autenticaUsuario(String senha, String email) {	
     	boolean status = false;
-    	String sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
+    	String sql = "SELECT * FROM usuario WHERE email = ? AND senha = ?";
     	try(PreparedStatement pstmt = conexao.prepareStatement(sql)){
     		pstmt.setString(1, email);
     		pstmt.setString(2, senha);

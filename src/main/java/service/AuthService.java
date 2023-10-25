@@ -38,14 +38,13 @@ public class AuthService {
 		
 	public static Object cadastraUsuario(Request req, Response res) throws Exception{
 		//Receives json and sends JWT json. See auth.js to check the json format
-		final String requestParam1 = "username";
+		final String requestParam1 = "name";
     	final String requestParam2 = "password";
     	final String requestParam3 = "email";
     	final String apiPath = "(/insert)-> ";
     
 		final String contentType = req.headers("Content-Type");
 		System.out.println("Reading for " + apiPath + "contentType = " + contentType);
-		
 		
     	///PROCESS BODY (REQ)
 		final String reqJsonBody = req.body(); //get Request body as String
@@ -58,8 +57,6 @@ public class AuthService {
 		String senha = (String) reqJson.get(requestParam2);
 		String nome = (String) reqJson.get(requestParam1);
 		Usuario usuario = new Usuario(senha,email,nome);
-		
-		System.out.println(usuario.toString());
 		
 		if(usuarioDAO.cadastraUsuario(usuario)) res.status(200);
 		else res.status(409);
