@@ -9,7 +9,7 @@ import model.Usuario;
 
 public class QuestaoDAO extends DAO{
 
-    public UsuarioDAO() {
+    public QuestaoDAO() {
         super();
         conectar();
     }
@@ -31,7 +31,7 @@ public class QuestaoDAO extends DAO{
             pstmt.executeUpdate();
             status = true;
 
-            System.out.println(usuario.toString());
+            //System.out.println(usuario.toString());
 
         } catch (SQLException u) {
             System.out.println("Não foi possível inserir: ");
