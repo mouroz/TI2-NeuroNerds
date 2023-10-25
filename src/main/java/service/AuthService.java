@@ -46,6 +46,7 @@ public class AuthService {
 		final String contentType = req.headers("Content-Type");
 		System.out.println("Reading for " + apiPath + "contentType = " + contentType);
 		
+		
     	///PROCESS BODY (REQ)
 		final String reqJsonBody = req.body(); //get Request body as String
 		  									   //parseBody will try to parse it to a proper JSON
@@ -57,6 +58,8 @@ public class AuthService {
 		String senha = (String) reqJson.get(requestParam2);
 		String nome = (String) reqJson.get(requestParam1);
 		Usuario usuario = new Usuario(senha,email,nome);
+		
+		System.out.println(usuario.toString());
 		
 		if(usuarioDAO.cadastraUsuario(usuario)) res.status(200);
 		else res.status(409);

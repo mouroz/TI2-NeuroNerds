@@ -8,6 +8,7 @@ import java.util.List;
 import java.time.LocalDate;
 import java.sql.Date;
 import java.util.Calendar;
+import model.Resposta;
 
 import model.Pergunta;
 
@@ -60,6 +61,28 @@ public class PerguntaDAO extends DAO {
             e.printStackTrace();
         }
         return result;
+    }
+    
+    public Resposta[] getRespostas(int id_pergunta) {
+        String sql = "SELECT * FROM Resposta WHERE Pergunta_idPergunta = ?";
+        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setInt(1, id_pergunta);
+            try (ResultSet rs = stmt.executeQuery()) {
+                ArrayList<Resposta> respostas = new ArrayList<>();
+                while (rs.next()) {
+                    Resposta resposta = new Resposta();
+                    resposta.setId_resposta(rs.getString("idResposta"));
+                    resposta.setConteudo(rs.getString("conteudo"));
+                    resposta.setData_postagem(rs.getString("data_postagem"));
+                    // Adicione aqui outros campos conforme necessário
+                    respostas.add(resposta);
+                }
+                return respostas.toArray(new Resposta[0]);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
