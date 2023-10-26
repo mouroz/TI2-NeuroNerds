@@ -27,7 +27,7 @@ public class App extends dao.DAO{
 	
 		staticFiles.location("/public");
 		staticFiles.externalLocation("src/main/resources/public");
-        port(4568);
+        port(4567);
         
         /*
         System.out.println("Digite o titulo: ");
