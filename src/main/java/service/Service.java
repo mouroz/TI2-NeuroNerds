@@ -194,6 +194,31 @@ public class Service extends ServiceParent{
         return responseJson.toJSONString();
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static Object getProfileDetails(Request req, Response res) throws Exception{
+		final String path = "/forum/page/load-post";	
+    	final ServiceLogger logger = new ServiceLogger(path);
+    	
+    	//GET USUARIO ID
+    	int id;
+    	try {
+    		id = Integer.parseInt(req.queryParams("id"));
+    	}catch(NumberFormatException e) {
+    		throw new Exception (logger.err("Failure to parse to int from url id"));
+    	}
+    	
+    	//GET USUARIO THROUGH ID ON DATABASE
+    	
+    	//RETURN JSON
+    	res.type("application/json");
+    	JSONObject returnJson = new JSONObject();
+    		returnJson.put("username", null);
+    		returnJson.put("name", null);
+    		returnJson.put("email" , null);
+    		
+    	res.status(200);
+    	return returnJson;
+	}
 	
 	//----------------------------------------------------------------------------------------------
 	///PUTS

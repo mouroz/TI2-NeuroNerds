@@ -1,19 +1,6 @@
 import { ApiError, JsonError } from '/js/class/fetchErrors.js';
 
 //NON SECURE SIMPLE AUTH FOR NOW. HEADER WILL BE IGNORED
-const defaultJson = {
-    header: {
-        alg: 'HS256', //HMAC SHA256
-        typ: 'JWT' //type of toke JWT
-    },
-    payload: {
-        sub: 'username', //unique identifier, for now username 
-        name: 'name',
-        trilha: 'adhd'
-        //iat: 124252354 //-> represents the time the token was issued to see if it expired
-    }
-    //signature: 'XXXXXXXXXXXXXXXXXXXXXX' //uses alg to encode header, payload and secret key
-}
 const localStorageName = 'userData';
 const nextPageHtml = '/outras/telainicial.html';
 
@@ -77,7 +64,7 @@ function sendAuth(usernameInput, passwordInput) {
             if (!('payload' in json)) throw new JsonError('Failure in atribute (payload) on Auth JSON');
 
             const payload = json.payload;
-            if (!('username' in payload)) throw new JsonError('Failure in atribute (username) on Auth JSON');
+            if (!('sub' in payload)) throw new JsonError('Failure in atribute (sub) on Auth JSON');
             if (!('name' in payload)) throw new JsonError('Failure in atribute (password) on Auth JSON');
             updateLocalStorage(defaultJson);
         })
@@ -93,6 +80,7 @@ function sendAuth(usernameInput, passwordInput) {
 }
 
 function updateLocalStorage(json){
+    console.log(json);
     localStorage.setItem(localStorageName, JSON.stringify(json));
     window.location.href = nextPageHtml;
 }

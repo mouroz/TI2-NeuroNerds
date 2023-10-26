@@ -25,12 +25,13 @@ public class Usuario {
     public String getEmail() {return email;}
     public String getUsername() {return username;}
     
-    public void setSenha(String senha) {this.senha = senha;}
     public void setEmail(String email) {this.email = email;}
     public void setUsername(String username) {this.username = username;}
-
+    public void setSenha(String senha) {this.senha = senha;}
     @Override
     public String toString(){
         return "usuario [email=" + email + ", senha=" + senha + ", idUsuario=" + id_usuario + ", username=" + username + "]";
-}
+    }
+
+	
 }

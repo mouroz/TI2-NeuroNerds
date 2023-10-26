@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     window.location.href = "/outras/perfil/sobremim.html";
                     break;
                 case "Plano":
-                    window.location.href = "/outras/perfil/plano.html";
+                    //window.location.href = "/outras/perfil/plano.html";
                     break;
                 default:
                     break;
