@@ -65,7 +65,7 @@ const defaultJson = {
             comments: 999,
             tags: ['Announcements', 'Important'],
             id: 1
-         ,
+
         }   
     }]
 }

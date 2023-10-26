@@ -120,7 +120,7 @@ public class PerguntaDAO extends DAO {
         List<Pergunta> perguntas = new ArrayList<>();
         String sql = "SELECT \"Pergunta\".*, \"usuario\".username AS nome_usuario " +
                      "FROM \"BancoTI2\".\"Pergunta\", \"BancoTI2\".\"usuario\" " +
-                     "WHERE \"Pergunta\".id_usuario = \"usuario\".id_usuario " +
+                     "WHERE \"Pergunta\".id_usuario = \"usuario\".idusuario " +
                      "ORDER BY \"Pergunta\".data_postagem DESC LIMIT 5";
         
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
