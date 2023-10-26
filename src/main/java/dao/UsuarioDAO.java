@@ -20,6 +20,23 @@ public class UsuarioDAO extends DAO {
     public void finalize() {
         close();
     }
+    
+    public String getNomeFromEmail(String email) {
+    	 String sql = "SELECT * FROM \"BancoTI2\".\"usuario\" WHERE email = ?";
+    	 String email_retorno = "";
+         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+             pstmt.setString(1, email);
+             System.out.println("Usuario esta cadastrado");	
+             
+             ResultSet resultSet = pstmt.executeQuery();
+             
+             email_retorno = resultSet.getString("email");
+
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+         }
+         return email_retorno;
+    }
 
     public boolean cadastraUsuario(Usuario usuario) throws IllegalStateException{
         boolean status = false;

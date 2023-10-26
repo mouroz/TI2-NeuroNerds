@@ -18,6 +18,8 @@ import java.util.logging.Level;
 
 public class AuthService extends ServiceParent{
 	
+		static UsuarioDAO usuariodao = new UsuarioDAO();
+	
 	@SuppressWarnings("unchecked")
 	public static Object cadastraUsuario(Request req, Response res) throws Exception{
     	final String path = "cadastro-user";
@@ -78,6 +80,10 @@ public class AuthService extends ServiceParent{
 			        header.put("alg", "HS256");
 			        header.put("typ", "JWT");
 		        JSONObject payload = new JSONObject();
+		        
+		        	
+		        
+		        
 			        payload.put("sub", email); // Unique identifier, for now, email
 			        payload.put("name", password);
 			        payload.put("trilha", "adhd"); // Not sure if its best to include this on payload

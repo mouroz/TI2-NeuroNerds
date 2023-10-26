@@ -28,8 +28,8 @@ public class App extends dao.DAO{
 		staticFiles.location("/public");
 		staticFiles.externalLocation("src/main/resources/public");
         port(4567);
-        
-        System.out.println("Digite o titulo: ");
+
+       /* System.out.println("Digite o titulo: ");
         String titulo = sc.nextLine();
         System.out.println("Digite o conteudo: ");
         String conteudo = sc.nextLine();
@@ -50,7 +50,7 @@ public class App extends dao.DAO{
         System.out.println("Digite o id: ");
         int id_usuario = sc.nextInt();   
         
-        teste.cadastraPergunta(titulo,conteudo,dataSql,id_usuario);
+        teste.cadastraPergunta(titulo,conteudo,dataSql,id_usuario);*/
         
         	//Comecando em index.html
 	        Spark.get("/", (req, res) -> {
