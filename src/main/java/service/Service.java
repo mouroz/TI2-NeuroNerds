@@ -59,63 +59,69 @@ public class Service extends ServiceParent{
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Object getForumHomepage(Request req, Response res) throws Exception{
-		final String path = "/forum/homepage";
-    	final ServiceLogger logger = new ServiceLogger(path);
-    	final int postsMaxLen = 5;
-    	
-		///GET VALUES FROM DATABASE
-    	
-    	List<Pergunta> perguntas = perguntaDAO.buscaUltimasCincoPerguntas();
-    	
-		int postsLen = 5;
-		postsLen = (postsLen > postsMaxLen) ? postsMaxLen : postsLen;
-		
-    	///CREATE RESPONSE (RES) --------------------------------------------------	
-		res.type("application/json");
-		//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		String[] defaultTags = {"adhd"};
-		
-		///-------------Response JSON Builder------------------
-		
-		JSONObject responseJson = new JSONObject();
-        	JSONArray jsonArrayData = new JSONArray();
-        	//Contains multiple postJson. Inside (JSON ARRAY BUILDER 01)
-        
-        ///----------------------------------------------------
-        	
-        ///(JSON ARRAY BUILDER 01)
-        for (int i = 0; i < postsLen; i++) {
-        	//Structuring inner JSONArrays
-        	JSONArray tagsArray = new JSONArray();
-        	for (String s : defaultTags) {
-        		tagsArray.add(s);
-        	}
-        		
-        	JSONObject postJson = new JSONObject(); //Contains user and content JSONObject
-        		JSONObject userJson = new JSONObject();
-        			userJson.put("name", perguntas.get(i).getNome_usuario());            
-        			userJson.put("date", perguntas.get(i).getData_postagem()); 
-	        	JSONObject contentJson = new JSONObject();
-		        	contentJson.put("title", perguntas.get(i).getTitulo());
-		        	contentJson.put("text", perguntas.get(i).getConteudo());
-		        	contentJson.put("likes", random.nextInt(30)); //nao possui
-		        	contentJson.put("comments", random.nextInt(30));
-		        	contentJson.put("tags", tagsArray);
-		        	//contentJson.put("id", perguntas.get(i).getId_pergunta());
-        	
-        	//finish the json
-        	postJson.put("user", userJson);
-        	postJson.put("content", contentJson);
-        	jsonArrayData.add(postJson);
-        }
-        
-        ///FINISH responseJson
-        responseJson.put("data", jsonArrayData);
-        
-        logger.logMethodEnd(responseJson);
-        return responseJson.toJSONString(); //response must go as string
-	}
+		public static Object getForumHomepage(Request req, Response res) throws Exception{
+			final String path = "/forum/homepage";
+	    	final ServiceLogger logger = new ServiceLogger(path);
+	    	final int postsMaxLen = 5;
+	    	
+			///GET VALUES FROM DATABASE
+	    	
+	    	List<Pergunta> perguntas = perguntaDAO.buscaUltimasCincoPerguntas();
+	    	
+			int postsLen = 5;
+			postsLen = (postsLen > postsMaxLen) ? postsMaxLen : postsLen;
+			
+	    	///CREATE RESPONSE (RES) --------------------------------------------------	
+			res.type("application/json");
+			//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			String[] defaultTags = {"adhd"};
+			
+			///-------------Response JSON Builder------------------
+			
+			JSONObject responseJson = new JSONObject();
+	        	JSONArray jsonArrayData = new JSONArray();
+	        	//Contains multiple postJson. Inside (JSON ARRAY BUILDER 01)
+	        
+	        ///----------------------------------------------------
+	        	
+	        ///(JSON ARRAY BUILDER 01)
+	        for (int i = 0; i < postsLen; i++) {
+	        	//Structuring inner JSONArrays
+	        	JSONArray tagsArray = new JSONArray();
+	        	for (String s : defaultTags) {
+	        		tagsArray.add(s);
+	        	}
+	        		
+	        	JSONObject postJson = new JSONObject(); //Contains user and content JSONObject
+	        		JSONObject userJson = new JSONObject();
+	        			userJson.put("name", perguntas.get(i).getNome_usuario());            
+	        			userJson.put("date", perguntas.get(i).getData_postagem()); 
+		        	JSONObject contentJson = new JSONObject();
+			        	contentJson.put("title", perguntas.get(i).getTitulo());
+			        	contentJson.put("text", perguntas.get(i).getConteudo());
+			        	contentJson.put("likes", random.nextInt(30)); //nao possui
+			        	contentJson.put("comments", random.nextInt(30));
+			        	contentJson.put("tags", tagsArray);
+			        	//contentJson.put("id", perguntas.get(i).getId_pergunta());
+	        	
+	        	//finish the json
+	        	postJson.put("user", userJson);
+	        	postJson.put("content", contentJson);
+	        	jsonArrayData.add(postJson);
+	        }
+	        
+	        ///FINISH responseJson
+	        responseJson.put("data", jsonArrayData);
+	        
+	        responseJson.put("data", jsonArrayData);
+	        res.type("application/json");
+	        res.status(200);
+	        res.body(responseJson.toJSONString());
+	        logger.logMethodEnd(responseJson);
+	        return res.body();
+
+
+		}
 	
 	@SuppressWarnings("unchecked")
 	public static Object getForumPagePost(Request req, Response res) throws Exception{
