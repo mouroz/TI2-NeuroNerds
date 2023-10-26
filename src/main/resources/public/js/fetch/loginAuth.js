@@ -1,6 +1,17 @@
 import { ApiError, JsonError } from '/js/class/fetchErrors.js';
 
-
+const defaultJson = {
+    header: {
+        alg: 'HS256', //HMAC SHA256
+        typ: 'JWT' //type of toke JWT
+    },
+    payload: {
+        sub: 'username', //unique identifier, for now username 
+        name: 'name'
+        //iat: 124252354 //-> represents the time the token was issued to see if it expired
+    }
+    //signature: 'XXXXXXXXXXXXXXXXXXXXXX' //uses alg to encode header, payload and secret key
+}
 
 //NON SECURE SIMPLE AUTH FOR NOW. HEADER WILL BE IGNORED
 const localStorageName = 'userData';
