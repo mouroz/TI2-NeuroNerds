@@ -2,6 +2,7 @@ package service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 import javax.servlet.MultipartConfigElement;
 
@@ -16,44 +17,17 @@ import model.Usuario;
 import spark.Request;
 import spark.Response;
 
-public class Service {
-	static UsuarioDAO usuarioDAO = new UsuarioDAO();
+public class Service extends ServiceParent{
 	
-	 /*
-	 * For the Service.java, all exceptions are thrown out to the Spark.exception route
-	 * As such, to simplify and make debugging easier and more flexible, each catch will instead just
-	 * throw a new exception with a custom message that also includes the apiPath (route). This drastically
-	 * reduces the amount of lines for each catch and makes the code easier to read 
-	 */
-
-	static JSONObject parseBody(String jsonBody, String apiPath) throws Exception{
-		//Parses and processes all exceptions
-		try {
-			JSONParser parser = new JSONParser(); //parse to JSON
-	        
-	    	Object parsedData = parser.parse(jsonBody);
-	    	if (parsedData instanceof JSONObject) {
-	    		return (JSONObject) parsedData;
-	    	}	
-	    	else {
-	    		throw new Exception ("This is not a JSON"); 
-	    	}
-		}
-		catch (ParseException e) {throw new Exception (apiPath + "Error when trying to parse JSON");}
-        catch (Exception e) {throw new Exception (apiPath + "Request body is not a proper JSON");}
-	}
-
-	//-------------------------------------------------------------------------
-	///REQUEST ROUTES
-	
+	///GETS
 	@SuppressWarnings("unchecked")
 	public static Object getExercicio(Request req, Response res) throws Exception{
-		//Receives json and sends JWT json. See auth.js to check the json format
-		final String requestParam1 = "user";
-    	final String apiPath = "(/exercicios)-> ";
-		///PROCESS URL
-		String name = req.queryParams(requestParam1);
-        System.out.println(apiPath + "got [(" +name+ ")] from request body");
+		String path = "/exercicios";
+		final ServiceLogger logger = new ServiceLogger(path);
+    	
+		///GET DATA FROM REQUEST URL
+		String name = req.queryParams("user");
+        logger.log("got [(" +name+ ")] from request body");
 
 		///GET EXERCICIOS DAO --------------------------------------------------
 		String[] alternativas = {"a1", "a2", "a3", "a4", "a5"};
@@ -63,234 +37,194 @@ public class Service {
     	
     	///CREATE RESPONSE (RES) --------------------------------------------------
     	res.type("application/json");
-		
+    	 JSONArray alternativesArray = new JSONArray();
+         for (String alternative : alternativas) {
+             alternativesArray.add(alternative);
+         }
+         
         JSONObject jsonResponse = new JSONObject();
-        jsonResponse.put("title", title);
-        jsonResponse.put("text", text);
-        jsonResponse.put("type", 0); // Represents the time the type (only alternatives for now)
-        jsonResponse.put("correct", correct); // Represents the correct alternative [1-5]
+	        jsonResponse.put("title", title);
+	        jsonResponse.put("text", text);
+	        jsonResponse.put("type", 0); // Represents the time the type (only alternatives for now)
+	        jsonResponse.put("correct", correct); // Represents the correct alternative [1-5]
+	        jsonResponse.put("alternatives", alternativesArray); // Signature (set to null for now)
         
-        JSONArray alternativesArray = new JSONArray();
-        for (String alternative : alternativas) {
-            alternativesArray.add(alternative);
-        }
-        jsonResponse.put("alternatives", alternativesArray); // Signature (set to null for now)
-        
-        System.out.println(apiPath + jsonResponse);
+        logger.logMethodEnd(jsonResponse);
         return jsonResponse.toJSONString(); //response must go as string
 	}
 
 	@SuppressWarnings("unchecked")
 	public static Object getForumHomepage(Request req, Response res) throws Exception{
-		//Receives json and sends JWT json. See auth.js to check the json format
-    	final String apiPath = "(/forum-homepage)-> ";	
+		final String path = "/forum/homepage";
+    	final ServiceLogger logger = new ServiceLogger(path);
     	final int postsMaxLen = 5;
     	
-		///(GET VALUES FROM DAO) --------------------------------------------------
-    	Pergunta[] posts = new Pergunta[2]; //Seria ideal ter uma classe que Posts e Comentarios que armazena 
-    											//tanto Pergunta quanto Usuario juntos
-		LocalDate currentDate = LocalDate.now();
-		for (int i = 0; i < posts.length; i++) {
-			posts[i] = new Pergunta(0, "titulo", "este aqui e o texto", currentDate, 0);
-		}
-		int postsLen = (posts.length > postsMaxLen) ? postsMaxLen : posts.length;
+		///GET VALUES FROM DATABASE
+    	
+    	
+		int postsLen = 5;
+		postsLen = (postsLen > postsMaxLen) ? postsMaxLen : postsLen;
 		
-		Usuario[] users = new Usuario[2];
-		for (int i = 0; i < users.length; i++) {
-			users[i] = new Usuario("12432", "email@yahoo.com", "ricardo");
-		}
-				
-    	///CREATE RESPONSE (RES) --------------------------------------------------
-		
-		
-    	/*
-    	 * The response for this request is a List of JSONS, each containing a header and a content JSON.
-    	 * Formatter was also used to convert from DateTime to String
-    	 */
+    	///CREATE RESPONSE (RES) --------------------------------------------------	
 		res.type("application/json");
+		//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String[] defaultTags = {"adhd"};
 		
-        JSONObject jsonResponse = new JSONObject();
+		///-------------Response JSON Builder------------------
+		
+		JSONObject responseJson = new JSONObject();
+        	JSONArray jsonArrayData = new JSONArray();
+        	//Contains multiple postJson. Inside (JSON ARRAY BUILDER 01)
         
-        JSONArray dataArray = new JSONArray();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        
-        
+        ///----------------------------------------------------
+        	
+        ///(JSON ARRAY BUILDER 01)
         for (int i = 0; i < postsLen; i++) {
-        	JSONObject postJson = new JSONObject(); //Contains user and content JSONObject
-        	
-        	//userJson
-        	JSONObject userJson = new JSONObject();
-        	
-        	userJson.put("name", users[i].getUsername());
-        	
-            String dateString = posts[i].getData_postagem().format(formatter);
-        	userJson.put("date", dateString); //no post dates stored
-        	
-        	//contentJson
-        	JSONObject contentJson = new JSONObject();
-        	contentJson.put("title", posts[i].getTitulo());
-        	contentJson.put("text", posts[i].getConteudo());
-        	contentJson.put("likes", 5); //nao possui
-        	contentJson.put("comments", 7);
-        	contentJson.put("id", posts[i].getId_pergunta());
-        	
-        	String[] exampleTags = {"importante", "adhd"};
-        	JSONArray tags = new JSONArray();
-        	for (String tag : exampleTags) {
-        		tags.add(tag);
+        	//Structuring inner JSONArrays
+        	JSONArray tagsArray = new JSONArray();
+        	for (String s : defaultTags) {
+        		tagsArray.add(s);
         	}
-        	
-        	contentJson.put("tags", tags);
+        		
+        	JSONObject postJson = new JSONObject(); //Contains user and content JSONObject
+        		JSONObject userJson = new JSONObject();
+        			userJson.put("name", null);            
+        			userJson.put("date", null); 
+	        	JSONObject contentJson = new JSONObject();
+		        	contentJson.put("title", null);
+		        	contentJson.put("text", null);
+		        	contentJson.put("likes", random.nextInt(30)); //nao possui
+		        	contentJson.put("comments", random.nextInt(30));
+		        	contentJson.put("tags", tagsArray);
+		        	contentJson.put("id", null);
         	
         	//finish the json
         	postJson.put("user", userJson);
         	postJson.put("content", contentJson);
-        	dataArray.add(postJson);
+        	jsonArrayData.add(postJson);
         }
         
+        ///FINISH responseJson
+        responseJson.put("data", jsonArrayData);
         
-        jsonResponse.put("data", dataArray); // Signature (set to null for now)
-        
-        System.out.println(apiPath + jsonResponse);
-        return jsonResponse.toJSONString(); //response must go as string
+        logger.logMethodEnd(responseJson);
+        return responseJson.toJSONString(); //response must go as string
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Object getForumPost(Request req, Response res) throws Exception{
-		//Receives json and sends JWT json. See auth.js to check the json format
-    	final String apiPath = "(/forum-post)-> ";	
-    	final int commentsMaxLen = 5;
+	public static Object getForumPagePost(Request req, Response res) throws Exception{
+    	final String path = "/forum/page/load-post";	
+    	final ServiceLogger logger = new ServiceLogger(path);
+    	final int maxCommentsNum = 5;
     	
-		///(GET VALUES FROM DAO) --------------------------------------------------
-    	int id = 0; //Use esse id pra saber qual pergunta pegar
-    	System.out.println(apiPath + "URL id value: " + req.queryParams("id"));
+		///GET ID FROM URL
+    	int id = 0; 
+    	logger.log("URL id value: " + req.queryParams("id"));
     	try {
     		id = Integer.parseInt(req.queryParams("id"));
-    	} catch (NumberFormatException e) {throw new Exception ("Failure to parse to int from url id");}
+    	} catch (NumberFormatException e) {
+    		throw new Exception (logger.err("Failure to parse to int from url id"));
+    	}
     	
-    	LocalDate currentDate = LocalDate.now();
-    	//For this test ill already write the values for post directly inside the JSON Building
-    	//But you also need to gather the information about the owner of the post
+    	///GET VALUES FROM DATABASE (!MISSING!)
     	
-    	Pergunta[] comments = new Pergunta[2]; //Comentarios vai ter o usuario Dentro ou nao? Ele seria o mesmo da pergunta?
-    											  //Neste teste eu estou os tratando separado, mas seria ideal ter uma classe unificada
-		for (int i = 0; i < comments.length; i++) {
-			comments[i] = new Pergunta(0, "titulo", "este aqui e o texto", currentDate, 0);
-		}
-		int commentsLen = (comments.length > commentsMaxLen) ? commentsMaxLen : comments.length;
-		
-		Usuario[] commentUsers = new Usuario[2];
-		for (int i = 0; i < commentUsers.length; i++) {
-			commentUsers[i] = new Usuario("12432", "email@yahoo.com", "ricardo");
-		}
-				
+    	
+    	
+    	int cLen = 5; //amount of comments
+    	cLen = (cLen > maxCommentsNum) ? maxCommentsNum : cLen;
+    	
     	///CREATE RESPONSE (RES) --------------------------------------------------
-    	/*
-    	 * The response for this request is a JSON with user (name, date) and content (title, text, likes, comments, tags, id)
-    	 * and a List of JSONS, each containing a user (name, date) and a shortened content (text, likes, id)
-    	 * Formatter was also used to convert from DateTime to String
-    	 */
+    	res.type("application/json");
+    	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		
-		///MANUALLY CREATING POST
-		res.type("application/json");
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		//Fake default values - values not on database yet
+		String[] tags = {"adhd"}; 
 		
-        JSONObject jsonResponse = new JSONObject();
-        JSONObject pPost = new JSONObject();
-        
-        JSONObject pUser = new JSONObject();
-        pUser.put("name", "Jose");
-        pUser.put("date", currentDate.format(formatter));
-        
-        JSONObject pContent = new JSONObject();
-        pContent.put("title", "titulo");
-        pContent.put("text", "Esse e o texto teste do post");
-        pContent.put("likes", "32");
-        pContent.put("comments", "23");
-        pContent.put("tags", new JSONArray() {{
-        	add("Important");
-        	add("Adhd");
-        }});
-        pContent.put("id", "0");
-        
-        pPost.put("user", pUser);
-        pPost.put("content", pContent);
-        jsonResponse.put("post", pPost); //finished establishing first hierarchy
-        
-        
-        ///CREATING THE COMMENTS
-        JSONArray commentJsonArr = new JSONArray();      
-        for (int i = 0; i < commentsLen; i++) {
-        	JSONObject comment = new JSONObject();
+		//Structuring 1 layer JSONArrays
+		JSONArray postContentTags = new JSONArray(); 
+		for (String s : tags) { //add each tag
+			postContentTags.add(tags);
+		}
+		
+		//-----JSON Overall Structure-----------------
+		
+		JSONObject responseJson = new JSONObject();
+			JSONObject jsonPost = new JSONObject();
+				JSONObject jsonPostUser = new JSONObject();
+					jsonPostUser.put("name", null);
+					jsonPostUser.put("date", null);
+				JSONObject jsonPostContent = new JSONObject(); 
+					jsonPostContent.put("title", null);
+					jsonPostContent.put("text", null);
+					jsonPostContent.put("likes", random.nextInt(30));
+					jsonPostContent.put("comments", random.nextInt(30));
+					jsonPostContent.put("tags", postContentTags);
+					jsonPostContent.put("id", null);
+				
+				jsonPost.put("user", jsonPostContent);	
+				jsonPost.put("content", jsonPostContent);
+			
+			JSONArray jsonArrayComments = new JSONArray();
+			//Array of jsonComment from: (JSON ARRAY BUILD 01)
+			
+		//----------------------------------------
+		
+			
+		///(JSON ARRAY BUILD 01)
+        for (int i = 0; i < cLen; i++) {
+        	JSONObject jsonComment = new JSONObject();
+	        	JSONObject jsonCommentUser = new JSONObject();
+		        	jsonCommentUser.put("name", null);
+		        	jsonCommentUser.put("date", null); 
+	        	JSONObject jsonCommentContent = new JSONObject(); 
+		        	jsonCommentContent.put("text", null);
+		        	jsonCommentContent.put("likes", random.nextInt(30));
+		        	jsonCommentContent.put("id", null);
         	
-        	//User
-        	JSONObject userJson = new JSONObject();
-        	userJson.put("name", commentUsers[i].getUsername());
-        	userJson.put("date", ( comments[i].getData_postagem() ).format(formatter)); 
-        	
-        	//Content
-        	JSONObject contentJson = new JSONObject(); 
-        	contentJson.put("text", comments[i].getConteudo());
-        	contentJson.put("likes", 5); //nao possui
-    		contentJson.put("id", comments[i].getId_pergunta());
-        	
-        	//finish the json
-        	comment.put("user", userJson);
-        	comment.put("content", contentJson);
-        	commentJsonArr.add(comment);
+        	jsonComment.put("user", jsonCommentUser);
+        	jsonComment.put("content", jsonCommentUser);
+        	jsonArrayComments.add(jsonComment);
         }
         
+        ///FINISH responseJson
+        responseJson.put("post", jsonPost);
+        responseJson.put("comment", jsonArrayComments); 
         
-        jsonResponse.put("comment", commentJsonArr); // Signature (set to null for now)
-        
-        System.out.println(apiPath + jsonResponse);
-        return jsonResponse.toJSONString(); //response must go as string
+        logger.logMethodEnd(responseJson);
+        return responseJson.toJSONString();
 	}
 	
 	
+	//----------------------------------------------------------------------------------------------
+	///PUTS
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//NÃO ESTA SENDO EXCECUTADO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	
-	//multipart/form-data only sends <input> values
-	static Object formsPostHandler(Request req, Response res) throws Exception{
-		//const Json Atributes
-		final String reqField1 = "value1"; //name of forms field
-    	final String reqField2 = "value2";
-    	final String apiPath = "(/formsButton) -> ";
-    	
-    	//print request type
-		final String contentType = req.headers("Content-Type");
-		System.out.println("Reading for " + apiPath + "contentType = " + contentType);
+	public static Object putForumPageComment(Request req, Response res) throws Exception{
+		final String path = "/forum/page/comment";
+    	final ServiceLogger logger = new ServiceLogger(path);
+		logger.log("ContentType found: " + req.headers("Content-Type")); 
 		
-		//-----------------------
-    	///PROCESS BODY (REQ)
-		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+    	//GET REQ BODY
+		final String reqJsonBody = req.body();
+		JSONObject reqJson = parseBody(reqJsonBody, logger);
 		
-		//Will return null if not params found
-        String name = req.queryParams(reqField1);
-        String email = req.queryParams(reqField2);
-        System.out.println(apiPath + "got (" +name+ "), (" +email+ ") from request body");
-  
-        //------------------------
-    	///CREATE RESPONSE (RES)
-        
-        return null;
+		String username = (String) reqJson.get("username");
+		String content = (String) reqJson.get("content");
+		
+		///PUT ON DATABASE WITH DAO (!MISSING!)
+		boolean sucess = false;
+		if (sucess) {
+			logger.log("Sucessfully put " + username + " on database");
+			res.status(200);
+		} else {
+			logger.log("Sucessfully put on database");
+			res.status(200);
+		}
+		
+		logger.logMethodEnd(null);
+		return null;
 	}
 	
-	//NÃO ESTA SENDO EXCECUTADO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ^^^^
 }
+
 
 

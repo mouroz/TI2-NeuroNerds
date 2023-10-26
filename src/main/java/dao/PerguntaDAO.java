@@ -64,7 +64,10 @@ public class PerguntaDAO extends DAO {
     }
     
     public Resposta[] getRespostas(int id_pergunta) {
-        String sql = "SELECT * FROM Resposta WHERE Pergunta_idPergunta = ?";
+        String sql = "SELECT Resposta.*, Usuario.nome " +
+                     "FROM Resposta " +
+                     "JOIN Usuario ON Resposta.usuario_idusuario = usuario.idusuario " +
+                     "WHERE Pergunta_idPergunta = ?";
         try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
             stmt.setInt(1, id_pergunta);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -73,8 +76,10 @@ public class PerguntaDAO extends DAO {
                     Resposta resposta = new Resposta();
                     resposta.setId_resposta(rs.getInt("idResposta"));
                     resposta.setConteudo(rs.getString("conteudo"));
-                    //resposta.setData_postagem(rs.getDate("data_postagem"));
-                    resposta.setId_usuario(id_pergunta);
+                    resposta.setData_postagem(rs.getDate("data_postagem"));
+                    resposta.setId_usuario(rs.getInt("usuario_idusuario"));
+                    resposta.setNome_usuario(rs.getString("nome")); // Aqui você seta o nome do usuário
+                    
                     // Adicione aqui outros campos conforme necessário
                     respostas.add(resposta);
                 }
@@ -85,6 +90,7 @@ public class PerguntaDAO extends DAO {
             return null;
         }
     }
+
 
 
     public boolean deletePergunta(int id) {

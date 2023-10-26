@@ -1,62 +1,41 @@
-import { ApiError, JsonError } from '/js/class/fetchErrors.js';
-
-//NON SECURE SIMPLE AUTH FOR NOW. HEADER WILL BE IGNORED
-const defaultJson = {
-    header: {
-        alg: 'HS256', //HMAC SHA256
-        typ: 'JWT' //type of toke JWT
-    },
-    payload: {
-        sub: 'username', //unique identifier, for now username 
-        name: 'name'
-        //iat: 124252354 //-> represents the time the token was issued to see if it expired
-    }
-    //signature: 'XXXXXXXXXXXXXXXXXXXXXX' //uses alg to encode header, payload and secret key
-}
-const sessionStorageName = 'userData';
-const nextPageHtml = '/outras/telainicial.html';
-
+const userLocalStorageName = 'userData';
+const userLS = localStorage.getItem(userLocalStorageName);
+if (userLS == null) console.error("Interactions -> Annonymous user error: cannot get logged user");
 
 //STATIC GLOBAL ELEMENTS
-const form = document.getElementById('loginForm');
-const usernameElement = document.getElementById('username');
-const passwordElement = document.getElementById('password');
+const commentForm = document.getElementById('comment-form');
+const commentBox = document.getElementById('comment-box-input');
 
-form.addEventListener('submit', (e) => {
+commentForm.addEventListener('submit', (e) => {
     e.preventDefault(); // Prevent default form submission
 
-    const existingData = sessionStorage.getItem(sessionStorageName);
-    if (existingData != null){
+    console.log(userLS.payload.name);
+    if (userLS == null || userLS.payload.name == "name") { //test user
+        alert("Cannot comment as you are not logged in");
+        return;
+    }
+
+    if (existingData != null) {
         alert("login through logged in acc")
         window.location.href = nextPageHtml;
         return;
     }
 
-    const usernameInput = usernameElement.value;
-    const passwordInput = passwordElement.value;
-    console.log(usernameInput.trim());
-    if (usernameInput.trim() !== '' || passwordInput.trim() !== ''){
-        sendAuth(usernameInput, passwordInput);
-    } 
+    const commentInput = commentBox.value; //commenting box content
+    if (commentInput.trim() != '') {
+        sendComment(commentInput);
+    }
 })
 
-function sendAuth(usernameInput, passwordInput) {
-    //to keep consistency we will send a JSON instead of FORM DATA, 
-    //although the code for formData is still here for use
-    /*const serverRequestData = new FormData(form);*/
-
-    //for security purposes it might be better do encrypt the data before sending
+function sendComment(commentInput) {
     const serverRequestData = {
-        username: usernameInput,
-        password: passwordInput
+        username: userLS.payload.username,
+        content: commentInput
     };
-    
+
     console.log(serverRequestData);
-    //authentification will be done with a 'POST' and auth token.
-    //a lot of the typical JWT is not being used for now so its 100% non secure
-    //and serves only as prototype
-    fetch('/auth', {
-        method: "POST", // You can use GET or POST, depending on your server's implementation.
+    fetch('/forum/page-comment', {
+        method: "PUT", // You can use GET or POST, depending on your server's implementation.
         body: JSON.stringify(serverRequestData),
         headers: {
             "Content-Type": "application/json"
@@ -65,36 +44,18 @@ function sendAuth(usernameInput, passwordInput) {
     })
         .then(response => {
             console.log(response.status);
-            if (response.status == 401) { //expected unauthorized response
-                alert("Incorrect user or password");
-                return;
-            } else if (!response.ok) { //unexpected error responses, incluiding couldnt reach server
-                throw new ApiError('API request failed with status ' + response.status);
+            switch (response.status) {
+                case 401:
+                    alert("Server dismissed response");
+                    break;
+                case 200:
+                    window.location.href = window.location.href; //refresh
+                    break;
+                default:
+                    alert("Unexpected response from server");
             }
-            return response.json();
-        })
-        .then(json => {
-			console.log (JSON.stringify(json, null, 2));
-            if (!('payload' in json)) throw new JsonError('Failure in atribute (payload) on Auth JSON');
+        });
 
-            const payload = json.payload;
-            if (!('username' in payload)) throw new JsonError('Failure in atribute (username) on Auth JSON');
-            if (!('name' in payload)) throw new JsonError('Failure in atribute (password) on Auth JSON');
-            updateSessionStorage(defaultJson);
-        })
-        .catch(error => {
-            console.error('loginAuth.js error: ', error + '\n' + 'using test user values for now');
-            if (error instanceof ApiError){
-                if (defaultJson) { //reserved for if function starts receiving default as param
-                    alert('couldnt reach server. Using test user');
-                    updateSessionStorage(defaultJson);
-                }
-            }
-        })
-}
 
-function updateSessionStorage(json){
-    //sessionStorage.setItem(sessionStorageName, JSON.stringify(json));
-    //window.location.href = nextPageHtml;
 }
 

@@ -11,114 +11,93 @@ import model.Usuario;
 import spark.Request;
 import spark.Response;
 
+//to display warning messages on log
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
-public class AuthService {
-	
-	static UsuarioDAO usuarioDAO = new UsuarioDAO();
-	
-	static JSONObject parseBody(String jsonBody, String apiPath) throws Exception{
-		//Parses and processes all exceptions
-		try {
-			JSONParser parser = new JSONParser(); //parse to JSON
-	        
-	    	Object parsedData = parser.parse(jsonBody);
-	    	if (parsedData instanceof JSONObject) {
-	    		return (JSONObject) parsedData;
-	    	}	
-	    	else {
-	    		throw new Exception ("This is not a JSON"); 
-	    	}
-		}
-		catch (ParseException e) {throw new Exception (apiPath + "Error when trying to parse JSON");}
-        catch (Exception e) {throw new Exception (apiPath + "Request body is not a proper JSON");}
-	}
 
-	//-------------------------------------------------------------------------
-	///REQUEST ROUTES
-		
+public class AuthService extends ServiceParent{
+	
+	@SuppressWarnings("unchecked")
 	public static Object cadastraUsuario(Request req, Response res) throws Exception{
-		//Receives json and sends JWT json. See auth.js to check the json format
-		final String requestParam1 = "name";
-    	final String requestParam2 = "password";
-    	final String requestParam3 = "email";
-    	final String apiPath = "(/insert)-> ";
-    
-		final String contentType = req.headers("Content-Type");
-		System.out.println("Reading for " + apiPath + "contentType = " + contentType);
+    	final String path = "cadastro-user";
+    	final ServiceLogger logger = new ServiceLogger(path);
+		logger.log("ContentType found: " + req.headers("Content-Type")); 
 		
-    	///PROCESS BODY (REQ)
-		final String reqJsonBody = req.body(); //get Request body as String
-		  									   //parseBody will try to parse it to a proper JSON
-		JSONObject reqJson = parseBody(reqJsonBody, apiPath); //Exceptions handled by function
+		///GET REQ BODY
+		final String reqJsonBody = req.body(); 	  									  
+		JSONObject reqJson = parseBody(reqJsonBody, logger);
+		logger.log("Request body JSON = " + reqJson);
 		
-		System.out.println(apiPath + "body json = \n" + reqJson);
-				
-		String email = (String) reqJson.get(requestParam3);
-		String senha = (String) reqJson.get(requestParam2);
-		String nome = (String) reqJson.get(requestParam1);
+		String email = (String) reqJson.get("name");
+		String senha = (String) reqJson.get("password");
+		String nome = (String) reqJson.get("email");
+		
+		///TRY TO PUT ON DATABASE
 		Usuario usuario = new Usuario(senha,email,nome);
+		JSONObject responseJson = new JSONObject();
 		
-		if(usuarioDAO.cadastraUsuario(usuario)) res.status(200);
-		else res.status(409);
-		
-			
-		return null;
-	}
-	
-	public static Object auth(Request req, Response res) throws Exception{
-		//Receives json and sends JWT json. See auth.js to check the json format
-		final String requestParam1 = "username";
-    	final String requestParam2 = "password";
-    	final String apiPath = "(/auth)-> ";
-    
-    	//print request type
-		final String contentType = req.headers("Content-Type");
-		System.out.println("Reading for " + apiPath + "contentType = " + contentType);
-		
-    	///PROCESS BODY (REQ)
-		final String reqJsonBody = req.body(); //get Request body as String
-		  									   //parseBody will try to parse it to a proper JSON
-		JSONObject reqJson = parseBody(reqJsonBody, apiPath); //Exceptions handled by function
-		
-		System.out.println(apiPath + "body json = \n" + reqJson);
-
-
-		///AUTHENTICATE
-		boolean auth = false;
-    	String email = (String) reqJson.get(requestParam1);
-    	String password = (String) reqJson.get(requestParam2);
-		  	
-		if (usuarioDAO.autenticaUsuario(password,email)) {
-	    	System.out.println(apiPath + "got [(" +email+ "), (" +password+ ")] from request body");
-	    	
-	    	///CREATE RESPONSE (RES)
-	    	res.type("application/json");
-			
-	    	 // Create the JSON response structure
-	        JSONObject header = new JSONObject();
-	        header.put("alg", "HS256");
-	        header.put("typ", "JWT");
-	
-	        JSONObject payload = new JSONObject();
-	        payload.put("sub", email); // Unique identifier, for now, email
-	        payload.put("name", password);
-	        payload.put("trilha", "adhd"); // Not sure if its best to include this on payload
-	
-	        JSONObject jsonResponse = new JSONObject();
-	        jsonResponse.put("header", header);
-	        jsonResponse.put("payload", payload);
-	        jsonResponse.put("iat", null); // Represents the time the token was issued (set to null for now)
-	        jsonResponse.put("signature", null); // Signature (set to null for now)
-	        
-	        System.out.println(apiPath + jsonResponse);
-	        return jsonResponse.toJSONString(); //response must go as string
+		if(usuarioDAO.cadastraUsuario(usuario)) {
+			res.status(200);
+			responseJson.put("payload", "sucess");
+			logger.log("Sucesfully registered email " + email);
 		}
 		else {
-			res.status(401); // HTTP status code 401 Unauthorized
-			res.type("application/json");
-			
+			res.status(401);
+			responseJson.put("payload", "failure");
+			logger.log("Couldnt register new account");
+		}
+		
+		
+		logger.logMethodEnd("UNSOLVED ERROR: Although this is the last line of code from the route function, this function is still receiving a MatchrFilter error. Even attempting to rebuild maven to a more modern version didnt fix this issue. Although we wont be abled to use the html receptors, ignore this error for now");
+    	return responseJson;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Object auth(Request req, Response res) throws Exception{
+		//Receives json and sends JWT json. See auth.js to check the json format
+		final String path = "auth";
+    	final ServiceLogger logger = new ServiceLogger(path);
+		logger.log("ContentType found: " + req.headers("Content-Type")); 
+
+    	///GET REQ BODY
+		final String reqJsonBody = req.body();
+		JSONObject reqJson = parseBody(reqJsonBody, logger);
+		logger.log("body json =" + reqJson);
+
+    	String email = (String) reqJson.get("username");
+    	String password = (String) reqJson.get("password");
+    	logger.log("got [(" +email+ "), (" +password+ ")] from request body");
+    	
+    	///TRY TO AUTHENTICATE WITH DATABASE REQUEST
+    	res.type("application/json");
+    	
+		if (usuarioDAO.autenticaUsuario(password,email)) {
+			JSONObject responseJson = new JSONObject();
+				JSONObject header = new JSONObject();
+			        header.put("alg", "HS256");
+			        header.put("typ", "JWT");
+		        JSONObject payload = new JSONObject();
+			        payload.put("sub", email); // Unique identifier, for now, email
+			        payload.put("name", password);
+			        payload.put("trilha", "adhd"); // Not sure if its best to include this on payload
+			        
+			//Finish building responseJson       
+	        responseJson.put("header", header);
+	        responseJson.put("payload", payload);
+	        responseJson.put("iat", null); // Represents the time the token was issued (set to null for now)
+	        responseJson.put("signature", null); // Signature (set to null for now)
+
+	        res.status(200);
+	        logger.logMethodEnd(responseJson);
+	        return responseJson.toJSONString(); //response must go as string
+		}
+		else {
 			JSONObject errorResponse = new JSONObject();
 		    errorResponse.put("error", "Authentication failed");
+		    
+		    res.status(401); // HTTP status code 401 Unauthorized
+		    logger.logMethodEnd(errorResponse);    
 		    return errorResponse.toJSONString();
 		}
 	}

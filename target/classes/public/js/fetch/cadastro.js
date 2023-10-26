@@ -3,7 +3,6 @@
 const sessionStorageName = 'userData';
 const nextPageHtml = '/outras/telainicial.html';
 
-
 //STATIC GLOBAL ELEMENTS
 const form = document.getElementById('cadastro-form');
 const usernameElement = document.getElementById('name');
@@ -38,7 +37,7 @@ function sendAuth() {
     //authentification will be done with a 'POST' and auth token.
     //a lot of the typical JWT is not being used for now so its 100% non secure
     //and serves only as prototype
-    fetch('/cadastro', {
+    fetch('/cadastro-user', {
         method: "POST", // You can use GET or POST, depending on your server's implementation.
         body: JSON.stringify(serverRequestData),
         headers: {
@@ -47,7 +46,6 @@ function sendAuth() {
         }
     })
         .then(response => {
-            alert('sent')
             console.log(response.status);
             switch (response.status){
                 case 200: //sucessful
@@ -58,7 +56,7 @@ function sendAuth() {
                     alert("Login already exists");
                     break;
                 default: 
-                    alert("Unexpected server response. Server might be out of air. Sorry for the incovenience")    
+                    console.error("Updated: message might have been sent, but the server cant send response back");    
 
             }
         })

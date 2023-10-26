@@ -86,7 +86,7 @@ const windowLocation = window.location.href;
 const windowId = windowLocation.split('?').pop();
 console.log(windowId);
 
-let path = `/forum-post?id=${windowId}`;
+let path = `/forum/page/load-post?id=${windowId}`;
 fetch(path) //either this or send it by adding a body. Not sure which yet
     .then(response => {
         if (!response.ok) throw new Error('API request failed with status ' + response);

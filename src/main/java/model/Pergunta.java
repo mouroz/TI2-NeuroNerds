@@ -12,6 +12,14 @@ public class Pergunta {
 	private int id_usuario;
 	private String nome_usuario;
 	
+	public String getNome_usuario() {
+		return nome_usuario;
+	}
+
+	public void setNome_usuario(String nome_usuario) {
+		this.nome_usuario = nome_usuario;
+	}
+
 	public Pergunta() {
 		
 	}
@@ -22,25 +30,16 @@ public class Pergunta {
 		this.conteudo = conteudo;
 		this.data_postagem = data_postagem;
 		this.id_usuario = id_usuario;
-		
 	}
-	public int getId_pergunta() {
-		return id_pergunta;
-	}
-	public void setId_pergunta(int id_pergunta) {
-		this.id_pergunta = id_pergunta;
-	}
-	public String getTitulo() {
-		return titulo;
-	}
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
-	public LocalDate getData_postagem() {
-		return data_postagem;
-	}
-	public void setData_postagem(LocalDate data_postagem) {
-		this.data_postagem = data_postagem;
+	
+	
+	public int getId_pergunta() {return id_pergunta;}
+	public String getTitulo() {return titulo;}
+	
+	public void setId_pergunta(int id_pergunta) {this.id_pergunta = id_pergunta;}
+	public void setTitulo(String titulo) {this.titulo = titulo;}
+	public LocalDate getData_postagem() {return data_postagem;}
+	public void setData_postagem(LocalDate data_postagem) {this.data_postagem = data_postagem;
 	}
 	public String getConteudo() {
 		return conteudo;

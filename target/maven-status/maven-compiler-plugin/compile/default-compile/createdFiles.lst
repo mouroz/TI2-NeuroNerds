@@ -1,0 +1,12 @@
+model/Resposta.class
+dao/UsuarioDAO.class
+dao/DAO.class
+model/Pergunta.class
+service/AuthService.class
+model/Questao.class
+model/Usuario.class
+service/Service$1.class
+dao/QuestaoDAO.class
+dao/PerguntaDAO.class
+service/Service.class
+app/App.class

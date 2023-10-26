@@ -21,7 +21,7 @@ public class UsuarioDAO extends DAO {
         close();
     }
 
-    public boolean cadastraUsuario(Usuario usuario) {
+    public boolean cadastraUsuario(Usuario usuario) throws IllegalStateException{
         boolean status = false;
         String sql = "INSERT INTO \"BancoTI2\".\"usuario\" (\"senha\", \"email\", \"username\") VALUES (?, ?, ?)";
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
