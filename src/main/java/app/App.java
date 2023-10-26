@@ -18,26 +18,8 @@ import spark.Spark;
 public class App extends dao.DAO{
 	
 	static Scanner sc = new Scanner(System.in);
-	
 	static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	
-	//FUNCAO TEMPORARIA ENQUANTO FRONT NAO FOI IMPLEMENTADO
-	public void cadastraPergunta(String titulo, String conteudo, Date data, int idUsuario) {
-		
-        String sql = "INSERT INTO \"BancoTI2\".\"Pergunta\" (\"titulo\", \"conteudo\", \"data_postagem\", \"id_usuario\") VALUES (?, ?, ?)";
-        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
-            pstmt.setString(1, titulo);
-            pstmt.setString(2, conteudo);
-            pstmt.setDate(3, data);
-            pstmt.setInt(4, idUsuario);
-
-            pstmt.executeUpdate();
-
-        } catch (SQLException u) {
-            System.out.println("Não foi possível inserir: ");
-            System.out.println("Nome ou email já cadastrado");
-        }
-	}
+	static Teste teste = new Teste();
 	
 	static UsuarioDAO usuarioDAO;
 	public static void main(String args[]){	
@@ -54,9 +36,11 @@ public class App extends dao.DAO{
         System.out.println("Digite a data: ");
         String data = sc.nextLine();
         
+        java.sql.Date dataSql = null;
+        
         try {
             java.util.Date dataUtil = formatter.parse(data);
-            java.sql.Date dataSql = new java.sql.Date(dataUtil.getTime());
+            dataSql = new java.sql.Date(dataUtil.getTime());
             System.out.println("Data inserida: " + dataSql);
         } catch (Exception e) {
             System.out.println("Formato de data inválido!");
@@ -66,7 +50,7 @@ public class App extends dao.DAO{
         System.out.println("Digite o id: ");
         int id_usuario = sc.nextInt();   
         
-        //cadastraPergunta(titulo,conteudo,dataSql,id_usuario);
+        teste.cadastraPergunta(titulo,conteudo,dataSql,id_usuario);
         
         	//Comecando em index.html
 	        Spark.get("/", (req, res) -> {

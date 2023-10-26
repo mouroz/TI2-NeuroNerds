@@ -87,7 +87,7 @@ function updateLocalStorage(json){
         typ: 'JWT' //type of toke JWT
     },
     payload: {
-        sub: 'username', //unique identifier, for now username 
+        sub: json., //unique identifier, for now username 
         name: 'name',
         trilha: 'adhd'
         //iat: 124252354 //-> represents the time the token was issued to see if it expired
