@@ -2,6 +2,7 @@ package service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 import javax.servlet.MultipartConfigElement;
@@ -12,12 +13,16 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import dao.UsuarioDAO;
+import dao.PerguntaDAO;
 import model.Pergunta;
+import model.Resposta;
 import model.Usuario;
 import spark.Request;
 import spark.Response;
 
 public class Service extends ServiceParent{
+	
+	static PerguntaDAO perguntaDAO = new PerguntaDAO();
 	
 	///GETS
 	@SuppressWarnings("unchecked")
@@ -61,6 +66,7 @@ public class Service extends ServiceParent{
     	
 		///GET VALUES FROM DATABASE
     	
+    	List<Pergunta> perguntas = perguntaDAO.buscaUltimasCincoPerguntas();
     	
 		int postsLen = 5;
 		postsLen = (postsLen > postsMaxLen) ? postsMaxLen : postsLen;
@@ -88,15 +94,15 @@ public class Service extends ServiceParent{
         		
         	JSONObject postJson = new JSONObject(); //Contains user and content JSONObject
         		JSONObject userJson = new JSONObject();
-        			userJson.put("name", null);            
-        			userJson.put("date", null); 
+        			userJson.put("name", perguntas.get(i).getNome_usuario());            
+        			userJson.put("date", perguntas.get(i).getData_postagem()); 
 	        	JSONObject contentJson = new JSONObject();
-		        	contentJson.put("title", null);
-		        	contentJson.put("text", null);
+		        	contentJson.put("title", perguntas.get(i).getTitulo());
+		        	contentJson.put("text", perguntas.get(i).getConteudo());
 		        	contentJson.put("likes", random.nextInt(30)); //nao possui
 		        	contentJson.put("comments", random.nextInt(30));
 		        	contentJson.put("tags", tagsArray);
-		        	contentJson.put("id", null);
+		        	//contentJson.put("id", perguntas.get(i).getId_pergunta());
         	
         	//finish the json
         	postJson.put("user", userJson);
@@ -128,7 +134,8 @@ public class Service extends ServiceParent{
     	
     	///GET VALUES FROM DATABASE (!MISSING!)
     	
-    	
+    	Pergunta pergunta = perguntaDAO.getPergunta(id);
+    	Resposta[] respostas = perguntaDAO.getRespostas(id);
     	
     	int cLen = 5; //amount of comments
     	cLen = (cLen > maxCommentsNum) ? maxCommentsNum : cLen;
@@ -151,15 +158,15 @@ public class Service extends ServiceParent{
 		JSONObject responseJson = new JSONObject();
 			JSONObject jsonPost = new JSONObject();
 				JSONObject jsonPostUser = new JSONObject();
-					jsonPostUser.put("name", null);
-					jsonPostUser.put("date", null);
+					jsonPostUser.put("name", pergunta.getNome_usuario());
+					jsonPostUser.put("date", pergunta.getData_postagem());
 				JSONObject jsonPostContent = new JSONObject(); 
-					jsonPostContent.put("title", null);
-					jsonPostContent.put("text", null);
+					jsonPostContent.put("title", pergunta.getTitulo());
+					jsonPostContent.put("text", pergunta.getConteudo());
 					jsonPostContent.put("likes", random.nextInt(30));
 					jsonPostContent.put("comments", random.nextInt(30));
 					jsonPostContent.put("tags", postContentTags);
-					jsonPostContent.put("id", null);
+					//jsonPostContent.put("id", pergunta.getId_pergunta());
 				
 				jsonPost.put("user", jsonPostContent);	
 				jsonPost.put("content", jsonPostContent);
@@ -174,12 +181,12 @@ public class Service extends ServiceParent{
         for (int i = 0; i < cLen; i++) {
         	JSONObject jsonComment = new JSONObject();
 	        	JSONObject jsonCommentUser = new JSONObject();
-		        	jsonCommentUser.put("name", null);
-		        	jsonCommentUser.put("date", null); 
+		        	jsonCommentUser.put("name", respostas[i].getNome_usuario());
+		        	jsonCommentUser.put("date", respostas[i].getData_postagem()); 
 	        	JSONObject jsonCommentContent = new JSONObject(); 
-		        	jsonCommentContent.put("text", null);
+		        	jsonCommentContent.put("text", respostas[i].getConteudo());
 		        	jsonCommentContent.put("likes", random.nextInt(30));
-		        	jsonCommentContent.put("id", null);
+		        	//jsonCommentContent.put("id", respostas[i].getId_resposta());
         	
         	jsonComment.put("user", jsonCommentUser);
         	jsonComment.put("content", jsonCommentUser);
@@ -236,6 +243,9 @@ public class Service extends ServiceParent{
 		String content = (String) reqJson.get("content");
 		
 		///PUT ON DATABASE WITH DAO (!MISSING!)
+		
+		
+		
 		boolean sucess = false;
 		if (sucess) {
 			logger.log("Sucessfully put " + username + " on database");

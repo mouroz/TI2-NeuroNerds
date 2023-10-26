@@ -1,3 +1,10 @@
+/service/
+/dao/
 /model/
+<<<<<<< HEAD
 /dao/
 /service/
+=======
+/app/
+>>>>>>> 4d6699e80e2ee574804fc914fdea69cc47658801
+/META-INF/
