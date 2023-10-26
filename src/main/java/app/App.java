@@ -4,12 +4,41 @@ import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Scanner;
+
 import dao.UsuarioDAO;
 import service.AuthService;
 import service.Service;
 import spark.Spark;
 
-public class App{
+public class App extends dao.DAO{
+	
+	static Scanner sc = new Scanner(System.in);
+	
+	static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	
+	//FUNCAO TEMPORARIA ENQUANTO FRONT NAO FOI IMPLEMENTADO
+	public void cadastraPergunta(String titulo, String conteudo, Date data, int idUsuario) {
+		
+        String sql = "INSERT INTO \"BancoTI2\".\"Pergunta\" (\"titulo\", \"conteudo\", \"data_postagem\", \"id_usuario\") VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+            pstmt.setString(1, titulo);
+            pstmt.setString(2, conteudo);
+            pstmt.setDate(3, data);
+            pstmt.setInt(4, idUsuario);
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException u) {
+            System.out.println("Não foi possível inserir: ");
+            System.out.println("Nome ou email já cadastrado");
+        }
+	}
+	
 	static UsuarioDAO usuarioDAO;
 	public static void main(String args[]){	
 		usuarioDAO = new UsuarioDAO();
@@ -17,7 +46,27 @@ public class App{
 		staticFiles.location("/public");
 		staticFiles.externalLocation("src/main/resources/public");
         port(4567);
-		    
+        
+        System.out.println("Digite o titulo: ");
+        String titulo = sc.nextLine();
+        System.out.println("Digite o conteudo: ");
+        String conteudo = sc.nextLine();
+        System.out.println("Digite a data: ");
+        String data = sc.nextLine();
+        
+        try {
+            java.util.Date dataUtil = formatter.parse(data);
+            java.sql.Date dataSql = new java.sql.Date(dataUtil.getTime());
+            System.out.println("Data inserida: " + dataSql);
+        } catch (Exception e) {
+            System.out.println("Formato de data inválido!");
+        }
+        
+        
+        System.out.println("Digite o id: ");
+        int id_usuario = sc.nextInt();   
+        
+        //cadastraPergunta(titulo,conteudo,dataSql,id_usuario);
         
         	//Comecando em index.html
 	        Spark.get("/", (req, res) -> {
@@ -62,7 +111,7 @@ public class App{
 	        	 */
 	        	return AuthService.cadastraUsuario(req, res);
 	        });
-	      
+	      sc.close();
 	}
 }
 

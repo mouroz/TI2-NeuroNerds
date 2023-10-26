@@ -29,9 +29,9 @@ public class AuthService extends ServiceParent{
 		JSONObject reqJson = parseBody(reqJsonBody, logger);
 		logger.log("Request body JSON = " + reqJson);
 		
-		String email = (String) reqJson.get("name");
+		String email = (String) reqJson.get("email");
 		String senha = (String) reqJson.get("password");
-		String nome = (String) reqJson.get("email");
+		String nome = (String) reqJson.get("name");
 		
 		///TRY TO PUT ON DATABASE
 		Usuario usuario = new Usuario(senha,email,nome);

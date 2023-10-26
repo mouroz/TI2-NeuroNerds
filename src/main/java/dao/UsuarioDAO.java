@@ -59,21 +59,26 @@ public class UsuarioDAO extends DAO {
     }
 
     
-    public boolean autenticaUsuario(String senha, String email) {	
-    	boolean status = false;
-    	String sql = "SELECT * FROM usuario WHERE email = ? AND senha = ?";
-    	try(PreparedStatement pstmt = conexao.prepareStatement(sql)){
-    		pstmt.setString(1, email);
-    		pstmt.setString(2, senha);
-    		
-    		pstmt.executeQuery();
-    		status = true;
-    	}
-    	catch(SQLException e) {
-    		throw new RuntimeException(e);
-    	}
-    	return status;
+    public boolean autenticaUsuario(String senha, String email) {    
+        boolean status = false;
+        // Use o nome completo da tabela, incluindo o esquema
+        String sql = "SELECT * FROM \"BancoTI2\".\"usuario\" WHERE email = ? AND senha = ?";
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            pstmt.setString(2, senha);
+            System.out.println("Usuario esta cadastrado");	
+            
+            ResultSet resultSet = pstmt.executeQuery();
+            // Se resultSet tem pelo menos uma linha, o usuário foi autenticado
+            if (resultSet.next()) {
+                status = true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return status;
     }
+
 
     public boolean updateEmail(Usuario usuario) {
         boolean status = false;

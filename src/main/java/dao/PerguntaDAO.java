@@ -45,6 +45,31 @@ public class PerguntaDAO extends DAO {
         }
         return status;
     }
+    
+    public Pergunta getPergunta(int idPergunta) {
+        Pergunta pergunta = null;
+        String sql = "SELECT \"Pergunta\".*, \"usuario\".username AS nome_usuario " +
+                     "FROM \"BancoTI2\".\"Pergunta\" " +
+                     "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".id_usuario = \"usuario\".id_usuario " +
+                     "WHERE \"Pergunta\".idPergunta = ?";
+        
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+            pstmt.setInt(1, idPergunta);
+            ResultSet resultSet = pstmt.executeQuery();
+            if (resultSet.next()) {
+                Date dataPostagem = resultSet.getDate("data_postagem");
+                String conteudo = resultSet.getString("conteudo");
+                int idUsuario = resultSet.getInt("id_usuario");
+                String nomeUsuario = resultSet.getString("nome_usuario");
+                String titulo = resultSet.getString("titulo");
+                
+                pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return pergunta;
+    }
 
     public int fetchPerguntaId(Pergunta pergunta) {
         int result = -1;
@@ -91,6 +116,31 @@ public class PerguntaDAO extends DAO {
         }
     }
 
+    public List<Pergunta> buscaUltimasCincoPerguntas() {
+        List<Pergunta> perguntas = new ArrayList<>();
+        String sql = "SELECT \"Pergunta\".*, \"usuario\".username AS nome_usuario " +
+                     "FROM \"BancoTI2\".\"Pergunta\", \"BancoTI2\".\"usuario\" " +
+                     "WHERE \"Pergunta\".id_usuario = \"usuario\".id_usuario " +
+                     "ORDER BY \"Pergunta\".data_postagem DESC LIMIT 5";
+        
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()) {
+                int idPergunta = resultSet.getInt("idPergunta");
+                Date dataPostagem = resultSet.getDate("data_postagem");
+                String conteudo = resultSet.getString("conteudo");
+                int idUsuario = resultSet.getInt("id_usuario");
+                String titulo = resultSet.getString("titulo");
+                String nomeUsuario = resultSet.getString("nome_usuario");
+                
+                Pergunta pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario);
+                perguntas.add(pergunta);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return perguntas;
+    }
 
 
     public boolean deletePergunta(int id) {
@@ -120,7 +170,7 @@ public class PerguntaDAO extends DAO {
                 Pergunta pergunta = new Pergunta();
                 pergunta.setId_pergunta(rs.getInt("id_pergunta"));
                 pergunta.setTitulo(rs.getString("titulo"));
-                pergunta.setData_postagem(rs.getDate("data_postagem").toLocalDate());
+                pergunta.setData_postagem(rs.getDate("data_postagem"));
                 pergunta.setConteudo(rs.getString("conteudo"));
                 pergunta.setId_usuario(rs.getInt("id_usuario"));
                 perguntas.add(pergunta);
