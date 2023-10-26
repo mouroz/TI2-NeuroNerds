@@ -3,10 +3,13 @@ dao/UsuarioDAO.class
 dao/DAO.class
 model/Pergunta.class
 service/AuthService.class
+app/Teste.class
 model/Questao.class
+service/ServiceParent.class
 model/Usuario.class
-service/Service$1.class
+service/ServiceLogger.class
 dao/QuestaoDAO.class
 dao/PerguntaDAO.class
 service/Service.class
 app/App.class
+dao/RespostaDAO.class

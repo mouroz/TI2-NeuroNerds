@@ -1,5 +1,7 @@
 import { ApiError, JsonError } from '/js/class/fetchErrors.js';
 
+
+
 //NON SECURE SIMPLE AUTH FOR NOW. HEADER WILL BE IGNORED
 const localStorageName = 'userData';
 const nextPageHtml = '/outras/telainicial.html';
@@ -66,7 +68,7 @@ function sendAuth(usernameInput, passwordInput) {
             const payload = json.payload;
             if (!('sub' in payload)) throw new JsonError('Failure in atribute (sub) on Auth JSON');
             if (!('name' in payload)) throw new JsonError('Failure in atribute (password) on Auth JSON');
-            updateLocalStorage(defaultJson);
+            updateLocalStorage(json);
         })
         .catch(error => {
             console.error('loginAuth.js error: ', error + '\n' + 'using test user values for now');

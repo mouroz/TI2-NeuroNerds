@@ -66,12 +66,13 @@ public class UsuarioDAO extends DAO {
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setString(1, email);
             pstmt.setString(2, senha);
-            System.out.println("Usuario esta cadastrado");	
+            
             
             ResultSet resultSet = pstmt.executeQuery();
             // Se resultSet tem pelo menos uma linha, o usuário foi autenticado
             if (resultSet.next()) {
                 status = true;
+                System.out.println("Usuario esta cadastrado");	
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -32,9 +32,10 @@ public class AuthService extends ServiceParent{
 		String email = (String) reqJson.get("email");
 		String senha = (String) reqJson.get("password");
 		String nome = (String) reqJson.get("name");
-		
+	
 		///TRY TO PUT ON DATABASE
 		Usuario usuario = new Usuario(senha,email,nome);
+		logger.log(usuario.toString());
 		JSONObject responseJson = new JSONObject();
 		
 		if(usuarioDAO.cadastraUsuario(usuario)) {
@@ -48,8 +49,6 @@ public class AuthService extends ServiceParent{
 			logger.log("Couldnt register new account");
 		}
 		
-		
-		logger.logMethodEnd("UNSOLVED ERROR: Although this is the last line of code from the route function, this function is still receiving a MatchrFilter error. Even attempting to rebuild maven to a more modern version didnt fix this issue. Although we wont be abled to use the html receptors, ignore this error for now");
     	return responseJson;
 	}
 	
@@ -67,7 +66,7 @@ public class AuthService extends ServiceParent{
 
     	String email = (String) reqJson.get("username");
     	String password = (String) reqJson.get("password");
-    	logger.log("got [(" +email+ "), (" +password+ ")] from request body");
+    	logger.log("got [email=(" +email+ "), password=(" +password+ ")] from request body");
     	
     	///TRY TO AUTHENTICATE WITH DATABASE REQUEST
     	res.type("application/json");

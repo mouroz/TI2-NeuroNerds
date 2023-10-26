@@ -11,7 +11,7 @@ public class ServiceLogger {
 	}
 	
 	public void logMethodEnd(Object customText) {
-		System.out.println("(" + path + ") -> FINISHED SUCCESFULLY. SENDING:\n" + customText);
+		System.out.println("FINISHED ("+ path +"). RETURNING:" + customText);
 	}
 	public String err(String customText) {
 		//possibly log error messages here
