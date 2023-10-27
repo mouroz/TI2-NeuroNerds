@@ -97,7 +97,7 @@ fetch(path) //either this or send it by adding a body. Not sure which yet
         console.log(json);
         ///main json
         if (!('post' in json)) throw new Error('Failure in atribute (post) on Forum-Page JSON');
-        if (!('comment' in json)) throw new Error('Failure in atribute (comment) on Forum-Page JSON');
+        if (!('comments' in json)) throw new Error('Failure in atribute (comment) on Forum-Page JSON');
 
         ///post-json
         const postJson = json.post;
@@ -114,22 +114,24 @@ fetch(path) //either this or send it by adding a body. Not sure which yet
         throw new Error(`Invalid attribute(s) found inside (post)->(content) on Forum-Page JSON`);
 
         ///comment-jsonArray
-        for (let i = 0; i < json.comment.len; i++) {
-            const commentJson = json.comment[i];
-            if (!('user' in commentJson)) throw new Error(`Failure in atribute (comment)[${i}]->(user) on Forum JSON`);
-            if (!('content' in commentJson)) throw new Error(`Failure in atribute (comment)[${i}]->(content) on Forum JSON`);
+        console.log(json.comment)
+        if (json.comment != undefined){
+            for (let i = 0; i < json.comment.len; i++) {
+                const commentJson = json.comment[i];
+                if (!('user' in commentJson)) throw new Error(`Failure in atribute (comment)[${i}]->(user) on Forum JSON`);
+                if (!('content' in commentJson)) throw new Error(`Failure in atribute (comment)[${i}]->(content) on Forum JSON`);
 
-            const userJson = commentJson.user;
-            if (!('name' in userJson) || !('date' in userJson))
-                throw new Error(`Invalid attribute(s) found inside (comment)[${i}]->(user) json of Forum JSON`);
+                const userJson = commentJson.user;
+                if (!('name' in userJson) || !('date' in userJson))
+                    throw new Error(`Invalid attribute(s) found inside (comment)[${i}]->(user) json of Forum JSON`);
 
-            const contentJson = commentJson.content;
-            if (!('title' in contentJson) || !('text' in contentJson) || !('likes' in contentJson) ||
-                !('comments' in contentJson) || !('tags' in contentJson) || !('id' in contentJson))
-                throw new Error(`Invalid attribute(s) found inside (comment)[${i}]->(content) on Forum JSON`);
-            
+                const contentJson = commentJson.content;
+                if (!('title' in contentJson) || !('text' in contentJson) || !('likes' in contentJson) ||
+                    !('comments' in contentJson) || !('tags' in contentJson) || !('id' in contentJson))
+                    throw new Error(`Invalid attribute(s) found inside (comment)[${i}]->(content) on Forum JSON`);
+                
+            }
         }
-
         updateForum(json);
        
     })
@@ -157,7 +159,7 @@ function updateForum(json) {
     jsonComments = json.comment; //JSON array following same structure as post
 
     updatePost(jsonPost);
-    unloadComments(jsonComments)
+    if (jsonComments != undefined) unloadComments(jsonComments)
 
 }
 

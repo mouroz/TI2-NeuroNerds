@@ -150,16 +150,11 @@ public class Service extends ServiceParent{
 	        throw new Exception(logger.err("Failure to parse to int from url id"));
 	    }
 	    
-	    ///GET VALUES FROM DATABASE (!MISSING!)
+	    ///GET VALUES FROM DATABASE 
 	    
 	    Pergunta pergunta = perguntaDAO.getPergunta(id);
-	    List<Resposta> respostas;
-	    try {
-	        respostas = perguntaDAO.getRespostas(id);
-	    } catch (Exception e) {
-	        logger.err("Erro ao buscar respostas do banco de dados: " + e.getMessage());
-	        respostas = new ArrayList<>(); // ou qualquer outra abordagem que faça sentido para sua aplicação
-	    }
+	    List<Resposta> respostas = perguntaDAO.getRespostas(id);
+
 	    
 	    int cLen = respostas.size(); // Isso irá pegar o tamanho correto da lista, mesmo que ela esteja vazia
 	    cLen = (cLen > maxCommentsNum) ? maxCommentsNum : cLen;
@@ -183,14 +178,14 @@ public class Service extends ServiceParent{
 	        JSONObject jsonPost = new JSONObject();
 	            JSONObject jsonPostUser = new JSONObject();
 	                jsonPostUser.put("name", pergunta.getNome_usuario());
-	                jsonPostUser.put("date", pergunta.getData_postagem().format(dateFormatter));
+	                jsonPostUser.put("date", (pergunta.getData_postagem()).toString());
 	            JSONObject jsonPostContent = new JSONObject(); 
 	                jsonPostContent.put("title", pergunta.getTitulo());
 	                jsonPostContent.put("text", pergunta.getConteudo());
 	                jsonPostContent.put("likes", random.nextInt(30));
 	                jsonPostContent.put("comments", random.nextInt(30));
 	                jsonPostContent.put("tags", postContentTags);
-	                //jsonPostContent.put("id", pergunta.getId_pergunta());
+	                jsonPostContent.put("id", pergunta.getId_pergunta());
 	            
 	            jsonPost.put("user", jsonPostUser);    
 	            jsonPost.put("content", jsonPostContent);
@@ -200,21 +195,24 @@ public class Service extends ServiceParent{
 	        
 	    //----------------------------------------
 	    
-	        
-	    ///(JSON ARRAY BUILD 01)
-	    for (int i = 0; i < cLen; i++) {
-	        JSONObject jsonComment = new JSONObject();
-	            JSONObject jsonCommentUser = new JSONObject();
-	                jsonCommentUser.put("name", respostas.get(i).getNome_usuario());
-	                jsonCommentUser.put("date", respostas.get(i).getData_postagem().format(dateFormatter)); 
-	            JSONObject jsonCommentContent = new JSONObject(); 
-	                jsonCommentContent.put("text", respostas.get(i).getConteudo());
-	                jsonCommentContent.put("likes", random.nextInt(30));
-	                //jsonCommentContent.put("id", respostas.get(i).getId_resposta());
-	        
-	        jsonComment.put("user", jsonCommentUser);
-	        jsonComment.put("content", jsonCommentContent); // Correção feita aqui
-	        jsonArrayComments.add(jsonComment);
+        if (respostas != null) { //If there are comments to be added
+        	
+        	///(JSON ARRAY BUILD 01)
+    	    for (int i = 0; i < cLen; i++) {
+    	        JSONObject jsonComment = new JSONObject();
+    	            JSONObject jsonCommentUser = new JSONObject();
+    	                jsonCommentUser.put("name", respostas.get(i).getNome_usuario());
+    	                jsonCommentUser.put("date", (respostas.get(i).getData_postagem()).toString()); 
+    	            JSONObject jsonCommentContent = new JSONObject(); 
+    	                jsonCommentContent.put("text", respostas.get(i).getConteudo());
+    	                jsonCommentContent.put("likes", random.nextInt(30));
+    	                //jsonCommentContent.put("id", respostas.get(i).getId_resposta());
+    	        
+    	        jsonComment.put("user", jsonCommentUser);
+    	        jsonComment.put("content", jsonCommentContent); // Correção feita aqui
+    	        jsonArrayComments.add(jsonComment);
+    	    }
+	   
 	    }
 	    
 	    ///FINISH responseJson
