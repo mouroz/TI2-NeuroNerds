@@ -54,7 +54,7 @@ public class PerguntaDAO extends DAO {
         Pergunta pergunta = null;
         String sql = "SELECT Pergunta.*, usuario.username AS nome_usuario " +
                      "FROM BancoTI2.Pergunta " +
-                     "JOIN BancoTI2.usuario ON Pergunta.usuario_id = usuario.idusuario " +
+                     "JOIN BancoTI2.usuario ON Pergunta.usuario_id = usuario.id " +
                      "WHERE Pergunta.id = ?";
         
         logPStatement(sql);

@@ -1,10 +1,23 @@
-const userLocalStorageName = 'userData';
+
 const userLS = localStorage.getItem(userLocalStorageName);
 if (userLS == null) console.error("Interactions -> Annonymous user error: cannot get logged user");
 
 //STATIC GLOBAL ELEMENTS
 const commentForm = document.getElementById('comment-form');
 const commentBox = document.getElementById('comment-box-input');
+
+const windowId = (window.location.href).split('?').pop();
+console.log(windowId);
+
+
+const localStr = localStorage.getItem('userData');
+if(localStr === null) throw new Error('Invalid access - no session storage found for userData');
+if (localStr.trim() === '') throw new Error('Invalid access - session storage is an empty string');
+
+const localJson = JSON.parse(localStr);
+if (!localJson) throw new Error('Invalid access - session storage is not usable json');
+        
+const subValue = localJson.payload.sub;
 
 commentForm.addEventListener('submit', (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -28,9 +41,13 @@ commentForm.addEventListener('submit', (e) => {
 })
 
 function sendComment(commentInput) {
+
+        
     const serverRequestData = {
         username: userLS.payload.username,
-        content: commentInput
+        content: commentInput,
+        sub: subValue,
+        id: windowId
     };
 
     console.log(serverRequestData);

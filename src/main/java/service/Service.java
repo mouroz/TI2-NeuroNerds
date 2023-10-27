@@ -255,6 +255,11 @@ public class Service extends ServiceParent{
 		
 		String username = (String) reqJson.get("username");
 		String content = (String) reqJson.get("content");
+		String email = (String) reqJson.get("sub");
+		String questionId = (String) reqJson.get("id");
+		
+		logger.log(String.format("Got values [username=(%s), content=(%s), email=(%s), question_id=(%s)]",
+				username, content, email, questionId));
 		
 		///PUT ON DATABASE WITH DAO (!MISSING!)
 		
