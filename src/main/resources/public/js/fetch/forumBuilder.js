@@ -170,7 +170,7 @@ function updateForum(json) {
         postDescription.textContent = jsonContent.text;
         likesNum.textContent = jsonContent.likes;
         commentsNum.textContent = jsonContent.comments;
-
+        console.log("id = " +jsonContent.id)
  
         let tagLen = jsonContent.tags.length;
         if (tagLen > 5) {
@@ -179,6 +179,7 @@ function updateForum(json) {
         }
          
         for (let j = 0; j < tagLen; j++){
+
             const tagDiv = document.createElement('div');
             //for later compare the tags outputs from json to an array and assign different colors
             tagDiv.classList.add('circular-container', getTagColorClass(jsonContent.tags[j]), 'tag');

@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -113,7 +114,7 @@ public class Service extends ServiceParent{
 			        	contentJson.put("comments", random.nextInt(30));
 			        	contentJson.put("tags", tagsArray);
 			        	contentJson.put("id", perguntas.get(i).getId_pergunta());
-	        	
+			        	logger.log(perguntas.get(i).getId_pergunta());
 	        	//finish the json
 	        	postJson.put("user", userJson);
 	        	postJson.put("content", contentJson);
@@ -252,14 +253,20 @@ public class Service extends ServiceParent{
     	//GET REQ BODY
 		final String reqJsonBody = req.body();
 		JSONObject reqJson = parseBody(reqJsonBody, logger);
+		logger.log(reqJson);
+		
+		String dateString = (String) reqJson.get("time");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date parsedDate = dateFormat.parse(dateString);
+        java.sql.Date date = new java.sql.Date(parsedDate.getTime());
 		
 		String username = (String) reqJson.get("username");
 		String content = (String) reqJson.get("content");
 		String email = (String) reqJson.get("sub");
 		String questionId = (String) reqJson.get("id");
 		
-		logger.log(String.format("Got values [username=(%s), content=(%s), email=(%s), question_id=(%s)]",
-				username, content, email, questionId));
+		logger.log(String.format("Got values [username=(%s), content=(%s), email=(%s), question_id=(%s), data=(%s)]",
+				username, content, email, questionId, date));
 		
 		///PUT ON DATABASE WITH DAO (!MISSING!)
 		
@@ -274,8 +281,8 @@ public class Service extends ServiceParent{
 			res.status(200);
 		}
 		
-		logger.logMethodEnd(null);
-		return null;
+		logger.logMethodEnd("sucess");
+		return "sucess";
 	}
 	
 }

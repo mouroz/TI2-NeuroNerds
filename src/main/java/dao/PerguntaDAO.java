@@ -55,11 +55,19 @@ public class PerguntaDAO extends DAO {
     static public Pergunta getPergunta(int idPergunta) {
     	idPergunta = 1;
         Pergunta pergunta = null;
-
-        String sql = "SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
-                "FROM \"BancoTI2\".\"Pergunta\" " +
-                "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".\"usuario_id\" = \"usuario\".\"id\" " +
-                "WHERE \"Pergunta\".\"id\" = ?";
+        
+        /*("SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
+            "FROM \"BancoTI2\".\"Pergunta\" " +
+            "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".\"usuario_id\" = \"usuario\".\"id\" " +
+            "WHERE \"Pergunta\".\"id\" = ?"
+         */
+        String sql = String.format("SELECT \"%s\".*, \"%s\".\"%s\" AS \"nome_usuario\" " +
+                "FROM \"%s\".\"%s\" JOIN \"%s\".\"%s\" ON \"%s\".\"%s\" = \"%s\".\"%s\" " +
+                "WHERE \"%s\".\"%s\" = ?",
+                TABLE, usuario.TABLE, usuario.cUsername,
+                SCHEMA, TABLE, SCHEMA, usuario.TABLE,
+                TABLE, cUsuario_id, usuario.TABLE, usuario.cId,
+                TABLE, cId);
         
         logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql))
@@ -153,7 +161,7 @@ public class PerguntaDAO extends DAO {
                 int idUsuario = resultSet.getInt("usuario_id");
                 String titulo = resultSet.getString("titulo");
                 String nomeUsuario = resultSet.getString("nome_usuario");
-                Pergunta pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario);
+                Pergunta pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario, idPergunta);
                 perguntas.add(pergunta);
             }
         } catch (SQLException e) {
