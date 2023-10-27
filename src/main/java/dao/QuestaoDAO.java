@@ -8,19 +8,28 @@ import model.Usuario;
 
 
 public class QuestaoDAO extends DAO{
-
+	String TABLE = "Questao";
+	String cNeuro = "neuro";
+	String cEnunciado = "enunciado";
+	String cHabilidade = "habilidade";
+	String cDificuldade = "dificuldade";
+	
+	
     public QuestaoDAO() {
         super();
         conectar();
     }
 
-    public void finalize() {
-        close();
-    }
+    void logPStatement(String s){logPS_DAO("(UsuarioDAO) -> ", s);  }
+    void log(String s) {System.out.println("(UsuarioDAO) -> " + s); }
+    public void finalize() {close();}
 
     public boolean cadastraUsuario(Questao questao) {
         boolean status = false;
-        String sql = "INSERT INTO \"BancoTI2\".\"Questao\" (\"neuro\", \"enunciado\", \"habilidade\", \"dificuldade\") VALUES (?, ?, ?, ?)";
+        String sql = String.format("INSERT INTO \"%s\".\"%s\" (\"%s\", \"%s\", \"%s\", \"%s\") VALUES (?, ?, ?, ?)",
+        		SCHEMA,TABLE,cNeuro,cEnunciado,cHabilidade,cDificuldade);
+        logPStatement(sql);
+        
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setLong(1, questao.getNeuro_div());
             pstmt.setString(2, questao.getEnunciado());
