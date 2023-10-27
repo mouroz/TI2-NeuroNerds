@@ -16,9 +16,11 @@ import org.json.simple.parser.ParseException;
 import dao.UsuarioDAO;
 import dao.PerguntaDAO;
 import dao.QuestaoDAO;
+import dao.RespostaDAO;
 import model.Pergunta;
 import model.Resposta;
 import model.Alternativa;
+import model.Resposta;
 import model.Usuario;
 import spark.Request;
 import spark.Response;
@@ -27,7 +29,7 @@ public class Service extends ServiceParent{
 	
 	static PerguntaDAO perguntaDAO = new PerguntaDAO();
 	static QuestaoDAO questaoDAO = new QuestaoDAO();
-	
+	static RespostaDAO respostaDAO = new RespostaDAO();
 	///GETS
 	//@SuppressWarnings("unchecked")
 	public static Object getExercicio(Request req, Response res) throws Exception{
@@ -40,16 +42,17 @@ public class Service extends ServiceParent{
 
 		///GET EXERCICIOS DAO --------------------------------------------------
         
-        //List<Alternativa> alternativas = questaoDAO.getAlternativas(0);
-        String[] alternativas = {"res1","res2","res3","res4","res5"};
+        List<Alternativa> alternativas = questaoDAO.getAlternativas(1);
+        //String[] alternativas = {"res1","res2","res3","res4","res5"};
         
     	///CREATE RESPONSE (RES) -----------------------------------------------
     	res.type("application/json");
     	 JSONArray alternativesArray = new JSONArray();
          
-    	 for (String alternative : alternativas) {
-             alternativesArray.add(alternative);
-         }
+    	 for(int i = 0; i < alternativas.size(); i++) {
+    		 Alternativa alternativa = alternativas.get(i);
+    		 alternativesArray.add(alternativa);
+    	 }
          
         JSONObject jsonResponse = new JSONObject();
 	        jsonResponse.put("title", null);
@@ -258,11 +261,14 @@ public class Service extends ServiceParent{
 		String email = (String) reqJson.get("sub");
 		String questionId = (String) reqJson.get("id");
 		
+		int id = Integer.parseInt(questionId);
+		
 		logger.log(String.format("Got values [username=(%s), content=(%s), email=(%s), question_id=(%s)]",
 				username, content, email, questionId));
 		
 		///PUT ON DATABASE WITH DAO (!MISSING!)
 		
+		respostaDAO.inserirResposta(username, content, email, id);
 		
 		
 		boolean sucess = false;

@@ -53,7 +53,6 @@ public class PerguntaDAO extends DAO {
     
 
     static public Pergunta getPergunta(int idPergunta) {
-    	idPergunta = 1;
         Pergunta pergunta = null;
 
         String sql = "SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
@@ -78,7 +77,7 @@ public class PerguntaDAO extends DAO {
                         "\nNome do Usuário: " + nomeUsuario +
                         "\nTítulo: " + titulo);
 
-                pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario);
+                pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario, idPergunta);
                 System.out.println("Pergunta: " + pergunta.toString());
             }
         } catch (SQLException e) {
@@ -153,7 +152,7 @@ public class PerguntaDAO extends DAO {
                 int idUsuario = resultSet.getInt("usuario_id");
                 String titulo = resultSet.getString("titulo");
                 String nomeUsuario = resultSet.getString("nome_usuario");
-                Pergunta pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario);
+                Pergunta pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario, idPergunta);
                 perguntas.add(pergunta);
             }
         } catch (SQLException e) {

@@ -31,12 +31,13 @@ public class Pergunta {
 		
 	}
 	
-	public Pergunta(String titulo, String conteudo, Date data_postagem, int id_usuario, String nome_usuario){
+	public Pergunta(String titulo, String conteudo, Date data_postagem, int id_usuario, String nome_usuario, int id){
 		this.titulo = titulo;
 		this.conteudo = conteudo;
 		this.data_postagem = data_postagem;
 		this.id_usuario = id_usuario;
 		this.nome_usuario = nome_usuario;
+		this.id_pergunta = id;
 	}
 	
 	//GETTERS
