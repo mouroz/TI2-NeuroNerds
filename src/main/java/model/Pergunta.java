@@ -40,6 +40,7 @@ public class Pergunta {
 		this.id_pergunta = id;
 	}
 	
+
 	//GETTERS
 	public int getId_pergunta() {return id_pergunta;}
 	public String getTitulo() {return titulo;}

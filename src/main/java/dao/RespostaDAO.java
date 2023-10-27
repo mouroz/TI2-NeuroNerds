@@ -25,7 +25,7 @@ public class RespostaDAO extends DAO{
         close();
     }
 
-    public void inserirResposta(String username, String conteudo, String email, int perguntaId) {
+    public void inserirResposta(String username, String conteudo, String email, int perguntaId, Date data) {
         int usuarioId = buscarUsuarioIdPorUsername(username);
 
         if (usuarioId != -1) {
@@ -34,6 +34,7 @@ public class RespostaDAO extends DAO{
                 pstmt.setString(1, conteudo);
                 pstmt.setInt(2, usuarioId);
                 pstmt.setInt(3, perguntaId);
+                pstmt.setDate(4, data);
                 int affectedRows = pstmt.executeUpdate();
                 if (affectedRows > 0) {
                     System.out.println("Resposta inserida com sucesso!");

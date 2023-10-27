@@ -54,11 +54,19 @@ public class PerguntaDAO extends DAO {
 
     static public Pergunta getPergunta(int idPergunta) {
         Pergunta pergunta = null;
-
-        String sql = "SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
-                "FROM \"BancoTI2\".\"Pergunta\" " +
-                "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".\"usuario_id\" = \"usuario\".\"id\" " +
-                "WHERE \"Pergunta\".\"id\" = ?";
+        
+        /*("SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
+            "FROM \"BancoTI2\".\"Pergunta\" " +
+            "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".\"usuario_id\" = \"usuario\".\"id\" " +
+            "WHERE \"Pergunta\".\"id\" = ?"
+         */
+        String sql = String.format("SELECT \"%s\".*, \"%s\".\"%s\" AS \"nome_usuario\" " +
+                "FROM \"%s\".\"%s\" JOIN \"%s\".\"%s\" ON \"%s\".\"%s\" = \"%s\".\"%s\" " +
+                "WHERE \"%s\".\"%s\" = ?",
+                TABLE, usuario.TABLE, usuario.cUsername,
+                SCHEMA, TABLE, SCHEMA, usuario.TABLE,
+                TABLE, cUsuario_id, usuario.TABLE, usuario.cId,
+                TABLE, cId);
         
         logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql))
