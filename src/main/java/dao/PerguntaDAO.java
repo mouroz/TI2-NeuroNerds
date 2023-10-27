@@ -53,10 +53,12 @@ public class PerguntaDAO extends DAO {
     public Pergunta getPergunta(int idPergunta) {
     	idPergunta = 1;
         Pergunta pergunta = null;
+
         String sql = "SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
                 "FROM \"BancoTI2\".\"Pergunta\" " +
                 "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".\"usuario_id\" = \"usuario\".\"id\" " +
                 "WHERE \"Pergunta\".\"id\" = ?";
+        
         logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql))
         {	System.out.println("entrou");

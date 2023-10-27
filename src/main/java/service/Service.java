@@ -30,7 +30,7 @@ public class Service extends ServiceParent{
 	
 	///GETS
 	//@SuppressWarnings("unchecked")
-	/*public static Object getExercicio(Request req, Response res) throws Exception{
+	public static Object getExercicio(Request req, Response res) throws Exception{
 		String path = "/exercicios";
 		final ServiceLogger logger = new ServiceLogger(path);
     	
@@ -40,13 +40,13 @@ public class Service extends ServiceParent{
 
 		///GET EXERCICIOS DAO --------------------------------------------------
         
-        List<Alternativa> alternativas = questaoDAO.getAlternativas(0);
-        
+        //List<Alternativa> alternativas = questaoDAO.getAlternativas(0);
+        String[] alternativas = {"res1","res2","res3","res4","res5"};
         
     	///CREATE RESPONSE (RES) -----------------------------------------------
     	res.type("application/json");
     	 JSONArray alternativesArray = new JSONArray();
-         /*
+         
     	 for (String alternative : alternativas) {
              alternativesArray.add(alternative);
          }
@@ -60,7 +60,7 @@ public class Service extends ServiceParent{
         
         logger.logMethodEnd(jsonResponse);
         return jsonResponse.toJSONString(); //response must go as string
-	}*/
+	}
 
 	@SuppressWarnings("unchecked")
 		public static Object getForumHomepage(Request req, Response res) throws Exception{
@@ -255,6 +255,11 @@ public class Service extends ServiceParent{
 		
 		String username = (String) reqJson.get("username");
 		String content = (String) reqJson.get("content");
+		String email = (String) reqJson.get("sub");
+		String questionId = (String) reqJson.get("id");
+		
+		logger.log(String.format("Got values [username=(%s), content=(%s), email=(%s), question_id=(%s)]",
+				username, content, email, questionId));
 		
 		///PUT ON DATABASE WITH DAO (!MISSING!)
 		
