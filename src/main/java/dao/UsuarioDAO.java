@@ -82,7 +82,7 @@ public class UsuarioDAO extends DAO{
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                result = rs.getInt("id_usuario");
+                result = rs.getInt(cId);
             }
         } catch (SQLException e) {
             e.printStackTrace();

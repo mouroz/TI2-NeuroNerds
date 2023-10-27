@@ -40,21 +40,22 @@ public class Service extends ServiceParent{
 
 		///GET EXERCICIOS DAO --------------------------------------------------
         
-        List<Alternativa> = questaoDAO.getAlternativas(0);
+        List<Alternativa> alternativas = questaoDAO.getAlternativas(0);
         
         
     	///CREATE RESPONSE (RES) --------------------------------------------------
     	res.type("application/json");
     	 JSONArray alternativesArray = new JSONArray();
-         for (String alternative : alternativas) {
+         /*
+    	 for (String alternative : alternativas) {
              alternativesArray.add(alternative);
-         }
+         }*/
          
         JSONObject jsonResponse = new JSONObject();
-	        jsonResponse.put("title", title);
-	        jsonResponse.put("text", text);
+	        jsonResponse.put("title", null);
+	        jsonResponse.put("text", null);
 	        jsonResponse.put("type", 0); // Represents the time the type (only alternatives for now)
-	        jsonResponse.put("correct", correct); // Represents the correct alternative [1-5]
+	        jsonResponse.put("correct", null); // Represents the correct alternative [1-5]
 	        jsonResponse.put("alternatives", alternativesArray); // Signature (set to null for now)
         
         logger.logMethodEnd(jsonResponse);

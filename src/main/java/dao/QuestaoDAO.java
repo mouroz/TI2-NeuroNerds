@@ -11,19 +11,25 @@ import model.Usuario;
 
 
 public class QuestaoDAO extends DAO{
-
+	
+	String TABLE = "alternativas";
+	String cId = "id";
+	String cQuestaoId = "questao_id";
+	
     public QuestaoDAO() {
         super();
         conectar();
     }
 
-    public void finalize() {
-        close();
-    }
-
+    void logPStatement(String s){logPS_DAO("(QuestaoDAO) -> ", s);  }
+    void log(String s) {System.out.println("(QuestaoDAO) -> " + s); }
+    
     public List<Alternativa> getAlternativas(int idQuestao) {
         List<Alternativa> alternativas = new ArrayList<>();
-        String sql = "SELECT * FROM BancoTI2.alternativas WHERE questao_id = ? ORDER BY id ASC";
+        String sql = String.format("SELECT * FROM %s.%s WHERE %d = ? ORDER BY %d ASC",
+        		SCHEMA,TABLE,cQuestaoId,cId);
+        logPStatement(sql);
+        
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setInt(1, idQuestao);
             ResultSet rs = pstmt.executeQuery();

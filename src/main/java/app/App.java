@@ -32,7 +32,8 @@ public class App extends dao.DAO{
         //LOCAL PARA INSERIR EXERCICIOS
         
         //teste.chamaCadastro();
-        teste.chamaCadastroAlternativa();
+        
+        //teste.chamaCadastroAlternativa();
         
         
         	//Comecando em index.html

@@ -13,8 +13,9 @@ public class DAO {
 		conexao = null;
 	}
 	
+	public void finalize() {close();}
 	public void logPS_DAO(String classPointer, String s) {
-		System.out.println(classPointer + "(SQL PStatement) -> " + s);
+		System.out.println(classPointer + "(SQL PStatement) " + s);
 	}
 	
 	public boolean conectar() {

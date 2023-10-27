@@ -12,18 +12,29 @@ import model.Pergunta;
 
 public class PerguntaDAO extends DAO {
 
+	String TABLE = "Pergunta";
+	String cId = "id";
+	String cDataPostagem = "data_postagem";
+	String cTitulo = "titulo";
+	String cConteudo = "conteudo";
+	String cUsuario_id = "usuario_id";
+	
+	
     public PerguntaDAO() {
         super();
         conectar();
     }
 
-    public void finalize() {
-        close();
-    }
-
+    void logPStatement(String s){logPS_DAO("(PerguntaDAO) -> ", s);  }
+    void log(String s) {System.out.println("(PerguntaDAO) -> " + s); }
+    
+    
     public boolean cadastroPergunta(Pergunta pergunta) {
         boolean status = false;
-        String sql = "INSERT INTO BancoTI2.Pergunta (titulo, data_postagem, conteudo, usuario_id) VALUES (?, ?, ?, ?)";
+        String sql = String.format("INSERT INTO %s.%s (%s, %s, %s, %d) VALUES (?, ?, ?, ?)",
+        		SCHEMA, TABLE, cTitulo, cDataPostagem, cConteudo, cUsuario_id);
+        
+        logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             LocalDate currentDate = LocalDate.now();
             pstmt.setString(1, pergunta.getTitulo());
@@ -34,7 +45,7 @@ public class PerguntaDAO extends DAO {
             status = true;
             System.out.println(pergunta.toString());
         } catch (SQLException u) {
-            System.out.println("Não foi possível inserir a pergunta.");
+            log("Não foi possível inserir a pergunta.");
         }
         return status;
     }
@@ -46,6 +57,7 @@ public class PerguntaDAO extends DAO {
                      "JOIN BancoTI2.usuario ON Pergunta.usuario_id = usuario.idusuario " +
                      "WHERE Pergunta.id = ?";
         
+        logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setInt(1, idPergunta);
             ResultSet resultSet = pstmt.executeQuery();
@@ -65,7 +77,10 @@ public class PerguntaDAO extends DAO {
 
     public int fetchPerguntaId(Pergunta pergunta) {
         int result = -1;
-        String sql = "SELECT id FROM BancoTI2.Pergunta WHERE titulo = ? LIMIT 1";
+        String sql = String.format("SELECT $d FROM %s.%s WHERE %s = ? LIMIT 1",
+        		cId, SCHEMA, TABLE, cTitulo);
+        
+        logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setString(1, pergunta.getTitulo());
             ResultSet rs = pstmt.executeQuery();
@@ -85,6 +100,8 @@ public class PerguntaDAO extends DAO {
                      "JOIN BancoTI2.usuario ON Resposta.usuario_id = usuario.idusuario " +
                      "WHERE Resposta.pergunta_id = ? " +
                      "ORDER BY Resposta.data_postagem ASC";
+        
+        logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setInt(1, id_pergunta);
             ResultSet rs = pstmt.executeQuery();
@@ -110,6 +127,7 @@ public class PerguntaDAO extends DAO {
                      "WHERE Pergunta.usuario_id = usuario.idusuario " +
                      "ORDER BY Pergunta.data_postagem DESC LIMIT 5";
         
+        logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
@@ -130,7 +148,9 @@ public class PerguntaDAO extends DAO {
 
     public boolean deletePergunta(int id) {
         boolean status = false;
-        String sql = "DELETE FROM BancoTI2.Pergunta WHERE id = ?";
+        String sql = String.format("DELETE FROM %s.%s WHERE %d = ?", SCHEMA, TABLE, cId);
+        
+        logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
@@ -143,7 +163,9 @@ public class PerguntaDAO extends DAO {
     
     public List<Pergunta> list(int id1, int id2) {
         List<Pergunta> perguntas = new ArrayList<>();
-        String sql = "SELECT * FROM BancoTI2.Pergunta WHERE id BETWEEN ? AND ?";
+        String sql = String.format("SELECT * FROM %s.%s WHERE %d BETWEEN ? AND ?", SCHEMA, TABLE, cId);
+        
+        logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setInt(1, id1);
             pstmt.setInt(2, id2);
