@@ -90,10 +90,10 @@ public class PerguntaDAO extends DAO {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
             	Resposta resposta = new Resposta();
-                resposta.setId_resposta(rs.getInt("idResposta"));
+                resposta.setId_resposta(rs.getInt("id"));
                 resposta.setConteudo(rs.getString("conteudo"));
                 resposta.setData_postagem(rs.getDate("data_postagem"));
-                resposta.setId_usuario(rs.getInt("usuario_idusuario"));
+                resposta.setId_usuario(rs.getInt("usuario_id"));
                 resposta.setNome_usuario(rs.getString("nome")); // Aqui você seta o nome do usuário
                 respostas.add(resposta);
             }
