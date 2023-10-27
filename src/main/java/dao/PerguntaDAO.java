@@ -122,11 +122,12 @@ public class PerguntaDAO extends DAO {
 
     public List<Pergunta> buscaUltimasCincoPerguntas() {
         List<Pergunta> perguntas = new ArrayList<>();
-        String sql = "SELECT Pergunta.*, usuario.username AS nome_usuario " +
-                     "FROM BancoTI2.Pergunta, BancoTI2.usuario " +
-                     "WHERE Pergunta.usuario_id = usuario.idusuario " +
-                     "ORDER BY Pergunta.data_postagem DESC LIMIT 5";
-        
+        String sql = "SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
+                "FROM \"BancoTI2\".\"Pergunta\" " +
+                "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".\"usuario_id\" = \"usuario\".\"id\" " +
+                "ORDER BY \"Pergunta\".\"data_postagem\" DESC LIMIT 5";
+
+     
         logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             ResultSet resultSet = pstmt.executeQuery();
@@ -141,6 +142,7 @@ public class PerguntaDAO extends DAO {
                 perguntas.add(pergunta);
             }
         } catch (SQLException e) {
+        	System.out.println("erro aqui");
             throw new RuntimeException(e);
         }
         return perguntas;

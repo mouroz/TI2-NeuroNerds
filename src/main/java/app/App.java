@@ -35,6 +35,7 @@ public class App extends dao.DAO{
         
         //teste.chamaCadastroAlternativa();
         
+          teste.chamaCadastroPergunta();
         
         	//Comecando em index.html
 	        Spark.get("/", (req, res) -> {
@@ -56,9 +57,9 @@ public class App extends dao.DAO{
 	        Spark.post("/auth", (req, res) -> {//100% functional
 	        	return AuthService.auth(req, res);
 	        }); 
-	        Spark.get("/exercicios", (req,res) -> {//Missing Database Integration
+	        /*Spark.get("/exercicios", (req,res) -> {//Missing Database Integration
 	        	return Service.getExercicio(req, res);
-	        });
+	        });*/
 	        Spark.get("/forum/homepage", (req,res) -> {//Missing Database Integration
 	        	return Service.getForumHomepage(req, res);
 	        });
