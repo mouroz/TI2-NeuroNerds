@@ -22,20 +22,20 @@ public class UsuarioDAO extends DAO {
     }
     
     public String getNomeFromEmail(String email) {
-    	 String sql = "SELECT * FROM \"BancoTI2\".\"usuario\" WHERE email = ?";
-    	 String email_retorno = "";
-         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
-             pstmt.setString(1, email);
-             System.out.println("Usuario esta cadastrado");	
-             
-             ResultSet resultSet = pstmt.executeQuery();
-             
-             email_retorno = resultSet.getString("email");
-
-         } catch (SQLException e) {
-             throw new RuntimeException(e);
-         }
-         return email_retorno;
+        String sql = "SELECT username FROM \"BancoTI2\".\"usuario\" WHERE email = ?";
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("username");
+                } else {
+                    System.out.println("Usuário não está cadastrado");
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean cadastraUsuario(Usuario usuario) throws IllegalStateException{
@@ -76,10 +76,10 @@ public class UsuarioDAO extends DAO {
     }
 
     
-    public boolean autenticaUsuario(String senha, String email) {    
+    public boolean autenticaUsuario(String email, String senha) {    
         boolean status = false;
         // Use o nome completo da tabela, incluindo o esquema
-        String sql = "SELECT * FROM \"BancoTI2\".\"usuario\" WHERE email = ? AND senha = ?";
+        String sql = "SELECT username FROM \"BancoTI2\".\"usuario\" WHERE email = ? AND senha = ?";
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setString(1, email);
             pstmt.setString(2, senha);
