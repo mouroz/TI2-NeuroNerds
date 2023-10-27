@@ -34,10 +34,9 @@ public class Teste extends dao.DAO{
 		titulo = sc.nextLine();
 		System.out.print("Conteudo: ");
 		conteudo = sc.nextLine();		
-		sc.nextLine();  // E esta também
 		System.out.print("Data: ");
 		String String_data_postagem = sc.nextLine();
-		sc.nextLine();  // E esta, se você for usar nextLine() depois
+		//sc.nextLine();  // E esta, se você for usar nextLine() depois
 		
 		data_postagem = java.sql.Date.valueOf(String_data_postagem);
 		
@@ -48,7 +47,7 @@ public class Teste extends dao.DAO{
 	//FUNCAO TEMPORARIA ENQUANTO FRONT NAO FOI IMPLEMENTADO
 	public void cadastraPergunta(String titulo, String conteudo, Date data, int idUsuario) {
 		
-        String sql = "INSERT INTO \"BancoTI2\".\"Pergunta\" (\"titulo\", \"conteudo\", \"data_postagem\", \"id_usuario\") VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO \"BancoTI2\".\"Pergunta\" (\"titulo\", \"conteudo\", \"data_postagem\", \"usuario_id\") VALUES (?, ?, ?, ?)";
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setString(1, titulo);
             pstmt.setString(2, conteudo);

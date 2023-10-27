@@ -49,7 +49,7 @@ public class Service extends ServiceParent{
          /*
     	 for (String alternative : alternativas) {
              alternativesArray.add(alternative);
-         }*/
+         }
          
         JSONObject jsonResponse = new JSONObject();
 	        jsonResponse.put("title", null);
