@@ -19,6 +19,7 @@ import dao.PerguntaDAO;
 import dao.QuestaoDAO;
 import dao.RespostaDAO;
 import model.Pergunta;
+import model.Questao;
 import model.Resposta;
 import model.Alternativa;
 import model.Resposta;
@@ -59,10 +60,11 @@ public class Service extends ServiceParent{
     		 }
     	 }
          
-    	 
+    	 Questao q = questaoDAO.getQuestao(1);
+    	 logger.log(String.format("Got: %s, from Questao", q.getEnunciado()));
         JSONObject jsonResponse = new JSONObject();
 	        jsonResponse.put("title", null);
-	        jsonResponse.put("text", null);
+	        jsonResponse.put("text", q.getEnunciado());
 	        jsonResponse.put("type", 0); // Represents the time the type (only alternatives for now)
 	        jsonResponse.put("correct", correct); // Represents the correct alternative [1-5]
 	        jsonResponse.put("alternatives", alternativesArray); // Signature (set to null for now)
