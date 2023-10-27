@@ -52,6 +52,7 @@ function fetchNewExercise() {
             return response.json();
         })
         .then(datajson => {
+            console.log(datajson);
             if (datajson === null) throw new Error('JSON is null');
 
             if (!('title' in datajson)) throw new Error('Failure in atribute (title) on Exercicio JSON');

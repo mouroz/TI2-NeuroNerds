@@ -69,8 +69,7 @@ public class PerguntaDAO extends DAO {
                 TABLE, cId);
         
         logPStatement(sql);
-        try (PreparedStatement pstmt = conexao.prepareStatement(sql))
-        {	System.out.println("entrou");
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql)){	
         	pstmt.setInt(1, idPergunta);
             ResultSet resultSet = pstmt.executeQuery();
             if (resultSet.next()) {
@@ -79,11 +78,11 @@ public class PerguntaDAO extends DAO {
                 int idUsuario = resultSet.getInt("usuario_id");
                 String nomeUsuario = resultSet.getString("nome_usuario");
                 String titulo = resultSet.getString("titulo");
-                System.out.println("Data de Postagem: " + dataPostagem +
+                /*System.out.println("Data de Postagem: " + dataPostagem +
                         "\nConteúdo: " + conteudo +
                         "\nID do Usuário: " + idUsuario +
                         "\nNome do Usuário: " + nomeUsuario +
-                        "\nTítulo: " + titulo);
+                        "\nTítulo: " + titulo);*/
 
                 pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario, idPergunta);
                 System.out.println("Pergunta: " + pergunta.toString());
@@ -132,7 +131,7 @@ public class PerguntaDAO extends DAO {
                 resposta.setConteudo(rs.getString("conteudo"));
                 resposta.setData_postagem(rs.getDate("data_postagem"));
                 resposta.setId_usuario(rs.getInt("usuario_id"));
-                resposta.setNome_usuario(rs.getString("nome")); // Aqui você seta o nome do usuário
+                resposta.setNome_usuario(rs.getString("nome_usuario")); // Aqui você seta o nome do usuário
                 respostas.add(resposta);
             }
         } catch (SQLException e) {

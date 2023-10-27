@@ -114,7 +114,7 @@ fetch(path) //either this or send it by adding a body. Not sure which yet
         throw new Error(`Invalid attribute(s) found inside (post)->(content) on Forum-Page JSON`);
 
         ///comment-jsonArray
-        console.log(json.comment)
+        console.log(json.comments)
         if (json.comment != undefined){
             for (let i = 0; i < json.comment.len; i++) {
                 const commentJson = json.comment[i];
@@ -156,7 +156,7 @@ const postTagContainer = document.getElementById("tag-container");
 
 function updateForum(json) {
     jsonPost = json.post; //Simple JSON
-    jsonComments = json.comment; //JSON array following same structure as post
+    jsonComments = json.comments; //JSON array following same structure as post
 
     updatePost(jsonPost);
     if (jsonComments != undefined) unloadComments(jsonComments)

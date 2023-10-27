@@ -1,8 +1,4 @@
 
-const userLS = localStorage.getItem('userData');
-if (userLS == null) console.error("Interactions -> Annonymous user error: cannot get logged user");
-const userJson = JSON.parse(userLS);
-
 
 //STATIC GLOBAL ELEMENTS
 const commentForm = document.getElementById('comment-form');
@@ -24,7 +20,7 @@ const subValue = localJson.payload.sub;
 commentForm.addEventListener('submit', (e) => {
     e.preventDefault(); // Prevent default form submission
 
-    if (userLS == null) { //test user
+    if (subValue == null) { //test user
         alert("Cannot comment as you are not logged in");
         return;
     }
@@ -43,9 +39,7 @@ function sendComment(commentInput) {
 
     const formattedDate = `${year}-${month}-${day}`;
     console.log(formattedDate);
-    console.log(userJson)
     const serverRequestData = {
-        username: userJson.payload.sub,
         content: commentInput,
         sub: subValue,
         time: formattedDate,
