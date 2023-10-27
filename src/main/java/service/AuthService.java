@@ -70,19 +70,22 @@ public class AuthService extends ServiceParent{
     	String password = (String) reqJson.get("password");
     	logger.log("got [email=(" +email+ "), password=(" +password+ ")] from request body");
     	
-    	String user = usuarioDAO.getNomeFromEmail(email);
-    	logger.log("got user= " +user+ "from email= "+email);
     	///TRY TO AUTHENTICATE WITH DATABASE REQUEST
     	res.type("application/json");
     	
-		if (usuarioDAO.autenticaUsuario(password,email)) {
+		if (usuarioDAO.autenticaUsuario(email,password)) {
+			
+	    	String user = usuarioDAO.getNomeFromEmail(email);
+	    	logger.log("got user= " +user+ "from email= "+email);
+			
+			
 			JSONObject responseJson = new JSONObject();
 				JSONObject header = new JSONObject();
 			        header.put("alg", "HS256");
 			        header.put("typ", "JWT");
 		        JSONObject payload = new JSONObject();
-			        payload.put("sub", user); // Unique identifier, for now, email
-			        payload.put("name", password);
+			        payload.put("sub", email); // Unique identifier, for now, email
+			        payload.put("name", user);
 			        payload.put("trilha", "adhd"); // Not sure if its best to include this on payload
 			        
 			//Finish building responseJson       
