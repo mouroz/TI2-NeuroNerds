@@ -1,52 +1,45 @@
 package dao;
-
+import java.sql.*;
+import model.Alternativa;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Questao;
 import model.Usuario;
 
 
 public class QuestaoDAO extends DAO{
-	String TABLE = "Questao";
-	String cNeuro = "neuro";
-	String cEnunciado = "enunciado";
-	String cHabilidade = "habilidade";
-	String cDificuldade = "dificuldade";
-	
-	
+
     public QuestaoDAO() {
         super();
         conectar();
     }
 
-    void logPStatement(String s){logPS_DAO("(UsuarioDAO) -> ", s);  }
-    void log(String s) {System.out.println("(UsuarioDAO) -> " + s); }
-    public void finalize() {close();}
+    public void finalize() {
+        close();
+    }
 
-    public boolean cadastraUsuario(Questao questao) {
-        boolean status = false;
-        String sql = String.format("INSERT INTO \"%s\".\"%s\" (\"%s\", \"%s\", \"%s\", \"%s\") VALUES (?, ?, ?, ?)",
-        		SCHEMA,TABLE,cNeuro,cEnunciado,cHabilidade,cDificuldade);
-        logPStatement(sql);
-        
+    public List<Alternativa> getAlternativas(int idQuestao) {
+        List<Alternativa> alternativas = new ArrayList<>();
+        String sql = "SELECT * FROM BancoTI2.alternativas WHERE questao_id = ? ORDER BY id ASC";
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
-            pstmt.setLong(1, questao.getNeuro_div());
-            pstmt.setString(2, questao.getEnunciado());
-            pstmt.setLong(3, questao.getHabilidade());
-            pstmt.setLong(4, questao.getDificuldade());
-
-
-            pstmt.executeUpdate();
-            status = true;
-
-            //System.out.println(usuario.toString());
-
-        } catch (SQLException u) {
-            System.out.println("Não foi possível inserir: ");
-            System.out.println("Nome ou email já cadastrado");
+            pstmt.setInt(1, idQuestao);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Alternativa alternativa = new Alternativa();
+                alternativa.setId(rs.getInt("id"));
+                alternativa.setConteudo(rs.getString("conteudo"));
+                alternativa.setCorreta(rs.getBoolean("correta"));
+                alternativa.setQuestao_id(rs.getInt("questao_id"));
+                // Adicione aqui outros campos conforme necessário
+                alternativas.add(alternativa);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return status;
-    }  
+        return alternativas;
+    }
     
 }
