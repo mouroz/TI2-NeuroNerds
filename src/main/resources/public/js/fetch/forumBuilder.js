@@ -53,7 +53,6 @@ const defaultJson = {
             tags: ['Important', 'Adhd'],
             id: 0
          },
-        
     }, {
         user: { //holds user data including post date. For now theres no profile picture
             name: 'username2', date: '10/10/2023'
@@ -96,7 +95,7 @@ const path = "/forum/homepage";
 fetch(path)
     .then(response => {
         if (!response.ok) throw new Error('API request failed with status ' + response);
-        return response.json();
+        return response.json(); //here
     })
     .then(json => {
         console.log(json);
@@ -136,6 +135,7 @@ const postsContainer = document.getElementById("posts-section");
 
 //FUNCTION ONLY HANDLES TYPE = 0 FOR NOW
 function updateForum(json) {
+    console.log(json);
     let len = json.data.length;
     if (json.data.length > 5) {
         console.warn("More than limit of 5 JSON (posts) received. Rest will be ignored");

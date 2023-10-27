@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -101,7 +102,7 @@ public class Service extends ServiceParent{
 	        	JSONObject postJson = new JSONObject(); //Contains user and content JSONObject
 	        		JSONObject userJson = new JSONObject();
 	        			userJson.put("name", perguntas.get(i).getNome_usuario());            
-	        			userJson.put("date", perguntas.get(i).getData_postagem()); 
+	        			userJson.put("date", (perguntas.get(i).getData_postagem()).toString()); 
 		        	JSONObject contentJson = new JSONObject();
 			        	contentJson.put("title", perguntas.get(i).getTitulo());
 			        	contentJson.put("text", perguntas.get(i).getConteudo());
@@ -115,18 +116,16 @@ public class Service extends ServiceParent{
 	        	postJson.put("content", contentJson);
 	        	jsonArrayData.add(postJson);
 	        }
-	        logger.log("Here");
+	        
 	        ///FINISH responseJson
 	        responseJson.put("data", jsonArrayData);
 	        
-	        responseJson.put("data", jsonArrayData);
 	        res.type("application/json");
 	        res.status(200);
+	        
 	        res.body(responseJson.toJSONString());
 	        logger.logMethodEnd(responseJson);
 	        return res.body();
-
-
 		}
 	
 	@SuppressWarnings("unchecked")
