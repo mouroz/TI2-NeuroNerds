@@ -30,7 +30,7 @@ public class Service extends ServiceParent{
 	
 	///GETS
 	//@SuppressWarnings("unchecked")
-	/*public static Object getExercicio(Request req, Response res) throws Exception{
+	public static Object getExercicio(Request req, Response res) throws Exception{
 		String path = "/exercicios";
 		final ServiceLogger logger = new ServiceLogger(path);
     	
@@ -40,16 +40,16 @@ public class Service extends ServiceParent{
 
 		///GET EXERCICIOS DAO --------------------------------------------------
         
-        List<Alternativa> alternativas = questaoDAO.getAlternativas(0);
-        
+        //List<Alternativa> alternativas = questaoDAO.getAlternativas(0);
+        String[] alternativas = {"res1","res2","res3","res4","res5"};
         
     	///CREATE RESPONSE (RES) -----------------------------------------------
     	res.type("application/json");
     	 JSONArray alternativesArray = new JSONArray();
-         /*
+         
     	 for (String alternative : alternativas) {
              alternativesArray.add(alternative);
-         }*/
+         }
          
         JSONObject jsonResponse = new JSONObject();
 	        jsonResponse.put("title", null);
@@ -60,7 +60,7 @@ public class Service extends ServiceParent{
         
         logger.logMethodEnd(jsonResponse);
         return jsonResponse.toJSONString(); //response must go as string
-	}*/
+	}
 
 	@SuppressWarnings("unchecked")
 		public static Object getForumHomepage(Request req, Response res) throws Exception{
