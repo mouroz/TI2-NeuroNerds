@@ -34,8 +34,9 @@ public class App extends dao.DAO{
         //teste.chamaCadastro();
         
         //teste.chamaCadastroAlternativa();
-        
-          //teste.chamaCadastroPergunta();
+
+        //teste.chamaCadastroPergunta();
+
         
         	//Comecando em index.html
 	        Spark.get("/", (req, res) -> {

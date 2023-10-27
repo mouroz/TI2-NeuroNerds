@@ -20,6 +20,13 @@ public class Pergunta {
 		this.nome_usuario = nome_usuario;
 	}
 
+	@Override
+	public String toString() {
+		return "Pergunta [id_pergunta=" + id_pergunta + ", titulo=" + titulo + ", conteudo=" + conteudo
+				+ ", data_postagem=" + data_postagem + ", id_usuario=" + id_usuario + ", nome_usuario=" + nome_usuario
+				+ "]";
+	}
+
 	public Pergunta() {
 		
 	}
