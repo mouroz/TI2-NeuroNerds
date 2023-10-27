@@ -98,7 +98,7 @@ public class Service extends ServiceParent{
 	        	for (String s : defaultTags) {
 	        		tagsArray.add(s);
 	        	}
-	        	logger.log("Here");
+	   
 	        	JSONObject postJson = new JSONObject(); //Contains user and content JSONObject
 	        		JSONObject userJson = new JSONObject();
 	        			userJson.put("name", perguntas.get(i).getNome_usuario());            
@@ -109,7 +109,7 @@ public class Service extends ServiceParent{
 			        	contentJson.put("likes", random.nextInt(30)); //nao possui
 			        	contentJson.put("comments", random.nextInt(30));
 			        	contentJson.put("tags", tagsArray);
-			        	//contentJson.put("id", perguntas.get(i).getId_pergunta());
+			        	contentJson.put("id", perguntas.get(i).getId_pergunta());
 	        	
 	        	//finish the json
 	        	postJson.put("user", userJson);
@@ -170,7 +170,7 @@ public class Service extends ServiceParent{
 			JSONObject jsonPost = new JSONObject();
 				JSONObject jsonPostUser = new JSONObject();
 					jsonPostUser.put("name", pergunta.getNome_usuario());
-					jsonPostUser.put("date", pergunta.getData_postagem());
+					jsonPostUser.put("date", (pergunta.getData_postagem()).toString());
 				JSONObject jsonPostContent = new JSONObject(); 
 					jsonPostContent.put("title", pergunta.getTitulo());
 					jsonPostContent.put("text", pergunta.getConteudo());
@@ -193,7 +193,7 @@ public class Service extends ServiceParent{
         	JSONObject jsonComment = new JSONObject();
 	        	JSONObject jsonCommentUser = new JSONObject();
 		        	jsonCommentUser.put("name", respostas[i].getNome_usuario());
-		        	jsonCommentUser.put("date", respostas[i].getData_postagem()); 
+		        	jsonCommentUser.put("date", (respostas[i].getData_postagem()).toString()); 
 	        	JSONObject jsonCommentContent = new JSONObject(); 
 		        	jsonCommentContent.put("text", respostas[i].getConteudo());
 		        	jsonCommentContent.put("likes", random.nextInt(30));
