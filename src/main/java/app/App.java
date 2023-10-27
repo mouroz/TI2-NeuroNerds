@@ -29,30 +29,12 @@ public class App extends dao.DAO{
 		staticFiles.externalLocation("src/main/resources/public");
         port(4567);
         
-        /*
-        System.out.println("Digite o titulo: ");
-        String titulo = sc.nextLine();
-        System.out.println("Digite o conteudo: ");
-        String conteudo = sc.nextLine();
-        System.out.println("Digite a data: ");
-        String data = sc.nextLine();
+        //LOCAL PARA INSERIR EXERCICIOS
         
-        java.sql.Date dataSql = null;
-        
-        try {
-            java.util.Date dataUtil = formatter.parse(data);
-            dataSql = new java.sql.Date(dataUtil.getTime());
-            System.out.println("Data inserida: " + dataSql);
-        } catch (Exception e) {
-            System.out.println("Formato de data inválido!");
-        }
+        //teste.chamaCadastro();
+        teste.chamaCadastroAlternativa();
         
         
-        System.out.println("Digite o id: ");
-        int id_usuario = sc.nextInt();   
-        
-        teste.cadastraPergunta(titulo,conteudo,dataSql,id_usuario);
-        */
         	//Comecando em index.html
 	        Spark.get("/", (req, res) -> {
 		       	System.out.println("Received POST request to /");
