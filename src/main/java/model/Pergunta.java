@@ -46,5 +46,9 @@ public class Pergunta {
 	public void setConteudo(String conteudo) {this.conteudo = conteudo;}
 	public void setId_usuario(int id_usuario) {this.id_usuario = id_usuario;}
 
+	public void printAll() {
+		System.out.println("(" + id_pergunta + ", " + titulo + ", " + conteudo + ", " + 
+				data_postagem + ", " + id_usuario + ", " + nome_usuario+ ")");
+	}
 	
 }

@@ -92,7 +92,8 @@ function getTagColorClass(tag) {
 }
 
 ///FETCH
-fetch("/forum/homepage")
+const path = "/forum/homepage";
+fetch(path)
     .then(response => {
         if (!response.ok) throw new Error('API request failed with status ' + response);
         return response.json();

@@ -63,17 +63,23 @@ public class Service extends ServiceParent{
 			final String path = "/forum/homepage";
 	    	final ServiceLogger logger = new ServiceLogger(path);
 	    	final int postsMaxLen = 5;
-	    	
+	    	logger.log("Started");
 			///GET VALUES FROM DATABASE
 	    	
 	    	List<Pergunta> perguntas = perguntaDAO.buscaUltimasCincoPerguntas();
 	    	
-			int postsLen = 5;
+			int postsLen = perguntas.size();
 			postsLen = (postsLen > postsMaxLen) ? postsMaxLen : postsLen;
 			
+			if (postsLen == 0) {
+				res.status(400);
+				logger.log("Couldnt find any values to add to the forum. Exiting method");
+				return "failure";
+			}
+			
 	    	///CREATE RESPONSE (RES) --------------------------------------------------	
+			
 			res.type("application/json");
-			//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			String[] defaultTags = {"adhd"};
 			
 			///-------------Response JSON Builder------------------
@@ -91,7 +97,7 @@ public class Service extends ServiceParent{
 	        	for (String s : defaultTags) {
 	        		tagsArray.add(s);
 	        	}
-	        		
+	        	logger.log("Here");
 	        	JSONObject postJson = new JSONObject(); //Contains user and content JSONObject
 	        		JSONObject userJson = new JSONObject();
 	        			userJson.put("name", perguntas.get(i).getNome_usuario());            
@@ -109,7 +115,7 @@ public class Service extends ServiceParent{
 	        	postJson.put("content", contentJson);
 	        	jsonArrayData.add(postJson);
 	        }
-	        
+	        logger.log("Here");
 	        ///FINISH responseJson
 	        responseJson.put("data", jsonArrayData);
 	        
