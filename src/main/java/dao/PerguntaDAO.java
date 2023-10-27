@@ -132,7 +132,7 @@ public class PerguntaDAO extends DAO {
                 resposta.setConteudo(rs.getString("conteudo"));
                 resposta.setData_postagem(rs.getDate("data_postagem"));
                 resposta.setId_usuario(rs.getInt("usuario_id"));
-                resposta.setNome_usuario(rs.getString("nome")); // Aqui você seta o nome do usuário
+                resposta.setNome_usuario(rs.getString("nome_usuario")); // Aqui você seta o nome do usuário
                 respostas.add(resposta);
             }
         } catch (SQLException e) {

@@ -31,6 +31,7 @@ public class RespostaDAO extends DAO{
         if (usuarioId != -1) {
             String sqlInserirResposta = "INSERT INTO \"BancoTI2\".\"Resposta\" (\"conteudo\", \"usuario_id\", \"pergunta_id\", \"data_postagem\") VALUES (?, ?, ?, ?)";
             try (PreparedStatement pstmt = conexao.prepareStatement(sqlInserirResposta)) {
+            	System.out.println("entrou");
                 pstmt.setString(1, conteudo);
                 pstmt.setInt(2, usuarioId);
                 pstmt.setInt(3, perguntaId);

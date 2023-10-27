@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -136,95 +137,88 @@ public class Service extends ServiceParent{
 		}
 	
 	@SuppressWarnings("unchecked")
-	public static Object getForumPagePost(Request req, Response res) throws Exception {
-	    final String path = "/forum/page/load-post";    
-	    final ServiceLogger logger = new ServiceLogger(path);
-	    final int maxCommentsNum = 5;
-	    
-	    ///GET ID FROM URL
-	    int id = 0; 
-	    logger.log("URL id value: " + req.queryParams("id"));
-	    try {
-	        id = Integer.parseInt(req.queryParams("id"));
-	    } catch (NumberFormatException e) {
-	        throw new Exception(logger.err("Failure to parse to int from url id"));
-	    }
-	    
-	    ///GET VALUES FROM DATABASE (!MISSING!)
-	    
-	    Pergunta pergunta = perguntaDAO.getPergunta(id);
-	    List<Resposta> respostas;
-	    try {
-	        respostas = perguntaDAO.getRespostas(id);
-	    } catch (Exception e) {
-	        logger.err("Erro ao buscar respostas do banco de dados: " + e.getMessage());
-	        respostas = new ArrayList<>(); // ou qualquer outra abordagem que faça sentido para sua aplicação
-	    }
-	    
-	    int cLen = respostas.size(); // Isso irá pegar o tamanho correto da lista, mesmo que ela esteja vazia
-	    cLen = (cLen > maxCommentsNum) ? maxCommentsNum : cLen;
-	    
-	    ///CREATE RESPONSE (RES) --------------------------------------------------
-	    res.type("application/json");
-	    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	    
-	    //Fake default values - values not on database yet
-	    String[] tags = {"adhd"}; 
-	    
-	    //Structuring 1 layer JSONArrays
-	    JSONArray postContentTags = new JSONArray(); 
-	    for (String s : tags) { //add each tag
-	        postContentTags.add(s);
-	    }
-	    
-	    //-----JSON Overall Structure-----------------
-	    
-	    JSONObject responseJson = new JSONObject();
-	        JSONObject jsonPost = new JSONObject();
-	            JSONObject jsonPostUser = new JSONObject();
-	                jsonPostUser.put("name", pergunta.getNome_usuario());
-	                jsonPostUser.put("date", pergunta.getData_postagem().format(dateFormatter));
-	            JSONObject jsonPostContent = new JSONObject(); 
-	                jsonPostContent.put("title", pergunta.getTitulo());
-	                jsonPostContent.put("text", pergunta.getConteudo());
-	                jsonPostContent.put("likes", random.nextInt(30));
-	                jsonPostContent.put("comments", random.nextInt(30));
-	                jsonPostContent.put("tags", postContentTags);
-	                //jsonPostContent.put("id", pergunta.getId_pergunta());
-	            
-	            jsonPost.put("user", jsonPostUser);    
-	            jsonPost.put("content", jsonPostContent);
-	        
-	        JSONArray jsonArrayComments = new JSONArray();
-	        //Array of jsonComment from: (JSON ARRAY BUILD 01)
-	        
-	    //----------------------------------------
-	    
-	        
-	    ///(JSON ARRAY BUILD 01)
-	    for (int i = 0; i < cLen; i++) {
-	        JSONObject jsonComment = new JSONObject();
-	            JSONObject jsonCommentUser = new JSONObject();
-	                jsonCommentUser.put("name", respostas.get(i).getNome_usuario());
-	                jsonCommentUser.put("date", respostas.get(i).getData_postagem().format(dateFormatter)); 
-	            JSONObject jsonCommentContent = new JSONObject(); 
-	                jsonCommentContent.put("text", respostas.get(i).getConteudo());
-	                jsonCommentContent.put("likes", random.nextInt(30));
-	                //jsonCommentContent.put("id", respostas.get(i).getId_resposta());
-	        
-	        jsonComment.put("user", jsonCommentUser);
-	        jsonComment.put("content", jsonCommentContent); // Correção feita aqui
-	        jsonArrayComments.add(jsonComment);
-	    }
-	    
-	    ///FINISH responseJson
-	    responseJson.put("post", jsonPost);
-	    responseJson.put("comments", jsonArrayComments); // Modificado de "comment" para "comments"
-	    
-	    logger.logMethodEnd(responseJson);
-	    return responseJson.toJSONString();
-	}
+	public static Object getForumPagePost(Request req, Response res) throws Exception{
+    	final String path = "/forum/page/load-post";	
+    	final ServiceLogger logger = new ServiceLogger(path);
+    	final int maxCommentsNum = 5;
+    	
+		///GET ID FROM URL
+    	int id = 0; 
+    	logger.log("URL id value: " + req.queryParams("id"));
+    	try {
+    		id = Integer.parseInt(req.queryParams("id"));
+    	} catch (NumberFormatException e) {
+    		throw new Exception (logger.err("Failure to parse to int from url id"));
+    	}
+    	
+    	///GET VALUES FROM DATABASE (!MISSING!)
+    	
+    	Pergunta pergunta = perguntaDAO.getPergunta(id);
+    	List<Resposta> respostas = perguntaDAO.getRespostas(id);
+    	
+    	int cLen = 5; //amount of comments
+    	cLen = (cLen > maxCommentsNum) ? maxCommentsNum : cLen;
+    	
+    	///CREATE RESPONSE (RES) --------------------------------------------------
+    	res.type("application/json");
+    	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+    	List<String> tags = Arrays.asList("adhd"); // Ou qualquer outra maneira de obter a lista de tags
+    	JSONArray postContentTags = new JSONArray(); 
+    	for (String tag : tags) {
+    	    postContentTags.add(tag);
+    	}
 
+		
+		//-----JSON Overall Structure-----------------
+		
+		JSONObject responseJson = new JSONObject();
+			JSONObject jsonPost = new JSONObject();
+				JSONObject jsonPostUser = new JSONObject();
+					jsonPostUser.put("name", pergunta.getNome_usuario());
+					jsonPostUser.put("date", (pergunta.getData_postagem()).toString());
+				JSONObject jsonPostContent = new JSONObject(); 
+					jsonPostContent.put("title", pergunta.getTitulo());
+					jsonPostContent.put("text", pergunta.getConteudo());
+					jsonPostContent.put("likes", random.nextInt(30));
+					jsonPostContent.put("comments", random.nextInt(30));
+					jsonPostContent.put("tags", postContentTags);
+					//jsonPostContent.put("id", pergunta.getId_pergunta());
+				
+				jsonPost.put("user", jsonPostUser);	
+				jsonPost.put("content", jsonPostContent);
+			
+			JSONArray jsonArrayComments = new JSONArray();
+			//Array of jsonComment from: (JSON ARRAY BUILD 01)
+			
+		//----------------------------------------
+		
+			
+		///(JSON ARRAY BUILD 01)
+			
+			for (Resposta resposta : respostas) {
+	        	JSONObject jsonComment = new JSONObject();
+	        	JSONObject jsonCommentUser = new JSONObject();
+		        	jsonCommentUser.put("name", resposta.getNome_usuario());
+		        	jsonCommentUser.put("date", dateFormatter.format(resposta.getData_postagem().toLocalDate()));
+	        	JSONObject jsonCommentContent = new JSONObject(); 
+		        	jsonCommentContent.put("text", resposta.getConteudo());
+		        	jsonCommentContent.put("likes", random.nextInt(30));
+		        	//jsonCommentContent.put("id", respostas[i].getId_resposta());
+        	
+        	jsonComment.put("user", jsonCommentUser);
+        	jsonComment.put("content", jsonCommentContent);
+        	jsonArrayComments.add(jsonComment);
+			}
+
+        
+        ///FINISH responseJson
+        responseJson.put("post", jsonPost);
+        responseJson.put("comment", jsonArrayComments); 
+        
+        logger.logMethodEnd(responseJson);
+        return responseJson.toJSONString();
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static Object getProfileDetails(Request req, Response res) throws Exception{
