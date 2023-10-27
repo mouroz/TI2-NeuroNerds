@@ -50,7 +50,7 @@ public class PerguntaDAO extends DAO {
         Pergunta pergunta = null;
         String sql = "SELECT \"Pergunta\".*, \"usuario\".username AS nome_usuario " +
                      "FROM \"BancoTI2\".\"Pergunta\" " +
-                     "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".id_usuario = \"usuario\".id_usuario " +
+                     "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".id_usuario = \"usuario\".idusuario " +
                      "WHERE \"Pergunta\".idPergunta = ?";
         
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {

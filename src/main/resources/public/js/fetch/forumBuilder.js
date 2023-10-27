@@ -187,6 +187,7 @@ function updateForum(json) {
         }
         console.log(tempDiv)
         tempDiv.addEventListener('click', () => {
+			alert(jsonContent.id);
             window.location.href = `/outras/forum-page.html?${jsonContent.id}`;
             //move to next page
         });
