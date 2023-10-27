@@ -1,13 +1,13 @@
 
-const userLS = localStorage.getItem(userLocalStorageName);
+const userLS = localStorage.getItem('userData');
 if (userLS == null) console.error("Interactions -> Annonymous user error: cannot get logged user");
 
 //STATIC GLOBAL ELEMENTS
 const commentForm = document.getElementById('comment-form');
 const commentBox = document.getElementById('comment-box-input');
 
-const windowId = (window.location.href).split('?').pop();
-console.log(windowId);
+const _windowId = (window.location.href).split('?').pop();
+console.log(_windowId);
 
 
 const localStr = localStorage.getItem('userData');
@@ -47,8 +47,8 @@ function sendComment(commentInput) {
         username: userLS.payload.username,
         content: commentInput,
         sub: subValue,
-        id: windowId
-    };
+        id: _windowId
+g    };
 
     console.log(serverRequestData);
     fetch('/forum/page-comment', {
