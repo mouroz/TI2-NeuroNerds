@@ -51,15 +51,16 @@ public class PerguntaDAO extends DAO {
     }
     
     public Pergunta getPergunta(int idPergunta) {
+    	idPergunta = 1;
         Pergunta pergunta = null;
-        String sql = "SELECT Pergunta.*, usuario.username AS nome_usuario " +
-                     "FROM BancoTI2.Pergunta " +
-                     "JOIN BancoTI2.usuario ON Pergunta.usuario_id = usuario.idusuario " +
-                     "WHERE Pergunta.id = ?";
-        
+        String sql = "SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
+                "FROM \"BancoTI2\".\"Pergunta\" " +
+                "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".\"usuario_id\" = \"usuario\".\"id\" " +
+                "WHERE \"Pergunta\".\"id\" = ?";
         logPStatement(sql);
-        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
-            pstmt.setInt(1, idPergunta);
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql))
+        {	System.out.println("entrou");
+        	pstmt.setInt(1, idPergunta);
             ResultSet resultSet = pstmt.executeQuery();
             if (resultSet.next()) {
                 Date dataPostagem = resultSet.getDate("data_postagem");
@@ -67,9 +68,17 @@ public class PerguntaDAO extends DAO {
                 int idUsuario = resultSet.getInt("usuario_id");
                 String nomeUsuario = resultSet.getString("nome_usuario");
                 String titulo = resultSet.getString("titulo");
+                System.out.println("Data de Postagem: " + dataPostagem +
+                        "\nConteúdo: " + conteudo +
+                        "\nID do Usuário: " + idUsuario +
+                        "\nNome do Usuário: " + nomeUsuario +
+                        "\nTítulo: " + titulo);
+
                 pergunta = new Pergunta(titulo, conteudo, dataPostagem, idUsuario, nomeUsuario);
+                System.out.println("Pergunta: " + pergunta.toString());
             }
         } catch (SQLException e) {
+        	System.out.println("erro aqui 1");
             throw new RuntimeException(e);
         }
         return pergunta;
@@ -95,11 +104,12 @@ public class PerguntaDAO extends DAO {
     
     public List<Resposta> getRespostas(int id_pergunta) {
         List<Resposta> respostas = new ArrayList<>();
-        String sql = "SELECT Resposta.*, usuario.username AS nome_usuario " +
-                     "FROM BancoTI2.Resposta " +
-                     "JOIN BancoTI2.usuario ON Resposta.usuario_id = usuario.idusuario " +
-                     "WHERE Resposta.pergunta_id = ? " +
-                     "ORDER BY Resposta.data_postagem ASC";
+        String sql = "SELECT \"Resposta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
+                "FROM \"BancoTI2\".\"Resposta\" " +
+                "JOIN \"BancoTI2\".\"usuario\" ON \"Resposta\".\"usuario_id\" = \"usuario\".\"id\" " +
+                "WHERE \"Resposta\".\"pergunta_id\" = ? " +
+                "ORDER BY \"Resposta\".\"data_postagem\" ASC";
+
         
         logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
@@ -115,6 +125,7 @@ public class PerguntaDAO extends DAO {
                 respostas.add(resposta);
             }
         } catch (SQLException e) {
+        	System.out.println("erro aqui 2");
             throw new RuntimeException(e);
         }
         return respostas;
