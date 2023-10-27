@@ -29,8 +29,8 @@ public class Service extends ServiceParent{
 	static QuestaoDAO questaoDAO = new QuestaoDAO();
 	
 	///GETS
-	@SuppressWarnings("unchecked")
-	public static Object getExercicio(Request req, Response res) throws Exception{
+	//@SuppressWarnings("unchecked")
+	/*public static Object getExercicio(Request req, Response res) throws Exception{
 		String path = "/exercicios";
 		final ServiceLogger logger = new ServiceLogger(path);
     	
@@ -43,7 +43,7 @@ public class Service extends ServiceParent{
         List<Alternativa> alternativas = questaoDAO.getAlternativas(0);
         
         
-    	///CREATE RESPONSE (RES) --------------------------------------------------
+    	///CREATE RESPONSE (RES) -----------------------------------------------
     	res.type("application/json");
     	 JSONArray alternativesArray = new JSONArray();
          /*
@@ -60,7 +60,7 @@ public class Service extends ServiceParent{
         
         logger.logMethodEnd(jsonResponse);
         return jsonResponse.toJSONString(); //response must go as string
-	}
+	}*/
 
 	@SuppressWarnings("unchecked")
 		public static Object getForumHomepage(Request req, Response res) throws Exception{
