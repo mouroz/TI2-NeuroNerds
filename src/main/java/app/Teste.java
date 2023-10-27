@@ -23,6 +23,28 @@ public class Teste extends dao.DAO{
 	
 	static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	
+	public void chamaCadastroPergunta() {
+		int usuario_id;
+		String conteudo, titulo;
+		Date data_postagem;
+		System.out.println("id: ");
+		usuario_id = sc.nextInt();
+		sc.nextLine();  // Adiciona esta linha para consumir o caractere de nova linha
+		System.out.print("Titulo: ");
+		titulo = sc.nextLine();
+		System.out.print("Conteudo: ");
+		conteudo = sc.nextLine();		
+		sc.nextLine();  // E esta também
+		System.out.print("Data: ");
+		String String_data_postagem = sc.nextLine();
+		sc.nextLine();  // E esta, se você for usar nextLine() depois
+		
+		data_postagem = java.sql.Date.valueOf(String_data_postagem);
+		
+		cadastraPergunta(titulo, conteudo, data_postagem, usuario_id);
+	}
+	
+	
 	//FUNCAO TEMPORARIA ENQUANTO FRONT NAO FOI IMPLEMENTADO
 	public void cadastraPergunta(String titulo, String conteudo, Date data, int idUsuario) {
 		
@@ -43,7 +65,7 @@ public class Teste extends dao.DAO{
 	
 	//FUNCAO TEMPORARIA ENQUANTO FRONT NAO FOI IMPLEMENTADO
 	
-	public void chamaCadastro() {
+	public void chamaCadastroQuestao() {
 		int neuro, habilidade, dificuldade;
 		String enunciado;
 		System.out.println("Neuro: ");
@@ -97,7 +119,7 @@ public class Teste extends dao.DAO{
 	}
 	
 	public void cadastraAlternativa(String conteudo, int idQuestao, boolean isCorreta) {
-        String sql = "INSERT INTO \"BancoTI2\".\"alternativas\" (\"conteudo\", \"Questao_idQuestao\", \"is_Correta\") VALUES (?, ?, ?)";
+        String sql = "INSERT INTO \"BancoTI2\".\"alternativas\" (\"conteudo\", \"questao_id\", \"correta\") VALUES (?, ?, ?)";
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setString(1, conteudo);
             pstmt.setInt(2, idQuestao);

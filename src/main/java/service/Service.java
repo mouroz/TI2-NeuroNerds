@@ -15,8 +15,10 @@ import org.json.simple.parser.ParseException;
 
 import dao.UsuarioDAO;
 import dao.PerguntaDAO;
+import dao.QuestaoDAO;
 import model.Pergunta;
 import model.Resposta;
+import model.Alternativa;
 import model.Usuario;
 import spark.Request;
 import spark.Response;
@@ -24,6 +26,7 @@ import spark.Response;
 public class Service extends ServiceParent{
 	
 	static PerguntaDAO perguntaDAO = new PerguntaDAO();
+	static QuestaoDAO questaoDAO = new QuestaoDAO();
 	
 	///GETS
 	@SuppressWarnings("unchecked")
@@ -36,11 +39,10 @@ public class Service extends ServiceParent{
         logger.log("got [(" +name+ ")] from request body");
 
 		///GET EXERCICIOS DAO --------------------------------------------------
-		String[] alternativas = {"a1", "a2", "a3", "a4", "a5"};
-    	String text = "enunciado";
-    	String title = "Titulo";
-    	byte correct = 1;
-    	
+        
+        List<Alternativa> = questaoDAO.getAlternativas(0);
+        
+        
     	///CREATE RESPONSE (RES) --------------------------------------------------
     	res.type("application/json");
     	 JSONArray alternativesArray = new JSONArray();
@@ -146,7 +148,7 @@ public class Service extends ServiceParent{
     	///GET VALUES FROM DATABASE (!MISSING!)
     	
     	Pergunta pergunta = perguntaDAO.getPergunta(id);
-    	Resposta[] respostas = perguntaDAO.getRespostas(id);
+    	List<Resposta> respostas = perguntaDAO.getRespostas(id);
     	
     	int cLen = 5; //amount of comments
     	cLen = (cLen > maxCommentsNum) ? maxCommentsNum : cLen;
@@ -192,10 +194,10 @@ public class Service extends ServiceParent{
         for (int i = 0; i < cLen; i++) {
         	JSONObject jsonComment = new JSONObject();
 	        	JSONObject jsonCommentUser = new JSONObject();
-		        	jsonCommentUser.put("name", respostas[i].getNome_usuario());
-		        	jsonCommentUser.put("date", (respostas[i].getData_postagem()).toString()); 
+		        	jsonCommentUser.put("name", respostas.get(i).getNome_usuario());
+		        	jsonCommentUser.put("date", (respostas.get(i).getData_postagem()).toString()); 
 	        	JSONObject jsonCommentContent = new JSONObject(); 
-		        	jsonCommentContent.put("text", respostas[i].getConteudo());
+		        	jsonCommentContent.put("text", respostas.get(i).getConteudo());
 		        	jsonCommentContent.put("likes", random.nextInt(30));
 		        	//jsonCommentContent.put("id", respostas[i].getId_resposta());
         	
