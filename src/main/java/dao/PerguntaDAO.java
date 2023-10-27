@@ -12,26 +12,27 @@ import model.Pergunta;
 
 public class PerguntaDAO extends DAO {
 
-	String TABLE = "Pergunta";
-	String cId = "id";
-	String cDataPostagem = "data_postagem";
-	String cTitulo = "titulo";
-	String cConteudo = "conteudo";
-	String cUsuario_id = "usuario_id";
-	
+	public static final String TABLE = "Pergunta";
+	public static final String cId = "id";
+	public static final String cDataPostagem = "data_postagem";
+	public static final String cTitulo = "titulo";
+	public static final String cConteudo = "conteudo";
+	public static final String cUsuario_id = "usuario_id";
+	public static final UsuarioDAO usuario = new UsuarioDAO();
+	public static final QuestaoDAO questao = new QuestaoDAO();
 	
     public PerguntaDAO() {
         super();
         conectar();
     }
 
-    void logPStatement(String s){logPS_DAO("(PerguntaDAO) -> ", s);  }
-    void log(String s) {System.out.println("(PerguntaDAO) -> " + s); }
+    private static void logPStatement(String s){logPS_DAO("(PerguntaDAO) -> ", s);  }
+    private static void log(String s) {System.out.println("(PerguntaDAO) -> " + s); }
     
     
     public boolean cadastroPergunta(Pergunta pergunta) {
         boolean status = false;
-        String sql = String.format("INSERT INTO %s.%s (%s, %s, %s, %d) VALUES (?, ?, ?, ?)",
+        String sql = String.format("INSERT INTO \"%s\".\"%s\" (\"%s\", \"%s\", \"%s\", \"%s\") VALUES (?, ?, ?, ?)",
         		SCHEMA, TABLE, cTitulo, cDataPostagem, cConteudo, cUsuario_id);
         
         logPStatement(sql);
@@ -50,7 +51,7 @@ public class PerguntaDAO extends DAO {
         return status;
     }
     
-    public Pergunta getPergunta(int idPergunta) {
+    static public Pergunta getPergunta(int idPergunta) {
         Pergunta pergunta = null;
         String sql = "SELECT Pergunta.*, usuario.username AS nome_usuario " +
                      "FROM BancoTI2.Pergunta " +
@@ -75,9 +76,9 @@ public class PerguntaDAO extends DAO {
         return pergunta;
     }
 
-    public int fetchPerguntaId(Pergunta pergunta) {
+    static public int fetchPerguntaId(Pergunta pergunta) {
         int result = -1;
-        String sql = String.format("SELECT $d FROM %s.%s WHERE %s = ? LIMIT 1",
+        String sql = String.format("SELECT \"$s\" FROM \"%s\".\"%s\" WHERE \"%s\" = ? LIMIT 1",
         		cId, SCHEMA, TABLE, cTitulo);
         
         logPStatement(sql);
@@ -93,7 +94,7 @@ public class PerguntaDAO extends DAO {
         return result;
     }
     
-    public List<Resposta> getRespostas(int id_pergunta) {
+    static public List<Resposta> getRespostas(int id_pergunta) {
         List<Resposta> respostas = new ArrayList<>();
         String sql = "SELECT Resposta.*, usuario.username AS nome_usuario " +
                      "FROM BancoTI2.Resposta " +
@@ -120,7 +121,7 @@ public class PerguntaDAO extends DAO {
         return respostas;
     }
 
-    public List<Pergunta> buscaUltimasCincoPerguntas() {
+    static public List<Pergunta> buscaUltimasCincoPerguntas() {
         List<Pergunta> perguntas = new ArrayList<>();
         String sql = "SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
                 "FROM \"BancoTI2\".\"Pergunta\" " +
@@ -148,9 +149,9 @@ public class PerguntaDAO extends DAO {
         return perguntas;
     }
 
-    public boolean deletePergunta(int id) {
+    static public boolean deletePergunta(int id) {
         boolean status = false;
-        String sql = String.format("DELETE FROM %s.%s WHERE %d = ?", SCHEMA, TABLE, cId);
+        String sql = String.format("DELETE FROM \"%s\".\"%s\" WHERE \"%s\" = ?", SCHEMA, TABLE, cId);
         
         logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
@@ -163,9 +164,9 @@ public class PerguntaDAO extends DAO {
         return status;
     }
     
-    public List<Pergunta> list(int id1, int id2) {
+    static public List<Pergunta> list(int id1, int id2) {
         List<Pergunta> perguntas = new ArrayList<>();
-        String sql = String.format("SELECT * FROM %s.%s WHERE %d BETWEEN ? AND ?", SCHEMA, TABLE, cId);
+        String sql = String.format("SELECT * FROM \"%s\".\"%s\" WHERE \"%s\" BETWEEN ? AND ?", SCHEMA, TABLE, cId);
         
         logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {

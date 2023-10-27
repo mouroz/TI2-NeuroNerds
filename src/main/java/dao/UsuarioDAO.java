@@ -11,23 +11,23 @@ import java.util.List;
 import model.Usuario;
 
 public class UsuarioDAO extends DAO{
-	String TABLE = "usuario";
-	String cId = "id";
-	String cUsername = "username";
-	String cSenha = "senha";
-	String cEmail = "email";
+	public static final String TABLE = "usuario";
+	public static final String cId = "id";
+	public static final String cUsername = "username";
+	public static final String cSenha = "senha";
+	public static final String cEmail = "email";
 	
     public UsuarioDAO() {
         super();
         conectar();
     }
 
-    void logPStatement(String s){logPS_DAO("(UsuarioDAO) -> ", s);  }
-    void log(String s) {System.out.println("(UsuarioDAO) -> " + s); }
-    public void finalize() {close();}
+    static void logPStatement(String s){logPS_DAO("(UsuarioDAO) -> ", s);  }
+    static void log(String s) {System.out.println("(UsuarioDAO) -> " + s); }
+
     
-    public String getNomeFromEmail(String email) {
-        String sql = String.format("SELECT %s FROM \"%s\".\"%s\" WHERE %s = ?", 
+    static public String getNomeFromEmail(String email) {
+        String sql = String.format("SELECT \"%s\" FROM \"%s\".\"%s\" WHERE \"%s\" = ?", 
         		cUsername, SCHEMA, TABLE, cEmail);
         
         logPStatement(sql);
@@ -47,7 +47,7 @@ public class UsuarioDAO extends DAO{
         }
     }
 
-    public boolean cadastraUsuario(Usuario usuario) throws IllegalStateException{
+    static public boolean cadastraUsuario(Usuario usuario) throws IllegalStateException{
         boolean status = false;
         String sql = String.format("INSERT INTO \"%s\".\"%s\" (\"%s\", \"%s\", \"%s\") VALUES (?, ?, ?)", 
         		SCHEMA, TABLE, cSenha, cEmail, cUsername);
@@ -70,9 +70,9 @@ public class UsuarioDAO extends DAO{
         return status;
     }
 
-    public int fetchUsuarioId(Usuario usuario) {
+    static public int fetchUsuarioId(Usuario usuario) {
         int result = -1;
-        String sql = String.format("SELECT %d FROM %s WHERE %s = ? LIMIT 1", 
+        String sql = String.format("SELECT \"%s\" FROM \"%s\" WHERE \"%s\" = ? LIMIT 1", 
         		cId, TABLE, cEmail);
         logPStatement(sql);
         
@@ -91,10 +91,10 @@ public class UsuarioDAO extends DAO{
     }
 
     
-    public boolean autenticaUsuario(String email, String senha) {    
+    static public boolean autenticaUsuario(String email, String senha) {    
         boolean status = false;
         // Use o nome completo da tabela, incluindo o esquema
-        String sql = String.format("SELECT %s FROM \"%s\".\"%s\" WHERE %s = ? AND %s = ?",
+        String sql = String.format("SELECT \"%s\" FROM \"%s\".\"%s\" WHERE \"%s\" = ? AND \"%s\" = ?",
         		cUsername, SCHEMA, TABLE, cEmail, cSenha);
         logPStatement(sql);
         
@@ -116,9 +116,9 @@ public class UsuarioDAO extends DAO{
     }
 
 
-    public boolean updateEmail(Usuario usuario) {
+    static public boolean updateEmail(Usuario usuario) {
         boolean status = false;
-        String sql = String.format("UPDATE %s SET %s = ? WHERE %d = ?", 
+        String sql = String.format("UPDATE \"%s\" SET \"%s\" = ? WHERE \"%s\" = ?", 
         		TABLE, cEmail, cId);
         logPStatement(sql);
         
@@ -134,9 +134,9 @@ public class UsuarioDAO extends DAO{
         return status;
     }
 
-    public boolean updateUsername(Usuario usuario) {
+    static public boolean updateUsername(Usuario usuario) {
         boolean status = false;
-        String sql = String.format("UPDATE %s SET %s = ? WHERE %d = ?", 
+        String sql = String.format("UPDATE \"%s\" SET \"%s\" = ? WHERE \"%s\" = ?", 
         		TABLE, cUsername, cId);
         logPStatement(sql);
         
@@ -154,9 +154,9 @@ public class UsuarioDAO extends DAO{
 
     
     
-    public boolean updateSenha(Usuario usuario) { 
+    static public boolean updateSenha(Usuario usuario) { 
         boolean status = false;
-        String sql = String.format("UPDATE %s SET %s = ? WHERE %d = ?", 
+        String sql = String.format("UPDATE \"%s\" SET \"%s\" = ? WHERE \"%d\" = ?", 
         		TABLE, cSenha, cId);
         logPStatement(sql);
         
@@ -172,7 +172,7 @@ public class UsuarioDAO extends DAO{
         return status;
     }
     
-    public boolean update(Usuario usuario) {
+    static public boolean update(Usuario usuario) {
         boolean status = false;
         try {
             Statement st = conexao.createStatement();
@@ -194,9 +194,9 @@ public class UsuarioDAO extends DAO{
         return status;
     }
 
-    public boolean delete(int id) {
+    static public boolean delete(int id) {
         boolean status = false;
-        String sql = String.format("DELETE FROM %s WHERE %d = ?",TABLE,cId);
+        String sql = String.format("DELETE FROM \"%s\" WHERE \"%s\" = ?",TABLE,cId);
         logPStatement(sql);
         
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
@@ -212,7 +212,7 @@ public class UsuarioDAO extends DAO{
     
     public List<Usuario> list(int id1, int id2) {
         List<Usuario> usuarios = new ArrayList<Usuario>();
-        String sql = String.format("SELECT * FROM %s WHERE %d BETWEEN ? AND ?", TABLE, cId);
+        String sql = String.format("SELECT * FROM \"%s\" WHERE \"%s\" BETWEEN ? AND ?", TABLE, cId);
         logPStatement(sql);
         
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {

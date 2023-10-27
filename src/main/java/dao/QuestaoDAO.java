@@ -12,21 +12,21 @@ import model.Usuario;
 
 public class QuestaoDAO extends DAO{
 	
-	String TABLE = "alternativas";
-	String cId = "id";
-	String cQuestaoId = "questao_id";
+	public static final String TABLE = "alternativas";
+	public static final String cId = "id";
+	public static final String cQuestaoId = "questao_id";
 	
     public QuestaoDAO() {
         super();
         conectar();
     }
 
-    void logPStatement(String s){logPS_DAO("(QuestaoDAO) -> ", s);  }
-    void log(String s) {System.out.println("(QuestaoDAO) -> " + s); }
+    static void logPStatement(String s){logPS_DAO("(QuestaoDAO) -> ", s);  }
+    static void log(String s) {System.out.println("(QuestaoDAO) -> " + s); }
     
-    public List<Alternativa> getAlternativas(int idQuestao) {
+    static public List<Alternativa> getAlternativas(int idQuestao) {
         List<Alternativa> alternativas = new ArrayList<>();
-        String sql = String.format("SELECT * FROM %s.%s WHERE %d = ? ORDER BY %d ASC",
+        String sql = String.format("SELECT * FROM \"%s\".\"%s\" WHERE \"%s\" = ? ORDER BY \"%s\" ASC",
         		SCHEMA,TABLE,cQuestaoId,cId);
         logPStatement(sql);
         

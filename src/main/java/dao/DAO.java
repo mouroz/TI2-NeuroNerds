@@ -6,15 +6,15 @@ import java.security.*;
 import java.math.*;
 
 public class DAO {
-	String SCHEMA = "BancoTI2";
-	protected Connection conexao;
+	public static final String SCHEMA = "BancoTI2";
+	static protected Connection conexao;
 
 	public DAO() {
 		conexao = null;
 	}
 	
 	public void finalize() {close();}
-	public void logPS_DAO(String classPointer, String s) {
+	static public void logPS_DAO(String classPointer, String s) {
 		System.out.println(classPointer + "(SQL PStatement) " + s);
 	}
 	
