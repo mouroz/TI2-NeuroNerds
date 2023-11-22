@@ -22,12 +22,13 @@ public class UsuarioDAO extends DAO{
         conectar();
     }
 
-    static void logPStatement(String s){logPS_DAO("(UsuarioDAO) -> ", s);  }
-    static void log(String s) {System.out.println("(UsuarioDAO) -> " + s); }
+    static public void logPStatement(String s){logPS_DAO("(UsuarioDAO) -> ", s);  }
+    static public void log(String s) {System.out.println("(UsuarioDAO) -> " + s); }
 
+    static public Usuario getUsuarioFrom(){return null;}
     
     static public String getNomeFromEmail(String email) {
-        String sql = String.format("SELECT \"%s\" FROM \"%s\".\"%s\" WHERE \"%s\" = ?", 
+        String sql = String.format("SELECT username FROM bancoti2.usuario WHERE email = ?", 
         		cUsername, SCHEMA, TABLE, cEmail);
         
         logPStatement(sql);
@@ -49,8 +50,7 @@ public class UsuarioDAO extends DAO{
 
     static public boolean cadastraUsuario(Usuario usuario) throws IllegalStateException{
         boolean status = false;
-        String sql = String.format("INSERT INTO \"%s\".\"%s\" (\"%s\", \"%s\", \"%s\") VALUES (?, ?, ?)", 
-        		SCHEMA, TABLE, cSenha, cEmail, cUsername);
+        String sql = "INSERT INTO bancoti2.usuario (senha, email, username) VALUES (?, ?, ?)";
         logPStatement(sql);
         
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
@@ -64,11 +64,11 @@ public class UsuarioDAO extends DAO{
             System.out.println(usuario.toString());
 
         } catch (SQLException u) {
-        	log("Não foi possível inserir: \n"
-        			+ "Nome ou email já cadastrado");
+            System.out.println(u);
         }
         return status;
     }
+
 
     static public int fetchUsuarioId(Usuario usuario) {
         int result = -1;
@@ -91,30 +91,27 @@ public class UsuarioDAO extends DAO{
     }
 
     
-    static public boolean autenticaUsuario(String email, String senha) {    
+    public static boolean autenticaUsuario(String email, String senha) {    
         boolean status = false;
         // Use o nome completo da tabela, incluindo o esquema
-        String sql = String.format("SELECT \"%s\" FROM \"%s\".\"%s\" WHERE \"%s\" = ? AND \"%s\" = ?",
-        		cUsername, SCHEMA, TABLE, cEmail, cSenha);
+        String sql = "SELECT username FROM bancoti2.usuario WHERE email = ? AND senha = ?";
         logPStatement(sql);
-        
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setString(1, email);
             pstmt.setString(2, senha);
-            
             
             ResultSet resultSet = pstmt.executeQuery();
             // Se resultSet tem pelo menos uma linha, o usuário foi autenticado
             if (resultSet.next()) {
                 status = true;
-                log("Usuario esta cadastrado");	
+                log("Usuario esta cadastrado");    
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return status;
     }
-
+ 
 
     static public boolean updateEmail(Usuario usuario) {
         boolean status = false;

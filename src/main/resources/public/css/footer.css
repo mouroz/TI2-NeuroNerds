@@ -1,19 +1,25 @@
 /*THIS CSS CAN ONLY AFFECT FOOTERS - CHANGES NEEDED TO .CONTAINER OR SO ON ARE TO BE SENT TO STYLE*/
 
-footer {
-    background-color: beige;
+.site-footer {
+    background-color: rgba(255, 255, 255, 0.712); /* Cor de fundo */
+    color: #333; /* Cor do texto */
+    text-align: center; /* Alinha o texto ao centro */
+    padding: 10px 0; /* Espaçamento superior e inferior */
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1); /* Sombra para um efeito elevado */
+    font-size: 14px; /* Tamanho do texto */
 }
 
-/* Remove margin and padding from the footer element */
-footer {
-    margin: 0;
-    margin-top: 20px;
-    padding: 0;
+.site-footer a {
+    color: #007bff; /* Cor do link */
+    text-decoration: none; /* Remove o sublinhado do link */
 }
 
-/* Remove margin and padding from the ul element within the footer */
-footer ul {
-    margin: 0;
-    padding: 0;
+.site-footer a:hover {
+    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
 }
 
+.footer-content {
+    max-width: 1200px; /* Largura máxima do conteúdo */
+    margin: auto; /* Centraliza o conteúdo */
+    padding: 0 20px; /* Espaçamento lateral */
+}

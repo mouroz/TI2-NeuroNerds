@@ -1,7 +1,7 @@
 /*this css is applied to every page*/
 
 body{
-    background-image:linear-gradient(to right, white, blue);
+    background: linear-gradient(90deg,  #71dd71, #587a68);	
 }
 
 .label-with-spacing {

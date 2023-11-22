@@ -24,12 +24,12 @@ public class QuestaoDAO extends DAO{
     static void logPStatement(String s){logPS_DAO("(QuestaoDAO) -> ", s);  }
     static void log(String s) {System.out.println("(QuestaoDAO) -> " + s); }
     
-    static public List<Alternativa> getAlternativas(int idQuestao) {
+    static public List<Alternativa> getAlternativas(int idQuestao) {    
         List<Alternativa> alternativas = new ArrayList<>();
-        String sql = String.format("SELECT * FROM \"%s\".\"%s\" WHERE \"%s\" = ? ORDER BY \"%s\" ASC",
-        		SCHEMA,TABLE,cQuestaoId,cId);
+        // Substitua 'SCHEMA' e 'TABLE' pelos seus nomes reais se eles forem diferentes
+        String sql = "SELECT * FROM bancoti2.alternativas WHERE questao_id = ? ORDER BY id ASC";
         logPStatement(sql);
-        
+
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setInt(1, idQuestao);
             ResultSet rs = pstmt.executeQuery();
@@ -39,13 +39,47 @@ public class QuestaoDAO extends DAO{
                 alternativa.setConteudo(rs.getString("conteudo"));
                 alternativa.setCorreta(rs.getBoolean("correta"));
                 alternativa.setQuestao_id(rs.getInt("questao_id"));
-                // Adicione aqui outros campos conforme necessário
+                // Adicione aqui outros campos conforme necessário 
                 alternativas.add(alternativa);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return alternativas;
+    }
+
+    static public List<Questao> getQuestoesPorNeurodivergencia(int idNeurodivergencia) {    
+        List<Questao> questoes = new ArrayList<>();
+        String sql = "SELECT * FROM bancoti2.questao WHERE neuro = ? ORDER BY id ASC";
+        logPStatement(sql);
+
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+            pstmt.setInt(1, idNeurodivergencia);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Questao questao = new Questao();
+                questao.setId(rs.getInt("id"));
+                questao.setNeuro_div(idNeurodivergencia);
+                questao.setEnunciado(rs.getString("enunciado"));
+                questao.setHabilidade(rs.getInt("habilidade"));
+                questao.setDificuldade(rs.getInt("dificuldade"));
+                // Adicione aqui outros campos conforme necessário
+                questoes.add(questao);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return questoes;
+    }
+
+    static public int getAlternativaCorreta(List<Alternativa> alternativas) {
+    	int indiceAlternativaCorreta = -1;
+    	for(int i = 0; i < alternativas.size(); i++) {
+    		if(alternativas.get(i).isCorreta()) {
+    			indiceAlternativaCorreta = i;
+    		}
+    	}
+    	return indiceAlternativaCorreta;
     }
     
 }

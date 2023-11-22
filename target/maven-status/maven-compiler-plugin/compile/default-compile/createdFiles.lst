@@ -2,6 +2,7 @@ model/Resposta.class
 dao/UsuarioDAO.class
 dao/DAO.class
 model/Pergunta.class
+model/Alternativa.class
 service/AuthService.class
 app/Teste.class
 model/Questao.class

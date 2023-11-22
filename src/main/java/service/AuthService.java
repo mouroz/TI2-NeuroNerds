@@ -18,7 +18,6 @@ import java.util.logging.Level;
 
 public class AuthService extends ServiceParent{
 	
-		static UsuarioDAO usuariodao = new UsuarioDAO();
 	
 	@SuppressWarnings("unchecked")
 	public static Object cadastraUsuario(Request req, Response res) throws Exception{
@@ -40,7 +39,7 @@ public class AuthService extends ServiceParent{
 		logger.log(usuario.toString());
 		JSONObject responseJson = new JSONObject();
 		
-		if(usuarioDAO.cadastraUsuario(usuario)) {
+		if(UsuarioDAO.cadastraUsuario(usuario)) {
 			res.status(200);
 			responseJson.put("payload", "sucess");
 			logger.log("Sucesfully registered email " + email);
@@ -73,9 +72,9 @@ public class AuthService extends ServiceParent{
     	///TRY TO AUTHENTICATE WITH DATABASE REQUEST
     	res.type("application/json");
     	
-		if (usuarioDAO.autenticaUsuario(email,password)) {
+		if (UsuarioDAO.autenticaUsuario(email,password)) {
 			
-	    	String user = usuarioDAO.getNomeFromEmail(email);
+	    	String user = UsuarioDAO.getNomeFromEmail(email);
 	    	logger.log("got user= " +user+ "from email= "+email);
 			
 			

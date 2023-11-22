@@ -6,109 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>NeuroNerds</title>
 
-    <!--COMMON MODULES-->
-    <!--includes all bootstrap, fontawesome and common website css-->
-    <script src="/js/modules/commonHead.js"></script>
-    <script src="/js/modules/pageHeader.js"></script>
-    <script src="/js/modules/footer.js"></script>
+    <!--includes external libraries-->
+    <script src="/js/common-head.js"></script>
 
-    <!--SITE CSS-->
-    <link rel="stylesheet" href="/css/index.css">
+    <!--renders header and footer-->
+    
+
+    <!--CSS-->
+    <link rel="stylesheet" href="./styles/index.css">
 
     <!--JS-->
-    <script type="module" src="js/fetch/loginAuth.js" defer></script>
+    <script type="module" src="./js/login-authentication.js" defer></script>
 
 </head>
 
-<header></header>
-<!--HEADER ADDED DYNAMICALLY WITH THIS JS. DONT DELETE HEADER PLACEHOLDER-->
-
-
 
 <body>
-    <div class="container" id="login">
-        <div class="row" id="welcomePart">
-            <h2>Bem vindo(a) ! Entre ou crie uma conta para continuar.</h2>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card rounded">
-                    <div class="card-body">
-                        <form id="loginForm">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">e-mail:</label>
-                                <input type="text" class="form-control" id="username" name="username">
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Senha:</label>
-                                <input type="password" class="form-control" id="password" name="password">
-                            </div>
 
-                            <div class="row" id="botoes">
-                                <div class="col" id="botao-logar">
-                                    <button class="btn btn-secondary btn-lg" type="submit">Entrar</button>
-                                </div>
-                                <div class="col" id="botao-cadastrar">
-                                    <a class="btn btn-secondary btn-lg" href="/outras/cadastro.html" role="button">Criar conta</a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-    </div>
+
+    <header class="site-header">
+        <h1>NeuroNerds</h1>
+    </header>
+    
+
+
 
     <div class="container">
-        <div class="row" id="quote"> <!--row for cards-->
-
-            <!--1-->
-            <div class="col" id="quote1">
-                <div class="card mx-auto" style="width: 18rem;"> <!--mx-auto here allows center alignment-->
-                    <img src="./imagens/card-pgInicial/einstein.jpeg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <blockquote class="blockquote">
-                            <p>Todo mundo é um gênio. Mas se você julgar um peixe por sua capacidade de subir em uma
-                                árvore, ele vai gastar toda a vida acreditando que é estúpido.</p>
-                        </blockquote>
-                        <figcaption class="blockquote-footer">
-                            Albert Einstein <cite title="Source Title"></cite>
-                        </figcaption>
+        <div class="screen">
+            <div class="screen__content">
+                <form class="login" id="loginForm">
+                    <div class ="login_text">
+                        <h1>Login</h1>
                     </div>
-                </div>
-            </div>
-
-            <!--2-->
-            <div class="col" id="quote2">
-                <div class="card mx-auto" style="width: 18rem;">
-                    <img src="./imagens/card-pgInicial/buddha.jpeg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <blockquote class="blockquote">
-                            <p>É capaz quem pensa que é capaz</p>
-                        </blockquote>
-                        <figcaption class="blockquote-footer">
-                            Buda <cite title="Source Title"></cite>
-                        </figcaption>
+                    <div class="login__field">
+                        <i class="login__icon fas fa-user"></i>
+                        <input type="text" class="login__input" placeholder="Email" id="email">
                     </div>
-                </div>
-            </div>
-
-            <!--3-->
-            <div class="col" id="quote3">
-                <div class="card mx-auto" style="width: 18rem;">
-                    <img src="./imagens/card-pgInicial/gandhi.jpeg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <blockquote class="blockquote">
-                            <p>Quem sabe concentrar-se numa coisa e insistir nela como único objetivo, obtém, ao fim e
-                                ao cabo, a capacidade de fazer qualquer coisa</p>
-                        </blockquote>
-                        <figcaption class="blockquote-footer">
-                            Mahatma Gandhi<cite title="Source Title"></cite>
-                        </figcaption>
+                    <div class="login__field">
+                        <i class="login__icon fas fa-lock"></i>
+                        <input type="password" class="login__input" placeholder="Password" id = "password">
                     </div>
-                </div>
+                    <button class="button login__submit" type="submit">
+                        <span class="button__text">Logar</span>
+                        <i class="button__icon fas fa-chevron-right"></i>
+                    </button>
+                    <div class="betButtons">
+                        <h3>Não possui login?</h3>
+                    </div>
+                    <a href="./pages/cadastro.html" class="button login__submit">
+                        <span class="button__text">Cadastre-se!</span>
+                        <i class="button__icon fas fa-chevron-right"></i>
+                    </a>							
+                </form>
             </div>
+	
         </div>
     </div>
+
 </body>

@@ -20,6 +20,7 @@ import dao.PerguntaDAO;
 import dao.QuestaoDAO;
 import dao.RespostaDAO;
 import model.Pergunta;
+import model.Questao;
 import model.Resposta;
 import model.Alternativa;
 import model.Resposta;
@@ -39,29 +40,51 @@ public class Service extends ServiceParent{
 		final ServiceLogger logger = new ServiceLogger(path);
     	
 		///GET DATA FROM REQUEST URL
-		String name = req.queryParams("user");
-        logger.log("got [(" +name+ ")] from request body");
+		String neuro = req.queryParams("neuro");
+		int neuroNum = 0;
+        logger.log("got [(" +neuro+ ")] from request body");
 
+        switch(neuro) {
+        
+        	case "Dislexia":
+        		neuroNum = 1;
+        		break;
+        	case "Discalculia":
+        		neuroNum = 2;
+        		break;
+        	case "TDAH":
+        		neuroNum = 3;
+        		break;
+        }
+        
 		///GET EXERCICIOS DAO --------------------------------------------------
         
-        List<Alternativa> alternativas = questaoDAO.getAlternativas(1);
-        //String[] alternativas = {"res1","res2","res3","res4","res5"};
+        //get todas as questoes de certa neurodiv
         
+        List<Questao> questoes = QuestaoDAO.getQuestoesPorNeurodivergencia(neuroNum);
+                 
     	///CREATE RESPONSE (RES) -----------------------------------------------
     	res.type("application/json");
-    	 JSONArray alternativesArray = new JSONArray();
-         
-    	 for(int i = 0; i < alternativas.size(); i++) {
-    		 Alternativa alternativa = alternativas.get(i);
-    		 alternativesArray.add(alternativa);
-    	 }
-         
-        JSONObject jsonResponse = new JSONObject();
-	        jsonResponse.put("title", null);
-	        jsonResponse.put("text", null);
-	        jsonResponse.put("type", 0); // Represents the time the type (only alternatives for now)
-	        jsonResponse.put("correct", null); // Represents the correct alternative [1-5]
-	        jsonResponse.put("alternatives", alternativesArray); // Signature (set to null for now)
+        
+    	
+    	//ITERATES THROUGH THE GIVEN NEURODIVERGENCE QUESTIONS AND RESPONDS WITH A JSON ARRAY CONTAINING ALL OF THEM
+    	
+    	JSONArray jsonResponse = new JSONArray();
+    	 
+    	 for(int i = 0; i < questoes.size(); i++) {
+    		 JSONObject json= new JSONObject();
+    		 
+    		 List<Alternativa> alternativas = QuestaoDAO.getAlternativas(questoes.get(i).getId());
+    		 int indiceCorreto = QuestaoDAO.getAlternativaCorreta(alternativas);
+        	 
+    	     json.put("text", questoes.get(i).getEnunciado());
+    	     json.put("type", questoes.get(i).getNeuro_div()); 
+    	     json.put("correct", indiceCorreto); 
+    	     json.put("alternatives", alternativas); 
+        	
+    	     jsonResponse.add(json);
+    	 }   	 
+   
         
         logger.logMethodEnd(jsonResponse);
         return jsonResponse.toJSONString(); //response must go as string
@@ -294,6 +317,11 @@ public class Service extends ServiceParent{
 		
 		logger.logMethodEnd("sucess");
 		return "sucess";
+	}
+	
+	public static Object atualizaQuestoesUser(Request req, Response res) {
+	
+		return null;
 	}
 	
 }

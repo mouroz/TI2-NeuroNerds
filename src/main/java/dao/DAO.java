@@ -6,7 +6,7 @@ import java.security.*;
 import java.math.*;
 
 public class DAO {
-	public static final String SCHEMA = "BancoTI2";
+	public static final String SCHEMA = "bancoTI2";
 	static protected Connection conexao;
 
 	public DAO() {
