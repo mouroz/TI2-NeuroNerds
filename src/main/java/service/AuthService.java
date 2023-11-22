@@ -75,6 +75,7 @@ public class AuthService extends ServiceParent{
 		if (UsuarioDAO.autenticaUsuario(email,password)) {
 			
 	    	String user = UsuarioDAO.getNomeFromEmail(email);
+	    	int id = UsuarioDAO.getNomeIdEmail(email);
 	    	logger.log("got user= " +user+ "from email= "+email);
 			
 			
@@ -83,7 +84,7 @@ public class AuthService extends ServiceParent{
 			        header.put("alg", "HS256");
 			        header.put("typ", "JWT");
 		        JSONObject payload = new JSONObject();
-			        payload.put("sub", email); // Unique identifier, for now, email
+			        payload.put("sub", id); // Unique identifier, for now, email
 			        payload.put("name", user);
 			        payload.put("trilha", "adhd"); // Not sure if its best to include this on payload
 			        

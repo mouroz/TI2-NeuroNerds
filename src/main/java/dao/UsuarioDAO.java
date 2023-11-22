@@ -28,8 +28,7 @@ public class UsuarioDAO extends DAO{
     static public Usuario getUsuarioFrom(){return null;}
     
     static public String getNomeFromEmail(String email) {
-        String sql = String.format("SELECT username FROM bancoti2.usuario WHERE email = ?", 
-        		cUsername, SCHEMA, TABLE, cEmail);
+        String sql = String.format("SELECT username FROM bancoti2.usuario WHERE email = ?");
         
         logPStatement(sql);
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
@@ -230,5 +229,25 @@ public class UsuarioDAO extends DAO{
         }
         return usuarios;
     }
-
+    
+    static public int getNomeIdEmail(String email) {
+        String sql = String.format("SELECT id FROM bancoti2.usuario WHERE email = ?");
+        
+        logPStatement(sql);
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+        	
+            pstmt.setString(1, email);
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("id");
+                } else {
+                    log("Usuário não está cadastrado");
+                    return -1;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
 }

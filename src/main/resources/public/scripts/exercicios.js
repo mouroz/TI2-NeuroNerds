@@ -25,7 +25,7 @@ let correctAlternative = 0; //in index 0 - 4
 import { getUsername } from "../modules/user-data.js";
 import { restfulJsonGet, getPaths, restfulJsonPost, postPaths } from "../modules/bancoti2-fetch.js";
 
-const username = getUsername();
+const username = getName();
 const neuro = window.location.search.split('?').pop();
 if (neuro != 'tdah' ||  neuro != '' || neuro != '') {
     console.error('Incorrect type value received');

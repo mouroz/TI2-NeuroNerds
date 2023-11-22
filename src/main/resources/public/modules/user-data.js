@@ -4,7 +4,7 @@
 
 const defaultJson = {
     name: 'nome',
-    username: 'username' //used as identifier
+    id: 'id' //used as identifier
 }
 const lsPath = 'userData';
 
