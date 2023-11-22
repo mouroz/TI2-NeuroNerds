@@ -21,17 +21,23 @@ public class RespostaDAO extends DAO{
         conectar();
     }
 
-    public void finalize() {
-        close();
-    }
+    private static void logPStatement(String s){logPS_DAO("(RespostaDAO) -> ", s);  }
+    private static void log(String s) {System.out.println("(RespostaDAO) -> " + s); }
+    
 
-    public void inserirResposta(String username, String conteudo, String email, int perguntaId, Date data) {
-        int usuarioId = buscarUsuarioIdPorUsername(username);
-
+    public void inserirResposta(String conteudo, String email, int perguntaId, Date data) {
+        int usuarioId = buscarUsuarioIdPorEmail(email);
+        System.out.println("AAAAAAAAAAA " +usuarioId);
         if (usuarioId != -1) {
             String sqlInserirResposta = "INSERT INTO \"BancoTI2\".\"Resposta\" (\"conteudo\", \"usuario_id\", \"pergunta_id\", \"data_postagem\") VALUES (?, ?, ?, ?)";
+            logPStatement(sqlInserirResposta);
+            
             try (PreparedStatement pstmt = conexao.prepareStatement(sqlInserirResposta)) {
+<<<<<<< HEAD
             	System.out.println("entrou");
+=======
+            	
+>>>>>>> 80d7dc736577fd2ac8e65628d8ad5edeccc41ea2
                 pstmt.setString(1, conteudo);
                 pstmt.setInt(2, usuarioId);
                 pstmt.setInt(3, perguntaId);
@@ -50,10 +56,10 @@ public class RespostaDAO extends DAO{
         }
     }
     
-    private int buscarUsuarioIdPorUsername(String username) {
-        String sqlBuscarUsuarioId = "SELECT \"id\" FROM \"BancoTI2\".\"usuario\" WHERE \"username\" = ?";
+    private int buscarUsuarioIdPorEmail(String email) {
+        String sqlBuscarUsuarioId = "SELECT \"id\" FROM \"BancoTI2\".\"usuario\" WHERE \"email\" = ?";
         try (PreparedStatement pstmt = conexao.prepareStatement(sqlBuscarUsuarioId)) {
-            pstmt.setString(1, username);
+            pstmt.setString(1, email);
             try (ResultSet resultSet = pstmt.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt("id");

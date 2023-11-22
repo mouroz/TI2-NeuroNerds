@@ -65,6 +65,7 @@ public class Service extends ServiceParent{
                  
     	///CREATE RESPONSE (RES) -----------------------------------------------
     	res.type("application/json");
+<<<<<<< HEAD
         
     	
     	//ITERATES THROUGH THE GIVEN NEURODIVERGENCE QUESTIONS AND RESPONDS WITH A JSON ARRAY CONTAINING ALL OF THEM
@@ -85,8 +86,29 @@ public class Service extends ServiceParent{
     	     jsonResponse.add(json);
     	 }   	 
    
+=======
+    	 JSONArray alternativesArray = new JSONArray();
+         
+    	 int correct = -1;
+    	 for(int i = 0; i < alternativas.size(); i++) {
+    		 Alternativa alternativa = alternativas.get(i);
+    		 alternativesArray.add(alternativa.getConteudo());
+    		 if (alternativa.isCorreta()) {
+    			 correct = i + 1;
+    		 }
+    	 }
+         
+    	 Questao q = questaoDAO.getQuestao(1);
+    	 logger.log(String.format("Got: %s, from Questao", q.getEnunciado()));
+        JSONObject jsonResponse = new JSONObject();
+	        jsonResponse.put("title", null);
+	        jsonResponse.put("text", q.getEnunciado());
+	        jsonResponse.put("type", 0); // Represents the time the type (only alternatives for now)
+	        jsonResponse.put("correct", correct); // Represents the correct alternative [1-5]
+	        jsonResponse.put("alternatives", alternativesArray); // Signature (set to null for now)
+>>>>>>> 80d7dc736577fd2ac8e65628d8ad5edeccc41ea2
         
-        logger.logMethodEnd(jsonResponse);
+        logger.logMethodEnd(jsonResponse.toJSONString());
         return jsonResponse.toJSONString(); //response must go as string
 	}
 
@@ -281,34 +303,29 @@ public class Service extends ServiceParent{
 		final String reqJsonBody = req.body();
 		JSONObject reqJson = parseBody(reqJsonBody, logger);
 		logger.log(reqJson);
-		
+
 		String dateString = (String) reqJson.get("time");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date parsedDate = dateFormat.parse(dateString);
         java.sql.Date date = new java.sql.Date(parsedDate.getTime());
 		
-		String username = (String) reqJson.get("username");
 		String content = (String) reqJson.get("content");
 		String email = (String) reqJson.get("sub");
 		String questionId = (String) reqJson.get("id");
 		
 		int id = Integer.parseInt(questionId);
 		
-		logger.log(String.format("Got values [username=(%s), content=(%s), email=(%s), question_id=(%s)]",
-				username, content, email, questionId));
-
-		logger.log(String.format("Got values [username=(%s), content=(%s), email=(%s), question_id=(%s), data=(%s)]",
-				username, content, email, questionId, date));
-
+		logger.log(String.format("Got values [content=(%s), email=(%s), question_id=(%s)]",
+				content, email, questionId));
 		
 		///PUT ON DATABASE WITH DAO (!MISSING!)
 		
-		respostaDAO.inserirResposta(username, content, email, id, date);
+		respostaDAO.inserirResposta(content, email, id, date);
 		
 		
 		boolean sucess = false;
 		if (sucess) {
-			logger.log("Sucessfully put " + username + " on database");
+			logger.log("Sucessfully put " + questionId + " on database");
 			res.status(200);
 		} else {
 			logger.log("Sucessfully put on database");

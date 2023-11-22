@@ -24,7 +24,36 @@ public class QuestaoDAO extends DAO{
     static void logPStatement(String s){logPS_DAO("(QuestaoDAO) -> ", s);  }
     static void log(String s) {System.out.println("(QuestaoDAO) -> " + s); }
     
+<<<<<<< HEAD
     static public List<Alternativa> getAlternativas(int idQuestao) {    
+=======
+    
+    static public Questao getQuestao(int idQuestao) {
+        String sql = String.format("SELECT * FROM \"%s\".\"%s\" WHERE \"%s\" = ?",
+                SCHEMA, "Questao", "id"); // Substitua "Questao" e "id" pelos nomes reais da tabela e coluna
+        logPStatement(sql);
+
+        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+            pstmt.setInt(1, idQuestao);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Questao questao = new Questao();
+                questao.setId(rs.getInt("id"));
+                questao.setNeuro_div(rs.getInt("neuro"));
+                questao.setEnunciado(rs.getString("enunciado"));
+                questao.setHabilidade(rs.getInt("habilidade"));
+                questao.setDificuldade(rs.getInt("dificuldade"));
+                // Adicione aqui outros campos conforme necessário
+                return questao;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null; // Ou lance uma exceção se a questão não for encontrada
+    }
+                                    
+    static public List<Alternativa> getAlternativas(int idQuestao) {
+>>>>>>> 80d7dc736577fd2ac8e65628d8ad5edeccc41ea2
         List<Alternativa> alternativas = new ArrayList<>();
         // Substitua 'SCHEMA' e 'TABLE' pelos seus nomes reais se eles forem diferentes
         String sql = "SELECT * FROM bancoti2.alternativas WHERE questao_id = ? ORDER BY id ASC";
