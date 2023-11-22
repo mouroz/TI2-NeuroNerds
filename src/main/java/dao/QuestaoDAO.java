@@ -24,10 +24,7 @@ public class QuestaoDAO extends DAO{
     static void logPStatement(String s){logPS_DAO("(QuestaoDAO) -> ", s);  }
     static void log(String s) {System.out.println("(QuestaoDAO) -> " + s); }
     
-<<<<<<< HEAD
-    static public List<Alternativa> getAlternativas(int idQuestao) {    
-=======
-    
+   
     static public Questao getQuestao(int idQuestao) {
         String sql = String.format("SELECT * FROM \"%s\".\"%s\" WHERE \"%s\" = ?",
                 SCHEMA, "Questao", "id"); // Substitua "Questao" e "id" pelos nomes reais da tabela e coluna
@@ -53,7 +50,6 @@ public class QuestaoDAO extends DAO{
     }
                                     
     static public List<Alternativa> getAlternativas(int idQuestao) {
->>>>>>> 80d7dc736577fd2ac8e65628d8ad5edeccc41ea2
         List<Alternativa> alternativas = new ArrayList<>();
         // Substitua 'SCHEMA' e 'TABLE' pelos seus nomes reais se eles forem diferentes
         String sql = "SELECT * FROM bancoti2.alternativas WHERE questao_id = ? ORDER BY id ASC";
