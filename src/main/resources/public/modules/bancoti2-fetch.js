@@ -9,27 +9,29 @@
  * @param: id, expected filter id. Can be ignored
  * @return: json, results from server, null in case of error
  */
-export function restfulJsonGet (path, id) {
-    if (id != null) path = path + '/' + id;
-    fetch (path, {
-        method: 'GET'
-    })
-    .then (response => {
-        //used when id is not found
-        if (response == 400)  console.warn('Failure receive from server -> couldnt find id ' + id);
-        else if (!response.ok) console.error('API failed with status ' + response.status);
-        else return response.json();
-    })
-    .then (json => {
-        console.log(`json obtained from ${path}: ` + json);
+export async function restfulJsonGet(path, id) {
+    if (id != null) {
+        path = path + '?neuro=' + id;
+    }
 
+    try {
+        const response = await fetch(path, { method: 'GET' });
+
+        if (response.status === 400) {
+            console.warn('Failure received from server -> couldnt find id ' + id);
+            return null;
+        } else if (!response.ok) {
+            console.error('API failed with status ' + response.status);
+            return null;
+        } 
+
+        const json = await response.json();
+        console.log(`json obtained from ${path}: `, json);
         return json;
-    })
-    .catch (error => {
+    } catch (error) {
         console.error(path + ' -> ' + error);
-
         return null;
-    })
+    }
 }
 
 export function doubleRestfulJsonGet (path, id1, id2) {

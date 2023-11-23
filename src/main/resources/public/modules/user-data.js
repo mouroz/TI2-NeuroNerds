@@ -29,6 +29,9 @@ export function getUsername() {
     if (parsedUser != null) return parsedUser.username;
     return null; 
 }
+export function getId() {
+	return parsedUser.id;
+}
 
 
 export function storeNewUserData(name, id){

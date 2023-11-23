@@ -36,32 +36,36 @@ public class Service extends ServiceParent{
 	///GETS
 	//@SuppressWarnings("unchecked")
 	public static Object getExercicio(Request req, Response res) throws Exception{
-		String path = "/exercicios";
+		String path = "/exercicios/load";
 		final ServiceLogger logger = new ServiceLogger(path);
     	
 		///GET DATA FROM REQUEST URL
 		String neuro = req.queryParams("neuro");
-		int neuroNum = 0;
+		int neuroNum = Integer.parseInt(neuro);
         logger.log("got [(" +neuro+ ")] from request body");
 
-        switch(neuro) {
-        
-        	case "Dislexia":
-        		neuroNum = 1;
-        		break;
-        	case "Discalculia":
-        		neuroNum = 2;
-        		break;
-        	case "TDAH":
-        		neuroNum = 3;
-        		break;
-        }
+//        switch() {
+//        
+//        	case 1:
+//        		neuroNum = 1;
+//        		break;
+//        	case "Discalculia":
+//        		neuroNum = 2;
+//        		break;
+//        	case "TDAH":
+//        		neuroNum = 3;
+//        		break;
+//        }
+//        
+        System.out.println(neuroNum);
         
 		///GET EXERCICIOS DAO --------------------------------------------------
         
         //get todas as questoes de certa neurodiv
         
         List<Questao> questoes = QuestaoDAO.getQuestoesPorNeurodivergencia(neuroNum);
+        
+        
                  
     	///CREATE RESPONSE (RES) -----------------------------------------------
     	res.type("application/json");
@@ -71,20 +75,32 @@ public class Service extends ServiceParent{
     	//ITERATES THROUGH THE GIVEN NEURODIVERGENCE QUESTIONS AND RESPONDS WITH A JSON ARRAY CONTAINING ALL OF THEM
     	
     	JSONArray jsonResponse = new JSONArray();
-    	 
-    	 for(int i = 0; i < questoes.size(); i++) {
-    		 JSONObject json= new JSONObject();
-    		 
-    		 List<Alternativa> alternativas = QuestaoDAO.getAlternativas(questoes.get(i).getId());
-    		 int indiceCorreto = QuestaoDAO.getAlternativaCorreta(alternativas);
-        	 
-    	     json.put("text", questoes.get(i).getEnunciado());
-    	     json.put("type", questoes.get(i).getNeuro_div()); 
-    	     json.put("correct", indiceCorreto); 
-    	     json.put("alternatives", alternativas); 
-        	
-    	     jsonResponse.add(json);
-    	 }   	 
+
+    	for (int i = 0; i < questoes.size(); i++) {
+    	    JSONObject json = new JSONObject();
+    	    
+    	    List<Alternativa> alternativas = QuestaoDAO.getAlternativas(questoes.get(i).getId());
+    	    int indiceCorreto = QuestaoDAO.getAlternativaCorreta(alternativas);
+    	    
+    	    json.put("text", questoes.get(i).getEnunciado());
+    	    json.put("type", questoes.get(i).getNeuro_div()); 
+    	    json.put("correct", indiceCorreto); 
+    	    
+    	    // Crie um JSONArray para armazenar as alternativas
+    	    JSONArray jsonAlternatives = new JSONArray();
+    	    for (Alternativa alt : alternativas) {
+    	        JSONObject jsonAlt = new JSONObject();
+    	        jsonAlt.put("conteudo", alt.getConteudo());
+    	        // Adicione outros campos de Alternativa se necessário
+    	        jsonAlternatives.add(jsonAlt);
+    	    }
+    	    json.put("alternatives", jsonAlternatives);
+    	    
+    	    jsonResponse.add(json);
+    	}  
+
+    	// Resto do código para lidar com jsonResponse
+	 
    
         logger.logMethodEnd(jsonResponse.toJSONString());
         return jsonResponse.toJSONString(); //response must go as string

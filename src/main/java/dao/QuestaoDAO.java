@@ -38,7 +38,7 @@ public class QuestaoDAO extends DAO{
                 questao.setId(rs.getInt("id"));
                 questao.setNeuro_div(rs.getInt("neuro"));
                 questao.setEnunciado(rs.getString("enunciado"));
-                questao.setHabilidade(rs.getInt("habilidade"));
+                questao.setHabilidade(rs.getString("habilidade"));
                 questao.setDificuldade(rs.getInt("dificuldade"));
                 // Adicione aqui outros campos conforme necessário
                 return questao;
@@ -86,7 +86,7 @@ public class QuestaoDAO extends DAO{
                 questao.setId(rs.getInt("id"));
                 questao.setNeuro_div(idNeurodivergencia);
                 questao.setEnunciado(rs.getString("enunciado"));
-                questao.setHabilidade(rs.getInt("habilidade"));
+                questao.setHabilidade(rs.getString("habilidade"));
                 questao.setDificuldade(rs.getInt("dificuldade"));
                 // Adicione aqui outros campos conforme necessário
                 questoes.add(questao);

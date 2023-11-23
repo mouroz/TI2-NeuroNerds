@@ -58,7 +58,7 @@ public class App extends dao.DAO{
 	        Spark.post("/auth", (req, res) -> {//100% functional
 	        	return AuthService.auth(req, res);
 	        }); 
-	        Spark.get("/exercicios", (req,res) -> {//Missing Database Integration
+	        Spark.get("/exercicios/load", (req,res) -> {//Missing Database Integration
 	        	return Service.getExercicio(req, res);
 	        });
 	        Spark.get("/forum/homepage", (req,res) -> {//Missing Database Integration

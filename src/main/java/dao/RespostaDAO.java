@@ -33,11 +33,8 @@ public class RespostaDAO extends DAO{
             logPStatement(sqlInserirResposta);
             
             try (PreparedStatement pstmt = conexao.prepareStatement(sqlInserirResposta)) {
-<<<<<<< HEAD
             	System.out.println("entrou");
-=======
-            	
->>>>>>> 80d7dc736577fd2ac8e65628d8ad5edeccc41ea2
+
                 pstmt.setString(1, conteudo);
                 pstmt.setInt(2, usuarioId);
                 pstmt.setInt(3, perguntaId);
