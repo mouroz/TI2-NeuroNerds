@@ -111,7 +111,7 @@ public class Service extends ServiceParent{
 	public static Object getForumHomepage(Request req, Response res) throws Exception{
     	final int postsMaxLen = 5;
     	
-    	List<Pergunta> perguntas = PerguntaDAO.getMostRecentList(5);
+    	List<Pergunta> perguntas = PerguntaDAO.getMostRecent(5);
 		int postsLen = (perguntas.size() > postsMaxLen) ? postsMaxLen : perguntas.size();
 		
 		if (postsLen == 0) {
@@ -177,7 +177,7 @@ public class Service extends ServiceParent{
     		throw new Exception ("Failure to parse to int from url id");
     	}
     	
-    	Pergunta pergunta = PerguntaDAO.getPergunta(id);
+    	Pergunta pergunta = PerguntaDAO.getPerguntaById(id);
     	List<Resposta> respostas = PerguntaDAO.getRespostasFromId(id);
     	int cLen = (respostas.size() > maxCommentsNum) ? maxCommentsNum : respostas.size();
     	
@@ -212,14 +212,11 @@ public class Service extends ServiceParent{
 				jsonPost.put("content", jsonPostContent);
 			
 			JSONArray jsonArrayComments = new JSONArray();
-			//Array of jsonComment from: (JSON ARRAY BUILD 01)
+			
 			
 		//----------------------------------------
-		
 			
-		///(JSON ARRAY BUILD 01)
-			
-			for (Resposta resposta : respostas) {
+		for (Resposta resposta : respostas) {
 	        	JSONObject jsonComment = new JSONObject();
 	        	JSONObject jsonCommentUser = new JSONObject();
 		        	jsonCommentUser.put("name", resposta.getNome_usuario());
@@ -232,7 +229,7 @@ public class Service extends ServiceParent{
         	jsonComment.put("user", jsonCommentUser);
         	jsonComment.put("content", jsonCommentContent);
         	jsonArrayComments.add(jsonComment);
-			}
+		}
 
         
         ///FINISH responseJson
@@ -241,6 +238,7 @@ public class Service extends ServiceParent{
         
         return responseJson.toJSONString();
 	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public static Object getProfileDetails(Request req, Response res) throws Exception{

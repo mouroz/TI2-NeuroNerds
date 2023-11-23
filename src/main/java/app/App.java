@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import dao.UsuarioDAO;
+import model.Usuario;
 import service.AuthService;
 import service.Service;
 import spark.Spark;
@@ -23,12 +24,12 @@ public class App extends dao.DAO{
 	
 	static UsuarioDAO usuarioDAO;
 	public static void main(String args[]){	
-		usuarioDAO = new UsuarioDAO();
-	
-		staticFiles.location("/public");
-		staticFiles.externalLocation("src/main/resources/public");
-        port(4567);
+		//staticFiles.location("/public");
+		//staticFiles.externalLocation("src/main/resources/public");
+        //port(4567);
         
+        Usuario user = UsuarioDAO.getUsuarioByUsername("johndoe1");
+        user.quickPrint();
         //LOCAL PARA INSERIR EXERCICIOS
         
         //teste.chamaCadastro();
@@ -37,6 +38,7 @@ public class App extends dao.DAO{
 
         //teste.chamaCadastroPergunta();
 
+        
         
         	//Comecando em index.html
 	        Spark.get("/", (req, res) -> {
@@ -51,6 +53,7 @@ public class App extends dao.DAO{
 		        res.body(""); // | res.body(e.getMessage())
 		        res.status(400);
 		    }); 	
+	        
 	        
 	        
 	        //ROTAS
@@ -73,7 +76,7 @@ public class App extends dao.DAO{
 	        
 	        
 	        Spark.post("/cadastro-user", (req, res) -> {
-	        	/*
+	        	 /*
 	        	 * Integration partially complete - The request is sucessfully received,
 	        	 * the code is executed and there are no errors on the database Integration.
 	        	 * However, after the return null call, eclipse gives a mapping error for 
@@ -81,7 +84,8 @@ public class App extends dao.DAO{
 	        	 */
 	        	return AuthService.cadastraUsuario(req, res);
 	        });
-	      //sc.close();
+	        sc.close();
+	
 	}
 }
 

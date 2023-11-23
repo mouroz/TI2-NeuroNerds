@@ -42,5 +42,8 @@ public class Usuario {
         return "usuario [email=" + email + ", senha=" + senha + ", idUsuario=" + id + ", username=" + username + "]";
     }
 
+    public void quickPrint() {
+    	System.out.println(toString());
+    }
 	
 }

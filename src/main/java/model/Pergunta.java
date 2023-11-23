@@ -12,6 +12,16 @@ public class Pergunta {
 	//private String usuarioNome; //not from the table. Where does it come from?
 	
 	
+	// When creating a obj -> id cant be created outside of sql
+	public Pergunta(Date data_postagem, String titulo, String conteudo, int id_usuario) {
+		this.titulo = titulo;
+		this.conteudo = conteudo;
+		this.dataPostagem = data_postagem;
+		this.usuarioId = id_usuario;
+	}
+	
+	
+	// When getting from sql
 	public Pergunta(int id, Date data_postagem, String titulo, String conteudo, int id_usuario){
 		this.titulo = titulo;
 		this.conteudo = conteudo;

@@ -8,6 +8,7 @@ import java.util.List;
 import java.time.LocalDate;
 import java.sql.Date;
 import model.Resposta;
+import model.Usuario;
 import model.Pergunta;
 
 public class PerguntaDAO extends DAO {
@@ -18,39 +19,44 @@ public class PerguntaDAO extends DAO {
 	public static final String cConteudo = "conteudo";
 	public static final String cUsuario_id = "usuario_id";
 	
-    
+    /* No update value function as function wont be needed
+     * 
+     */
 	
+	public static Pergunta getPerguntaById(int id) {
+		Pergunta pergunta = null;
+		String sql = "SELECT * FROM bancoti2.pergunta WHERE id = ?";
+		try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+	         pstmt.setInt(1, id);
+	      
+	         try (ResultSet resultSet = pstmt.executeQuery()) {
+	             if (resultSet.next()) {
+	                 Date date = resultSet.getDate(cDataPostagem);
+	                 String titulo = resultSet.getString(cTitulo);
+	                 String conteudo = resultSet.getString(cConteudo);
+	                 int usuario_id = resultSet.getInt(cUsuario_id);
+	                 
+	                 pergunta = new Pergunta(id, date, titulo, titulo, usuario_id);
+	                 
+	             } else {
+	            	 System.out.println("Pergunta nao encontrada cadastrado");
+	             }
+	         }
+	         
+	     } catch (SQLException e) { e.printStackTrace(); }
+		
+		return pergunta;
+	}
 	
-	
-	public static int getPerguntaId(Pergunta pergunta) {
-        int result = -1;
-        String sql = "SELECT id FROM bancoti2.pergunta WHERE titulo = ? LIMIT 1";
-        
-        try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
-            pstmt.setString(1, pergunta.getTitulo());
-            ResultSet resultSet = pstmt.executeQuery();
-            
-            if (resultSet.next()) {
-                result = resultSet.getInt("id");
-            }
-           
-        } catch (SQLException e) {
-            e.printStackTrace();
-            
-        }
-        
-        return result;
-    }
-    
     
     public static boolean postPergunta(Pergunta pergunta) {
         String sql = "INSERT INTO bancoti2.pergunta"
-        		+ " (titulo, data_postagem, conteudo, usuario_id) VALUES (?, ?, ?, ?)";
+        		+ " (data_postagem, titulo, conteudo, usuario_id) VALUES (?, ?, ?, ?)";
         
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             LocalDate currentDate = LocalDate.now();
-            pstmt.setString(1, pergunta.getTitulo());
-            pstmt.setDate(2, Date.valueOf(currentDate));
+            pstmt.setDate(1, Date.valueOf(currentDate));
+            pstmt.setString(2, pergunta.getTitulo());
             pstmt.setString(3, pergunta.getConteudo());
             pstmt.setInt(4, pergunta.getUsuarioId());
             pstmt.executeUpdate();
@@ -83,9 +89,7 @@ public class PerguntaDAO extends DAO {
     
     
     
-    /* List<Respostas> from a Pergunta id
-     * Returns an empty list if failed
-     */
+    // List of resposta (comments) from the pergunta id
     public static List<Resposta> getRespostasFromId(int id) {
         List<Resposta> respostas = new ArrayList<>();
         String sql = """
@@ -99,6 +103,7 @@ public class PerguntaDAO extends DAO {
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
+            
             while (rs.next()) {
             	Resposta resposta = new Resposta();
                 resposta.setId_resposta(rs.getInt("id"));
@@ -116,9 +121,11 @@ public class PerguntaDAO extends DAO {
         return respostas;
     }
 
+	
+	
     
     //List of Perguntas with its max length as parameter
-    public static List<Pergunta> getMostRecentList(int limit) {
+    public static List<Pergunta> getMostRecent(int limit) {
         List<Pergunta> perguntas = new ArrayList<>();
         String sql = """
         		SELECT pergunta.*, usuario.username AS nome
@@ -177,41 +184,6 @@ public class PerguntaDAO extends DAO {
     }
     
     
-    /*
-     * No idea what this one is about
-     */
-    public static Pergunta getPergunta(int id) {
-        Pergunta pergunta = null;
-        
-        /*("SELECT \"Pergunta\".*, \"usuario\".\"username\" AS \"nome_usuario\" " +
-            "FROM \"BancoTI2\".\"Pergunta\" " +
-            "JOIN \"BancoTI2\".\"usuario\" ON \"Pergunta\".\"usuario_id\" = \"usuario\".\"id\" " +
-            "WHERE \"Pergunta\".\"id\" = ?"
-         */
-        String sql = "";
-        
-        logPStatement(sql);
-        try (PreparedStatement pstmt = conexao.prepareStatement(sql)){	
-        	pstmt.setInt(1, id);
-            ResultSet resultSet = pstmt.executeQuery();
-            if (resultSet.next()) {
-                Date data = resultSet.getDate("data_postagem");
-                String conteudo = resultSet.getString("conteudo");
-                int idUsuario = resultSet.getInt("usuario_id");
-                String titulo = resultSet.getString("titulo");
-                //String nomeUsuario = resultSet.getString("nome_usuario");
-    
-                pergunta = new Pergunta(id, data, titulo,  conteudo, id);
-                System.out.println("Pergunta: " + pergunta.toString());
-                
-            }
-        } catch (SQLException e) {
-        	System.out.println("erro aqui 1");
-            throw new RuntimeException(e);
-            
-        }
-        return pergunta;
-    }
 
     private static void logPStatement(String s){logPS_DAO("(PerguntaDAO) -> ", s);  }
     private static void log(String s) {System.out.println("(PerguntaDAO) -> " + s); }

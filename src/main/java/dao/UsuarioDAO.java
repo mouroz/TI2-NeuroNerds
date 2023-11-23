@@ -11,27 +11,25 @@ import java.util.List;
 import model.Usuario;
 
 public class UsuarioDAO extends DAO{
-	public static final String cId = "id";
-	public static final String cNome = "nome";
-	public static final String cUsername = "username";
+	public static final String cId = "id"; //uk
+	public static final String cNome = "nome"; 
+	public static final String cUsername = "username"; //uk
+	public static final String cEmail = "email"; //uk
 	public static final String cSenha = "senha";
-	public static final String cEmail = "email";
+
     
     
-    /*
-     * Methods for returning a single Usuario
-     * Used mostly with unique keys (username, email, id)
-     */
 	
-    public static Usuario getUsuarioByUniqueCol(String sql, String value) {
+    
+    public static Usuario getUsuarioById(int id) {
     	Usuario usuario = null;
+    	String sql = "SELECT * FROM bancoti2.usuario WHERE id = ?";
     	
     	try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
-	         pstmt.setString(1, value);
+	         pstmt.setInt(1, id);
 	      
 	         try (ResultSet resultSet = pstmt.executeQuery()) {
 	             if (resultSet.next()) {
-	            	 int id = resultSet.getInt(cId);
 	                 String nome = resultSet.getString(cNome);
 	                 String username = resultSet.getString(cUsername);
 	                 String email = resultSet.getString(cEmail);
@@ -39,7 +37,7 @@ public class UsuarioDAO extends DAO{
 	                 
 	                 usuario = new Usuario(id, nome,username,email,senha);
 	             } else {
-	            	 log("Usuário não está cadastrado");
+	            	 System.out.println("Usuário id " + id + " não está cadastrado");
 	             }
 	         }
 	         
@@ -48,25 +46,65 @@ public class UsuarioDAO extends DAO{
     	return usuario;
     }
     
-    public static Usuario getUsuarioById(String id) {
-    	String  sql = "SELECT * FROM bancoti2.usuario WHERE id = ?";
-    	return getUsuarioByUniqueCol(sql, id);
-    }
     
     public static Usuario getUsuarioByEmail(String email) {
-    	String  sql = "SELECT * FROM bancoti2.usuario WHERE email = ?";
-    	return getUsuarioByUniqueCol(sql, email);
+    	Usuario usuario = null;
+    	String sql = "SELECT * FROM bancoti2.usuario WHERE email = ?";
+    	
+    	try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+	         pstmt.setString(1, email);
+	      
+	         try (ResultSet resultSet = pstmt.executeQuery()) {
+	             if (resultSet.next()) {
+	            	 int id = resultSet.getInt(cId);
+	                 String nome = resultSet.getString(cNome);
+	                 String username = resultSet.getString(cUsername);
+	                 String senha = resultSet.getString(cSenha);
+	                 
+	                 usuario = new Usuario(id, nome,username,email,senha);
+	             } else {
+	            	 System.out.println("Usuário email " + email + " não está cadastrado");
+	             }
+	         }
+	         
+	     } catch (SQLException e) { e.printStackTrace(); }
+    	
+    	return usuario;
     }
     
     public static Usuario getUsuarioByUsername(String username) {
-    	String  sql = "SELECT * FROM bancoti2.usuario WHERE username = ?";
-    	return getUsuarioByUniqueCol(sql, username);
+    	Usuario usuario = null;
+    	String sql = "SELECT * FROM bancoti2.usuario WHERE username = ?";
+    	
+    	try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {
+	         pstmt.setString(1, username);
+	      
+	         try (ResultSet resultSet = pstmt.executeQuery()) {
+	             if (resultSet.next()) {
+	            	 int id = resultSet.getInt(cId);
+	                 String nome = resultSet.getString(cNome);
+	                 String email = resultSet.getString(cEmail);
+	                 String senha = resultSet.getString(cSenha);
+	                 
+	                 
+	                 usuario = new Usuario(id, nome,username,email,senha);
+	             } else {
+	            	 System.out.println("Usuário username " + username + " não está cadastrado");
+	             }
+	         }
+	         
+	     } catch (SQLException e) { e.printStackTrace(); }
+    	
+    	return usuario;
     }
     
+
     
     /*
      * Methods for updating the user data
      * Returns false if operation failed
+     * 
+     * May present Unique Key -< Foreign key problems!!
      */
     
     public static boolean updateUser(Usuario usuario, String id) {
@@ -160,6 +198,9 @@ public class UsuarioDAO extends DAO{
         return true;
     }
     
+    
+    //------------------------------------------------------------------------
+    ///Other methods
     
     
     /* Authenticates via email and password
