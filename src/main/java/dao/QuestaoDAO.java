@@ -16,11 +16,6 @@ public class QuestaoDAO extends DAO{
 	public static final String cId = "id";
 	public static final String cQuestaoId = "questao_id";
 	
-    public QuestaoDAO() {
-        super();
-        conectar();
-    }
-
     static void logPStatement(String s){logPS_DAO("(QuestaoDAO) -> ", s);  }
     static void log(String s) {System.out.println("(QuestaoDAO) -> " + s); }
     
@@ -74,6 +69,7 @@ public class QuestaoDAO extends DAO{
     }
 
     static public List<Questao> getQuestoesPorNeurodivergencia(int idNeurodivergencia) {    
+    	System.out.println(idNeurodivergencia);
         List<Questao> questoes = new ArrayList<>();
         String sql = "SELECT * FROM bancoti2.questao WHERE neuro = ? ORDER BY id ASC";
         logPStatement(sql);
@@ -92,7 +88,7 @@ public class QuestaoDAO extends DAO{
                 questoes.add(questao);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return questoes;
     }

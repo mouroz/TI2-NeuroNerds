@@ -131,7 +131,7 @@ public class PerguntaDAO extends DAO {
         		SELECT pergunta.*, usuario.username AS nome
                 FROM bancoti2.pergunta
                 JOIN bancoti2.usuario ON pergunta.usuario_id = usuario.id
-                ORDER BY pergunta.data_postagem DESC LIMIT """ + limit;
+                ORDER BY pergunta.data_postagem DESC LIMIT """ + " " + limit;
 
 
         try (PreparedStatement pstmt = conexao.prepareStatement(sql)) {

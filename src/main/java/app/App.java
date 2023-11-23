@@ -13,7 +13,9 @@ import java.util.Scanner;
 import dao.UsuarioDAO;
 import model.Usuario;
 import service.AuthService;
-import service.Service;
+import service.ExerciciosService;
+import service.ForumService;
+import service.PostService;
 import spark.Spark;
 
 public class App extends dao.DAO{
@@ -24,9 +26,9 @@ public class App extends dao.DAO{
 	
 	static UsuarioDAO usuarioDAO;
 	public static void main(String args[]){	
-		//staticFiles.location("/public");
-		//staticFiles.externalLocation("src/main/resources/public");
-        //port(4567);
+		staticFiles.location("/public");
+		staticFiles.externalLocation("src/main/resources/public");
+        port(4567);
         
         Usuario user = UsuarioDAO.getUsuarioByUsername("johndoe1");
         user.quickPrint();
@@ -61,18 +63,24 @@ public class App extends dao.DAO{
 	        Spark.post("/auth", (req, res) -> {//100% functional
 	        	return AuthService.auth(req, res);
 	        }); 
-	        Spark.get("/exercicios/load", (req,res) -> {//Missing Database Integration
-	        	return Service.getExercicio(req, res);
+
+	        Spark.get("/forum/explore", (req,res) -> {//Missing Database Integration
+	        	return ForumService.getForumHomepage(req, res);
 	        });
-	        Spark.get("/forum/homepage", (req,res) -> {//Missing Database Integration
-	        	return Service.getForumHomepage(req, res);
-	        });
-	        Spark.get("/forum/page/load-post", (req,res) -> {//Missing Database Integration
-	        	return Service.getForumPagePost(req, res);
+	        
+	        
+	        Spark.get("/forum/page/explore", (req,res) -> {//Missing Database Integration
+	        	return PostService.getForumPagePost(req, res);
 	        });
 	        Spark.put("/forum/page/comment", (req, res) -> {
-	        	return Service.putForumPageComment(req, res);
+	        	return PostService.putForumPageComment(req, res);
 	        });
+	        
+	        
+	        Spark.get("/exercicios/load", (req,res) -> {//Missing Database Integration
+	        	return ExerciciosService.getExercicio(req, res);
+	        });
+	       
 	        
 	        
 	        Spark.post("/cadastro-user", (req, res) -> {
