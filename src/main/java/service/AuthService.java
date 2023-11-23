@@ -21,90 +21,84 @@ public class AuthService extends ServiceParent{
 	
 	@SuppressWarnings("unchecked")
 	public static Object cadastraUsuario(Request req, Response res) throws Exception{
-    	final String path = "cadastro-user";
-    	final ServiceLogger logger = new ServiceLogger(path);
-		logger.log("ContentType found: " + req.headers("Content-Type")); 
-		
-		///GET REQ BODY
 		final String reqJsonBody = req.body(); 	  									  
-		JSONObject reqJson = parseBody(reqJsonBody, logger);
-		logger.log("Request body JSON = " + reqJson);
+		JSONObject reqJson = parseBody(reqJsonBody);
 		
 		String email = (String) reqJson.get("email");
 		String senha = (String) reqJson.get("password");
 		String nome = (String) reqJson.get("name");
 	
-		///TRY TO PUT ON DATABASE
-		Usuario usuario = new Usuario(senha,email,nome);
-		logger.log(usuario.toString());
-		JSONObject responseJson = new JSONObject();
+		//!Currently missing name field to receive: name is being set to username value!
+		Usuario usuario = new Usuario(nome, email, nome, senha);
+		System.out.println("got usuario -> " + usuario);
 		
-		if(UsuarioDAO.cadastraUsuario(usuario)) {
+		
+		//Is a json response really needed, when the status would work just fine?
+		JSONObject responseJson = new JSONObject();
+		if(UsuarioDAO.postUsuario(usuario)) {
 			res.status(200);
 			responseJson.put("payload", "sucess");
-			logger.log("Sucesfully registered email " + email);
-		}
-		else {
+		} else {
 			res.status(401);
 			responseJson.put("payload", "failure");
-			logger.log("Couldnt register new account");
 		}
 		
     	return responseJson;
 	}
 	
+	
+	
 	@SuppressWarnings("unchecked")
+	/* Sends response a very specific JWT model
+	 * See model example on auth-user module at front-end server
+	 */
 	public static Object auth(Request req, Response res) throws Exception{
-		//Receives json and sends JWT json. See auth.js to check the json format
-		final String path = "auth";
-    	final ServiceLogger logger = new ServiceLogger(path);
-		logger.log("ContentType found: " + req.headers("Content-Type")); 
-
-    	///GET REQ BODY
 		final String reqJsonBody = req.body();
-		JSONObject reqJson = parseBody(reqJsonBody, logger);
-		logger.log("body json =" + reqJson);
+		JSONObject reqJson = parseBody(reqJsonBody);
 
     	String email = (String) reqJson.get("username");
     	String password = (String) reqJson.get("password");
-    	logger.log("got [email=(" +email+ "), password=(" +password+ ")] from request body");
+    	System.out.println("Got [email=(" +email+ "), password=(" +password+ ")] from request body");
     	
-    	///TRY TO AUTHENTICATE WITH DATABASE REQUEST
+    	
+    	
     	res.type("application/json");
-    	
-		if (UsuarioDAO.autenticaUsuario(email,password)) {
-			
-	    	String user = UsuarioDAO.getNomeFromEmail(email);
-	    	int id = UsuarioDAO.getNomeIdEmail(email);
-	    	logger.log("got user= " +user+ "from email= "+email);
-			
-			
-			JSONObject responseJson = new JSONObject();
-				JSONObject header = new JSONObject();
-			        header.put("alg", "HS256");
-			        header.put("typ", "JWT");
-		        JSONObject payload = new JSONObject();
-			        payload.put("sub", id); // Unique identifier, for now, email
-			        payload.put("name", user);
-			        payload.put("trilha", "adhd"); // Not sure if its best to include this on payload
-			        
-			//Finish building responseJson       
-	        responseJson.put("header", header);
-	        responseJson.put("payload", payload);
-	        responseJson.put("iat", null); // Represents the time the token was issued (set to null for now)
-	        responseJson.put("signature", null); // Signature (set to null for now)
+    	JSONObject json;
+    	if (UsuarioDAO.autenticaUsuario(email, password)) {
+    		res.status(200);
+    		Usuario usuario = UsuarioDAO.getUsuarioByEmail(email);
+    		json = buildAuthResponse(usuario);
+    		
+    	} else {
+    		res.status(401); //Unauthorized
 
-	        res.status(200);
-	        logger.logMethodEnd(responseJson);
-	        return responseJson.toJSONString(); //response must go as string
+    		//Add error message
+    		json = new JSONObject();
+			json.put("error", "Authentication failed");
 		}
-		else {
-			JSONObject errorResponse = new JSONObject();
-		    errorResponse.put("error", "Authentication failed");
-		    
-		    res.status(401); // HTTP status code 401 Unauthorized
-		    logger.logMethodEnd(errorResponse);    
-		    return errorResponse.toJSONString();
-		}
+    	
+    	return json;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private static JSONObject buildAuthResponse(Usuario usuario) {
+		JSONObject responseJson = new JSONObject();
+		
+		JSONObject header = new JSONObject();
+	        header.put("alg", "HS256");
+	        header.put("typ", "JWT");
+        JSONObject payload = new JSONObject();
+	        payload.put("sub", usuario.getId()); 
+	        payload.put("name", usuario.getNome());
+	        payload.put("iat", null);//iat not implemented
+	    //signature not implemented
+	        
+	        
+	    responseJson.put("header", header);
+	    responseJson.put("payload", payload);
+	    responseJson.put("signature", null); // Signature (set to null for now)
+	    
+	    return responseJson;
 	}
 }

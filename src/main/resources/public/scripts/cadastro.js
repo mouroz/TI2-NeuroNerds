@@ -5,19 +5,19 @@ const nextPageHtml = '/outras/telainicial.html';
 
 //STATIC GLOBAL ELEMENTS
 const form = document.getElementById('cadastro-form');
-const usernameElement = document.getElementById('name');
+const nameElement = document.getElementById('name');
 const emailElement = document.getElementById('email');
 const passwordElement = document.getElementById('password');
 
 form.addEventListener('submit', (e) => {
     e.preventDefault(); // Prevent default form submission
 
-    const usernameInput = usernameElement.value;
+    const nameInput = nameElement.value;
     const passwordInput = passwordElement.value;
 
-    console.log(usernameInput.trim());
-    if (usernameInput.trim() !== '' || passwordInput.trim() !== ''){
-        sendAuth(usernameInput, passwordInput);
+    console.log(nameInput.trim());
+    if (nameInput.trim() !== '' || passwordInput.trim() !== ''){
+        sendAuth(nameInput, passwordInput);
     } 
 })
 
@@ -28,7 +28,7 @@ function sendAuth() {
 
     //for security purposes it might be better do encrypt the data before sending
     const serverRequestData = {
-        name: usernameElement.value,
+        name: nameElement.value,
         email: emailElement.value,
         password: passwordElement.value
     };

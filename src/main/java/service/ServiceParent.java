@@ -12,7 +12,7 @@ public class ServiceParent {
 	static UsuarioDAO usuarioDAO = new UsuarioDAO();
 	static Random random = new Random(); 
 
-	static JSONObject parseBody(String jsonBody, ServiceLogger logger) throws Exception{
+	static JSONObject parseBody(String jsonBody) throws Exception{
 		//Parses and processes all exceptions
 		try {
 			JSONParser parser = new JSONParser(); //parse to JSON
@@ -22,10 +22,10 @@ public class ServiceParent {
 	    		return (JSONObject) parsedData;
 	    	}	
 	    	else {
-	    		throw new Exception (logger.err("This is not a JSON")); 
+	    		throw new Exception ("This is not a JSON"); 
 	    	}
 		}
-		catch (ParseException e) {throw new Exception (logger.err("Error when trying to parse JSON")); }
-        catch (Exception e) {throw new Exception (logger.err("Request body is not a proper JSON")); }
+		catch (ParseException e) {throw new Exception ("Error when trying to parse JSON"); }
+        catch (Exception e) {throw new Exception ("Request body is not a proper JSON"); }
 	}
 }

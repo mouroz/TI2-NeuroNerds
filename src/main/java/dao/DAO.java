@@ -7,18 +7,9 @@ import java.math.*;
 
 public class DAO {
 	public static final String SCHEMA = "bancoTI2";
-	static protected Connection conexao;
+	protected static Connection conexao = null;
 
-	public DAO() {
-		conexao = null;
-	}
-	
-	public void finalize() {close();}
-	static public void logPS_DAO(String classPointer, String s) {
-		System.out.println(classPointer + "(SQL PStatement) " + s);
-	}
-	
-	public boolean conectar() {
+	public static boolean conectar() {
 		String driverName = "org.postgresql.Driver";                    
 		String serverName = "localhost";
 		String mydatabase = "ti2banco";
@@ -42,7 +33,7 @@ public class DAO {
 		return status;
 	}
 	
-	public boolean close() {
+	public static boolean close() {
 		boolean status = false;
 		
 		try {
@@ -60,4 +51,12 @@ public class DAO {
 		m.update(senha.getBytes(),0, senha.length());
 		return new BigInteger(1,m.digest()).toString(16);
 	}
+	
+	
+	
+	
+	public static void logPS_DAO(String classPointer, String s) {
+		System.out.println(classPointer + "(SQL PStatement) " + s);
+	}
+	
 }

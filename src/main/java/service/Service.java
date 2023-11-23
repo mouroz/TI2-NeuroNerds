@@ -30,51 +30,46 @@ import spark.Response;
 
 public class Service extends ServiceParent{
 	
-	static PerguntaDAO perguntaDAO = new PerguntaDAO();
-	static QuestaoDAO questaoDAO = new QuestaoDAO();
-	static RespostaDAO respostaDAO = new RespostaDAO();
-	///GETS
-	//@SuppressWarnings("unchecked")
-	public static Object getExercicio(Request req, Response res) throws Exception{
-		String path = "/exercicios/load";
-		final ServiceLogger logger = new ServiceLogger(path);
-    	
-		///GET DATA FROM REQUEST URL
+	
+	@SuppressWarnings("unchecked")
+	/* Returns a very specific json array used for exercicio.js to load the exercices
+	 * 
+	 * A json array is used to allow for queueing of exercices instead of having to a fetch for each one
+	 * Refer to exercicio.js to see the jsonArray structure
+	 */
+	public static Object getExercicio(Request req, Response res) throws Exception {
 		String neuro = req.queryParams("neuro");
-		int neuroNum = Integer.parseInt(neuro);
-        logger.log("got [(" +neuro+ ")] from request body");
-
-//        switch() {
-//        
-//        	case 1:
-//        		neuroNum = 1;
-//        		break;
-//        	case "Discalculia":
-//        		neuroNum = 2;
-//        		break;
-//        	case "TDAH":
-//        		neuroNum = 3;
-//        		break;
-//        }
-//        
+		int neuroNum = 0;
+		
+        switch(neuro) {
+        	case "outro":
+        		neuroNum = 1;
+        		break;
+        	case "Discalculia":
+        		neuroNum = 2;
+        		break;
+        	case "TDAH":
+        		neuroNum = 3;
+        		break;
+        	default:
+        		break;
+        }
         System.out.println(neuroNum);
         
-		///GET EXERCICIOS DAO --------------------------------------------------
+
+        res.type("application/json");
         
-        //get todas as questoes de certa neurodiv
-        
+        //Get todas as questoes de certa neurodiv
         List<Questao> questoes = QuestaoDAO.getQuestoesPorNeurodivergencia(neuroNum);
-        
-        
-                 
-    	///CREATE RESPONSE (RES) -----------------------------------------------
-    	res.type("application/json");
+        JSONArray jsonArray = getExercicioResponse(questoes);
 
         
-    	
-    	//ITERATES THROUGH THE GIVEN NEURODIVERGENCE QUESTIONS AND RESPONDS WITH A JSON ARRAY CONTAINING ALL OF THEM
-    	
-    	JSONArray jsonResponse = new JSONArray();
+        return jsonArray.toJSONString(); //response must go as string
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static JSONArray getExercicioResponse(List<Questao> questoes) {
+		JSONArray jsonArray = new JSONArray();
 
     	for (int i = 0; i < questoes.size(); i++) {
     	    JSONObject json = new JSONObject();
@@ -86,123 +81,112 @@ public class Service extends ServiceParent{
     	    json.put("type", questoes.get(i).getNeuro_div()); 
     	    json.put("correct", indiceCorreto); 
     	    
-    	    // Crie um JSONArray para armazenar as alternativas
     	    JSONArray jsonAlternatives = new JSONArray();
     	    for (Alternativa alt : alternativas) {
     	        JSONObject jsonAlt = new JSONObject();
     	        jsonAlt.put("conteudo", alt.getConteudo());
-    	        // Adicione outros campos de Alternativa se necessário
     	        jsonAlternatives.add(jsonAlt);
     	    }
     	    json.put("alternatives", jsonAlternatives);
     	    
-    	    jsonResponse.add(json);
+    	    jsonArray.add(json);
     	}  
-
-    	// Resto do código para lidar com jsonResponse
-	 
-   
-        logger.logMethodEnd(jsonResponse.toJSONString());
-        return jsonResponse.toJSONString(); //response must go as string
+    	
+    	return jsonArray;
 	}
 
-	@SuppressWarnings("unchecked")
-		public static Object getForumHomepage(Request req, Response res) throws Exception{
-			final String path = "/forum/homepage";
-	    	final ServiceLogger logger = new ServiceLogger(path);
-	    	final int postsMaxLen = 5;
-	    	logger.log("Started");
-			///GET VALUES FROM DATABASE
-	    	
-	    	List<Pergunta> perguntas = perguntaDAO.buscaUltimasCincoPerguntas();
-	    	
-			int postsLen = perguntas.size();
-			postsLen = (postsLen > postsMaxLen) ? postsMaxLen : postsLen;
-			
-			if (postsLen == 0) {
-				res.status(400);
-				logger.log("Couldnt find any values to add to the forum. Exiting method");
-				return "failure";
-			}
-			
-	    	///CREATE RESPONSE (RES) --------------------------------------------------	
-			
-			res.type("application/json");
-			String[] defaultTags = {"adhd"};
-			
-			///-------------Response JSON Builder------------------
-			
-			JSONObject responseJson = new JSONObject();
-	        	JSONArray jsonArrayData = new JSONArray();
-	        	//Contains multiple postJson. Inside (JSON ARRAY BUILDER 01)
-	        
-	        ///----------------------------------------------------
-	        	
-	        ///(JSON ARRAY BUILDER 01)
-	        for (int i = 0; i < postsLen; i++) {
-	        	//Structuring inner JSONArrays
-	        	JSONArray tagsArray = new JSONArray();
-	        	for (String s : defaultTags) {
-	        		tagsArray.add(s);
-	        	}
-	   
-	        	JSONObject postJson = new JSONObject(); //Contains user and content JSONObject
-	        		JSONObject userJson = new JSONObject();
-	        			userJson.put("name", perguntas.get(i).getNome_usuario());            
-	        			userJson.put("date", (perguntas.get(i).getData_postagem()).toString()); 
-		        	JSONObject contentJson = new JSONObject();
-			        	contentJson.put("title", perguntas.get(i).getTitulo());
-			        	contentJson.put("text", perguntas.get(i).getConteudo());
-			        	contentJson.put("likes", random.nextInt(30)); //nao possui
-			        	contentJson.put("comments", random.nextInt(30));
-			        	contentJson.put("tags", tagsArray);
-			        	contentJson.put("id", perguntas.get(i).getId_pergunta());
-			        	logger.log(perguntas.get(i).getId_pergunta());
-	        	//finish the json
-	        	postJson.put("user", userJson);
-	        	postJson.put("content", contentJson);
-	        	jsonArrayData.add(postJson);
-	        }
-	        
-	        ///FINISH responseJson
-	        responseJson.put("data", jsonArrayData);
-	        
-	        res.type("application/json");
-	        res.status(200);
-	        
-	        res.body(responseJson.toJSONString());
-	        logger.logMethodEnd(responseJson);
-	        return res.body();
-		}
+	
+	
+	
 	
 	@SuppressWarnings("unchecked")
+	/* Returns a very specific JSONArray containing multiple post preview from
+	 * the forum explore section
+	 * 
+	 * Contains a limiter on the amount of posts sent.
+	 * Refer to forum-explore.js to see the JSONArray structure
+	 * 
+	 * Tags has not been implemented on the database yet, and as such default values are used
+	 */
+	public static Object getForumHomepage(Request req, Response res) throws Exception{
+    	final int postsMaxLen = 5;
+    	
+    	List<Pergunta> perguntas = PerguntaDAO.getMostRecentList(5);
+		int postsLen = (perguntas.size() > postsMaxLen) ? postsMaxLen : perguntas.size();
+		
+		if (postsLen == 0) {
+			res.status(400);
+			System.err.println("Couldnt find any values. Exiting");
+			return "failure";
+		}
+		
+		res.type("application/json");
+		String[] defaultTags = {"adhd"};
+		
+		
+		//Build response
+		JSONArray jsonArray = new JSONArray();
+		
+        for (int i = 0; i < postsLen; i++) {
+        	JSONArray tagsArray = new JSONArray();
+        	for (String s : defaultTags) {
+        		tagsArray.add(s);
+        	}
+   
+        	JSONObject json = new JSONObject(); //Contains user and content JSONObject
+        		JSONObject userJson = new JSONObject();
+        			//userJson.put("name", perguntas.get(i).getNome_usuario());  -> create method list user from list questao          
+        			userJson.put("date", (perguntas.get(i).getData_postagem()).toString()); 
+	        	JSONObject contentJson = new JSONObject();
+		        	contentJson.put("title", perguntas.get(i).getTitulo());
+		        	contentJson.put("text", perguntas.get(i).getConteudo());
+		        	contentJson.put("likes", random.nextInt(30)); //nao possui
+		        	contentJson.put("comments", random.nextInt(30));
+		        	contentJson.put("tags", tagsArray);
+		        	contentJson.put("id", perguntas.get(i).getId_pergunta());
+        	//finish the json
+        	json.put("user", userJson);
+        	json.put("content", contentJson);
+        	jsonArray.add(json);
+        }
+
+		res.status(200);
+        return jsonArray.toJSONString();
+	}
+	
+	
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	/* Returns a very specific JSON, containg the main post data and a JSONArray of comments
+	 * 
+	 * Contains a limiter on the amount of comments sent
+	 * Refer to forum-post.js to see the JSON structure
+	 * 
+	 * Tags has not been implemented on the database yet, and as such default values are used
+	 */
 	public static Object getForumPagePost(Request req, Response res) throws Exception{
-    	final String path = "/forum/page/load-post";	
-    	final ServiceLogger logger = new ServiceLogger(path);
     	final int maxCommentsNum = 5;
     	
-		///GET ID FROM URL
+		//Get id from url sent -> need to review the formats later
     	int id = 0; 
-    	logger.log("URL id value: " + req.queryParams("id"));
     	try {
     		id = Integer.parseInt(req.queryParams("id"));
     	} catch (NumberFormatException e) {
-    		throw new Exception (logger.err("Failure to parse to int from url id"));
+    		throw new Exception ("Failure to parse to int from url id");
     	}
     	
-    	///GET VALUES FROM DATABASE (!MISSING!)
+    	Pergunta pergunta = PerguntaDAO.getPergunta(id);
+    	List<Resposta> respostas = PerguntaDAO.getRespostasFromId(id);
+    	int cLen = (respostas.size() > maxCommentsNum) ? maxCommentsNum : respostas.size();
     	
-    	Pergunta pergunta = perguntaDAO.getPergunta(id);
-    	List<Resposta> respostas = perguntaDAO.getRespostas(id);
     	
-    	int cLen = 5; //amount of comments
-    	cLen = (cLen > maxCommentsNum) ? maxCommentsNum : cLen;
-    	
-    	///CREATE RESPONSE (RES) --------------------------------------------------
+    	//Build response
     	res.type("application/json");
     	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		
-    	List<String> tags = Arrays.asList("adhd"); // Ou qualquer outra maneira de obter a lista de tags
+    	List<String> tags = Arrays.asList("adhd");
     	JSONArray postContentTags = new JSONArray(); 
     	for (String tag : tags) {
     	    postContentTags.add(tag);
@@ -214,7 +198,7 @@ public class Service extends ServiceParent{
 		JSONObject responseJson = new JSONObject();
 			JSONObject jsonPost = new JSONObject();
 				JSONObject jsonPostUser = new JSONObject();
-					jsonPostUser.put("name", pergunta.getNome_usuario());
+					//jsonPostUser.put("name", pergunta.getNome_usuario()); -> find another way to get name from pergunta
 					jsonPostUser.put("date", (pergunta.getData_postagem()).toString());
 				JSONObject jsonPostContent = new JSONObject(); 
 					jsonPostContent.put("title", pergunta.getTitulo());
@@ -255,7 +239,6 @@ public class Service extends ServiceParent{
         responseJson.put("post", jsonPost);
         responseJson.put("comment", jsonArrayComments); 
         
-        logger.logMethodEnd(responseJson);
         return responseJson.toJSONString();
 	}
 	
@@ -285,18 +268,22 @@ public class Service extends ServiceParent{
     	return returnJson;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//----------------------------------------------------------------------------------------------
 	///PUTS
 	
 	public static Object putForumPageComment(Request req, Response res) throws Exception{
-		final String path = "/forum/page/comment";
-    	final ServiceLogger logger = new ServiceLogger(path);
-		logger.log("ContentType found: " + req.headers("Content-Type")); 
-		
     	//GET REQ BODY
 		final String reqJsonBody = req.body();
-		JSONObject reqJson = parseBody(reqJsonBody, logger);
-		logger.log(reqJson);
+		JSONObject reqJson = parseBody(reqJsonBody);
 
 		String dateString = (String) reqJson.get("time");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -309,26 +296,28 @@ public class Service extends ServiceParent{
 		
 		int id = Integer.parseInt(questionId);
 		
-		logger.log(String.format("Got values [content=(%s), email=(%s), question_id=(%s)]",
+		System.out.println(String.format("Got values [content=(%s), email=(%s), question_id=(%s)]",
 				content, email, questionId));
 		
 		///PUT ON DATABASE WITH DAO (!MISSING!)
 		
-		respostaDAO.inserirResposta(content, email, id, date);
+		RespostaDAO.inserirResposta(content, email, id, date);
 		
 		
 		boolean sucess = false;
 		if (sucess) {
-			logger.log("Sucessfully put " + questionId + " on database");
+			System.out.println("Sucessfully put " + questionId + " on database");
 			res.status(200);
 		} else {
-			logger.log("Sucessfully put on database");
+			System.out.println("Sucessfully put on database");
 			res.status(200);
 		}
 		
-		logger.logMethodEnd("sucess");
 		return "sucess";
 	}
+	
+	
+	
 	
 	public static Object atualizaQuestoesUser(Request req, Response res) {
 	
