@@ -16,7 +16,8 @@ public class UsuarioDAO extends DAO{
 	public static final String cUsername = "username"; //uk
 	public static final String cEmail = "email"; //uk
 	public static final String cSenha = "senha";
-
+	public static final String cQtdAcertos = "qtd_acertos";
+	public static final String cQtdFeitas = "qtd_feitas";
     
     
 	
@@ -34,8 +35,10 @@ public class UsuarioDAO extends DAO{
 	                 String username = resultSet.getString(cUsername);
 	                 String email = resultSet.getString(cEmail);
 	                 String senha = resultSet.getString(cSenha);
+	                 String qtd_acertos = resultSet.getString(cQtdAcertos);
+	                 String qtd_feitas = resultSet.getString(cQtdFeitas);
 	                 
-	                 usuario = new Usuario(id, nome,username,email,senha);
+	                 usuario = new Usuario(id, nome,username,email,senha, qtd_acertos, qtd_feitas);
 	             } else {
 	            	 System.out.println("Usuário id " + id + " não está cadastrado");
 	             }
@@ -61,7 +64,7 @@ public class UsuarioDAO extends DAO{
 	                 String username = resultSet.getString(cUsername);
 	                 String senha = resultSet.getString(cSenha);
 	                 
-	                 usuario = new Usuario(id, nome,username,email,senha);
+	                 usuario = new Usuario(id, nome,username,email,senha, qtd_acertos, qtd_feitas);
 	             } else {
 	            	 System.out.println("Usuário email " + email + " não está cadastrado");
 	             }
